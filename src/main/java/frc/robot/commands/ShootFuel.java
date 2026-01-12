@@ -39,8 +39,8 @@ public class ShootFuel extends Command{
                     driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                     driveSim.getSimulatedDriveTrainPose().getRotation(), 
                     Inches.of(5),
-                    MetersPerSecond.of(10),
-                    Degrees.of(60)
+                    MetersPerSecond.of(7.5),
+                    Degrees.of(75)
                 )
             );
 
