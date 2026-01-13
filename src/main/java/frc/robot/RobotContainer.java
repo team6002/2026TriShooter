@@ -22,13 +22,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TheAutoAlign;
-import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.JoystickDrive;
-import frc.robot.commands.reefscape.ReefAlignment;
 import frc.robot.constants.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
@@ -38,16 +36,6 @@ import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.drive.IO.ModuleIOSim;
 import frc.robot.subsystems.drive.IO.ModuleIOSpark;
 import frc.robot.subsystems.led.LEDStatusLight;
-import frc.robot.subsystems.superstructure.SuperStructure;
-import frc.robot.subsystems.superstructure.elevator.Elevator;
-import frc.robot.subsystems.superstructure.elevator.ElevatorConstants;
-import frc.robot.subsystems.superstructure.elevator.ElevatorIOSpark;
-import frc.robot.subsystems.superstructure.pivot.Pivot;
-import frc.robot.subsystems.superstructure.pivot.PivotConstants_IntakePivot;
-import frc.robot.subsystems.superstructure.pivot.PivotConstants_MainPivot;
-import frc.robot.subsystems.superstructure.pivot.PivotConstants_TwistPivot;
-import frc.robot.subsystems.superstructure.pivot.PivotConstants_WristPivot;
-import frc.robot.subsystems.superstructure.pivot.PivotIOSpark;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
@@ -77,13 +65,6 @@ public class RobotContainer {
     public final AprilTagVision aprilTagVision;
     private SwerveDriveSimulation driveSimulation = null;
 
-    public final Elevator elevator;
-    public final Pivot pivot;
-    public final Pivot intakePivot;
-    public final Pivot wristPivot;
-    public final Pivot twistPivot;
-    public final SuperStructure superStructure;
-
     private final Field2d field = new Field2d();
     // Controller
     public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
@@ -109,29 +90,18 @@ public class RobotContainer {
 
                 this.vision = new Vision(
                         drive,
-                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
-                        new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1),
-                        new VisionIOPhotonVision(Vision_Constants.camera2Name, Vision_Constants.robotToCamera2));
+                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                        // new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1),
+                        // new VisionIOPhotonVision(Vision_Constants.camera2Name, Vision_Constants.robotToCamera2)
+                );
 
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
-                pivot = new Pivot(new PivotIOSpark(new PivotConstants_MainPivot()), "Main Pivot");
-                pivot.setDefaultCommand(new RunCommand(() -> pivot.runAutomatic(), pivot));
-                intakePivot = new Pivot(new PivotIOSpark(new PivotConstants_IntakePivot()), "Intake Pivot");
-                intakePivot.setDefaultCommand(new RunCommand(() -> intakePivot.runAutomatic(), intakePivot));
-                wristPivot = new Pivot(new PivotIOSpark(new PivotConstants_WristPivot()), "Wrist Pivot");
-                wristPivot.setDefaultCommand(new RunCommand(() -> wristPivot.runAutomatic(), wristPivot));
-
-                twistPivot = new Pivot(new PivotIOSpark(new PivotConstants_TwistPivot()), "Twist Pivot");
-                twistPivot.setDefaultCommand(new RunCommand(() -> twistPivot.runAutomatic(), twistPivot));
-
-                elevator = new Elevator(new ElevatorIOSpark(new ElevatorConstants()), "Elevator");
-                elevator.setDefaultCommand(new RunCommand(() -> elevator.runAutomatic(), elevator));
                 break;
 
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
-                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
+                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.1, 4, new Rotation2d(Math.PI)));
                 // add the simulated drivetrain to the simulation field
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 // Sim robot, instantiate physics sim IO implementations
@@ -148,11 +118,12 @@ public class RobotContainer {
                         new VisionIOPhotonVisionSim(
                                 Vision_Constants.camera0Name,
                                 Vision_Constants.robotToCamera0,
-                                driveSimulation::getSimulatedDriveTrainPose),
-                        new VisionIOPhotonVisionSim(
-                                Vision_Constants.camera1Name,
-                                Vision_Constants.robotToCamera1,
-                                driveSimulation::getSimulatedDriveTrainPose));
+                                driveSimulation::getSimulatedDriveTrainPose)
+                        // new VisionIOPhotonVisionSim(
+                        //         Vision_Constants.camera1Name,
+                        //         Vision_Constants.robotToCamera1,
+                        //         driveSimulation::getSimulatedDriveTrainPose)
+                );
 
                 aprilTagVision = new AprilTagVision(
                         new ApriltagVisionIOSim(
@@ -160,11 +131,6 @@ public class RobotContainer {
                                 VisionConstants.fieldLayout,
                                 driveSimulation::getSimulatedDriveTrainPose),
                         camerasProperties);
-                pivot = new Pivot(new PivotIOSpark(new PivotConstants_MainPivot()), "Main Pivot");
-                intakePivot = new Pivot(new PivotIOSpark(new PivotConstants_IntakePivot()), "Intake Pivot");
-                wristPivot = new Pivot(new PivotIOSpark(new PivotConstants_WristPivot()), "Wrist Pivot");
-                twistPivot = new Pivot(new PivotIOSpark(new PivotConstants_TwistPivot()), "Twist Pivot");
-                elevator = new Elevator(new ElevatorIOSpark(new ElevatorConstants()), "Elevator");
 
                 break;
             default:
@@ -177,22 +143,18 @@ public class RobotContainer {
                         new ModuleIO() {},
                         (pose) -> {});
 
-                vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+                vision = new Vision(drive, new VisionIO() {}
+                // new VisionIO() {}
+                );
                 aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
-                pivot = new Pivot(new PivotIOSpark(null) {}, "");
-                intakePivot = new Pivot(new PivotIOSpark(null) {}, "");
-                wristPivot = new Pivot(new PivotIOSpark(null) {}, "");
-                twistPivot = new Pivot(new PivotIOSpark(null) {}, "");
-                elevator = new Elevator(new ElevatorIOSpark(null) {}, "");
                 break;
         }
 
-        this.superStructure = new SuperStructure(elevator, pivot, wristPivot, twistPivot, intakePivot);
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
+        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive));
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -225,19 +187,15 @@ public class RobotContainer {
         JoystickDrive.instance = Optional.of(joystickDrive);
 
         /* auto alignment example, delete it for your project */
-        driver.autoAlignmentButtonLeft()
-                .and(driver.l4Button())
-                .whileTrue(autoAlign(ReefAlignment.Side.LEFT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
+        // driver.autoAlignmentButtonLeft()
+        //         .and(driver.l4Button())
+        //         .whileTrue(autoAlign(ReefAlignment.Side.LEFT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
-        driver.autoAlignmentButtonRight()
-                .and(driver.l4Button())
-                .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
+        // driver.autoAlignmentButtonRight()
+        //         .and(driver.l4Button())
+        //         .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
         driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 1, 0, 0));
-        
-        driver.l3Button().onTrue(superStructure.moveToPose(SuperStructure.SuperStructurePose.IDLE));
-
-        driver.l2Button().onTrue(superStructure.moveToPose(SuperStructure.SuperStructurePose.PREPARE_TO_RUN));
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -249,9 +207,9 @@ public class RobotContainer {
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
     }
 
-    public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {
-        return ReefAlignment.alignToNearestBranch(drive, aprilTagVision, ledStatusLight, side, autoAlignmentConfig);
-    }
+//     public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {
+//         return ReefAlignment.alignToNearestBranch(drive, aprilTagVision, ledStatusLight, side, autoAlignmentConfig);
+//     }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -265,7 +223,7 @@ public class RobotContainer {
     public void resetSimulationField() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
-        drive.resetOdometry(new Pose2d(3, 3, new Rotation2d()));
+        drive.resetOdometry(new Pose2d(3.1, 4, new Rotation2d(Math.PI)));
         SimulatedArena.getInstance().resetFieldForAuto();
     }
 

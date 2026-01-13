@@ -19,6 +19,7 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
@@ -30,6 +31,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -42,6 +44,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
@@ -424,6 +427,34 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     @Override
     public double getChassisMaxAngularAccelerationRadPerSecSq() {
         return CHASSIS_MAX_ANGULAR_ACCELERATION.in(RadiansPerSecondPerSecond);
+    }
+
+    public Command followPath(String pathName){
+        PathPlannerPath path;
+        try{
+            path = PathPlannerPath.fromPathFile(pathName);
+        }catch (Exception e) {
+           DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+           return Commands.none();
+        }
+        return AutoBuilder.followPath(path);
+    }
+
+    /**attempt to load a pathplanner path with the path name and return that path's start pose, if it fail print an error message and stack trace to the DS */
+    public void setAutoStartPose(String pathName){
+        PathPlannerPath path;
+        try{
+            path = PathPlannerPath.fromPathFile(pathName);
+        }catch (Exception e) {
+           DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+           return;
+        }
+
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(-3, 0, new Rotation2d())));
+        } else {
+            resetOdometry(path.getStartingHolonomicPose().get());
+        }
     }
 
     /** Turns the motor brakes on */
