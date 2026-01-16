@@ -253,6 +253,25 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
     }
 
+    public void runVelocity(ChassisSpeeds speeds) {
+        // Calculate module setpoints
+        speeds = ChassisSpeeds.discretize(speeds, 0.02);
+        SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
+
+        // Log unoptimized setpoints
+        Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
+
+        // Send setpoints to modules
+        for (int i = 0; i < 4; i++) {
+            modules[i].runSetpoint(setpointStates[i]);
+        }
+
+        // Log optimized setpoints (runSetpoint mutates each state)
+        Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+    }
+
     @Override
     public void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
         this.setpoint = new SwerveSetpoint(speeds, getModuleStates(), feedforwards);
@@ -451,7 +470,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         }
 
         if (DriverStation.getAlliance().get() == Alliance.Red) {
-            resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(-3, 0, new Rotation2d())));
+            resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(3, 0, new Rotation2d())));
         } else {
             resetOdometry(path.getStartingHolonomicPose().get());
         }
