@@ -27,5 +27,5 @@ public class HoodConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
     
-    public static final double kGearRatio = 216.5;
+    public static final double kGearRatio = 1;
 }

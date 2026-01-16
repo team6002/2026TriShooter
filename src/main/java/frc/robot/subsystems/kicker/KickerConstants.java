@@ -34,5 +34,5 @@ public class KickerConstants {
     public static final double kClimb = -1;
     public static final double kHolding = 2;
 
-    public static final double kGearRatio = 216.5;
+    public static final double kGearRatio = 3;
 }
