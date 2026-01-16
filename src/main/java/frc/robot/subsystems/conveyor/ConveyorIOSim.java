@@ -1,7 +1,5 @@
 package frc.robot.subsystems.conveyor;
 
-import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -16,7 +14,7 @@ public class ConveyorIOSim implements ConveyorIO {
     private double reference = 0;
     public static double objectsInHopper = 0;
 
-    public ConveyorIOSim(AbstractDriveTrainSimulation driveSim) {
+    public ConveyorIOSim() {
         conveyorSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, ConveyorConstants.kGearRatio),
                 DCMotor.getNeo550(2));
@@ -57,7 +55,7 @@ public class ConveyorIOSim implements ConveyorIO {
 
     @Override
     public void PID() {
-        conveyorSim.setInput(conveyorPIDController.calculate(reference));
+        conveyorSim.setInput(conveyorPIDController.calculate(conveyorSim.getAngularVelocityRadPerSec(), reference));
     }
 
     @Override

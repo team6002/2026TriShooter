@@ -61,15 +61,15 @@ public class DriveConstants {
     public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.PI / 2);
 
     // Device CAN IDs
-    public static final int frontLeftDriveCanId = 10;
-    public static final int frontRightDriveCanId = 19;
-    public static final int backLeftDriveCanId = 8;
-    public static final int backRightDriveCanId = 2;
+    public static final int frontLeftDriveCanId = 1;
+    public static final int frontRightDriveCanId = 3;
+    public static final int backLeftDriveCanId = 5;
+    public static final int backRightDriveCanId = 7;
 
-    public static final int frontLeftTurnCanId = 7;
-    public static final int frontRightTurnCanId = 5;
-    public static final int backLeftTurnCanId = 9;
-    public static final int backRightTurnCanId = 1;
+    public static final int frontLeftTurnCanId = 2;
+    public static final int frontRightTurnCanId = 4;
+    public static final int backLeftTurnCanId = 6;
+    public static final int backRightTurnCanId = 8;
 
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 60;

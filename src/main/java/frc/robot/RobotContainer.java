@@ -31,6 +31,14 @@ import frc.robot.commands.drive.AutoAlignment;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.commands.reefscape.ReefAlignment;
 import frc.robot.constants.*;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSim;
+import frc.robot.subsystems.climb.ClimbIOSpark;
+import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.ConveyorIO;
+import frc.robot.subsystems.conveyor.ConveyorIOSim;
+import frc.robot.subsystems.conveyor.ConveyorIOSpark;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIONavX;
@@ -38,10 +46,18 @@ import frc.robot.subsystems.drive.IO.GyroIOSim;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.drive.IO.ModuleIOSim;
 import frc.robot.subsystems.drive.IO.ModuleIOSpark;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodIO;
+import frc.robot.subsystems.hood.HoodIOSim;
+import frc.robot.subsystems.hood.HoodIOSpark;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeIOSpark;
+import frc.robot.subsystems.kicker.Kicker;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOSim;
+import frc.robot.subsystems.kicker.KickerIOSpark;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterIO;
@@ -73,6 +89,10 @@ public class RobotContainer {
     public final Drive drive;
     public final Shooter shooter;
     public final Intake intake;
+    public final Conveyor conveyor;
+    public final Kicker kicker;
+    public final Hood hood;
+    public final Climb climb;
     public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
@@ -104,6 +124,10 @@ public class RobotContainer {
 
                 shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
+                conveyor = new Conveyor(new ConveyorIOSpark());
+                kicker = new Kicker(new KickerIOSpark());
+                hood = new Hood(new HoodIOSpark());
+                climb = new Climb(new ClimbIOSpark());
 
                 this.vision = new Vision(
                         drive,
@@ -131,6 +155,10 @@ public class RobotContainer {
 
                 shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
+                conveyor = new Conveyor(new ConveyorIOSim());
+                kicker = new Kicker(new KickerIOSim());
+                hood = new Hood(new HoodIOSim());
+                climb = new Climb(new ClimbIOSim());
 
                 vision = new Vision(
                         drive,
@@ -163,6 +191,10 @@ public class RobotContainer {
 
                 shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
+                conveyor = new Conveyor(new ConveyorIO() {});
+                kicker = new Kicker(new KickerIO() {});
+                hood = new Hood(new HoodIO() {});
+                climb = new Climb(new ClimbIO() {});
 
                 vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);

@@ -6,6 +6,8 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ShooterConfig {
     public static final SparkMaxConfig shooterConfig = new SparkMaxConfig();
+    public static final SparkMaxConfig leftShooterConfig = new SparkMaxConfig();
+    public static final SparkMaxConfig rightShooterConfig = new SparkMaxConfig();
 
     static {
         shooterConfig
@@ -16,6 +18,38 @@ public class ShooterConfig {
                 .voltageCompensation(12.0);
         shooterConfig.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(10);
         shooterConfig
+                .closedLoop
+                .pid(
+                        ShooterConstants.kP,
+                        ShooterConstants.kI,
+                        ShooterConstants.kD)
+                .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+
+        leftShooterConfig
+                .disableFollowerMode()
+                .idleMode(IdleMode.kCoast)
+                .inverted(ShooterConstants.kInverted)
+                .smartCurrentLimit(40)
+                .voltageCompensation(12.0);
+        leftShooterConfig.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(10);
+        leftShooterConfig
+                .closedLoop
+                .pid(
+                        ShooterConstants.kP,
+                        ShooterConstants.kI,
+                        ShooterConstants.kD)
+                .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+
+        rightShooterConfig
+                .disableFollowerMode()
+                .idleMode(IdleMode.kCoast)
+                .inverted(ShooterConstants.kInverted)
+                .smartCurrentLimit(40)
+                .voltageCompensation(12.0);
+        rightShooterConfig.encoder.quadratureAverageDepth(2).quadratureMeasurementPeriod(10);
+        rightShooterConfig
                 .closedLoop
                 .pid(
                         ShooterConstants.kP,

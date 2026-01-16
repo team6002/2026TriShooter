@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class IntakeIOSim implements IntakeIO {
 
     private final DCMotorSim intakeSim;
-    private final PIDController groundPIDController =
-            new PIDController(IntakeConstants.kSimP, IntakeConstants.kSimI, IntakeConstants.kSimD);
+    private final PIDController intakePIDController =
+            new PIDController(IntakeConstants.kPSim, IntakeConstants.kISim, IntakeConstants.kDSim);
     private static IntakeSimulation intakeSimulation;
     private double reference = 0;
     public static double objectsInHopper = 0;
@@ -68,7 +68,7 @@ public class IntakeIOSim implements IntakeIO {
 
     @Override
     public void PID() {
-        intakeSim.setInput(groundPIDController.calculate(reference));
+        intakeSim.setInput(intakePIDController.calculate(intakeSim.getAngularVelocityRadPerSec(), reference));
     }
 
     @Override

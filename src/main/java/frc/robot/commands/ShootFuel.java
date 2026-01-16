@@ -18,22 +18,21 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 public class ShootFuel extends Command {
     private final AbstractDriveTrainSimulation driveSim;
     private int timer;
+    private int shooterIndex = 0;
 
-    // Shooting table: {distance (meters), angle (degrees), velocity (m/s)}
     private static final double[][] SHOOTING_TABLE = {
-        {1.50, 81.7, 7.00},
-        {2.50, 78.1, 7.62},
-        {3.50, 75.4, 8.25},
-        {4.50, 73.6, 8.88},
-        {5.50, 72.2, 9.50}
+        {1.50, 75, 7.00},
+        {2.50, 72, 7.75},
+        {3.50, 69, 8.25},
+        {4.50, 66, 9},
+        {5.50, 63, 9.75}
     };
 
-    // Shooter offsets from robot center (in robot-relative coordinates)
-    private static final Translation2d CENTER_SHOOTER_OFFSET = 
+    private static final Translation2d CENTER_SHOOTER_OFFSET =
         new Translation2d(Units.inchesToMeters(-12), 0);
-    private static final Translation2d LEFT_SHOOTER_OFFSET = 
+    private static final Translation2d LEFT_SHOOTER_OFFSET =
         new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(6));
-    private static final Translation2d RIGHT_SHOOTER_OFFSET = 
+    private static final Translation2d RIGHT_SHOOTER_OFFSET =
         new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(-6));
 
     private final Pose2d BlueHubPose =
@@ -48,49 +47,45 @@ public class ShootFuel extends Command {
     @Override
     public void initialize(){
         timer = 0;
+        shooterIndex = 0;
     }
 
     @Override
     public void execute(){
-        if(timer > 15 && IntakeIOSim.numObjectsInHopper() > 0){
+        if (timer > 3 && IntakeIOSim.numObjectsInHopper() > 0) {
+
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
-            Pose2d hubPose = 
+            Pose2d hubPose =
                 DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue) == DriverStation.Alliance.Blue
                 ? BlueHubPose : RedHubPose;
 
             double distance = robotPose.getTranslation().getDistance(hubPose.getTranslation());
             ShootingParams params = getShootingParams(distance);
 
-            // Shoot up to 3 balls (one from each shooter)
-            int ballsToShoot = Math.min(3, IntakeIOSim.numObjectsInHopper());
-            
-            for (int i = 0; i < ballsToShoot; i++) {
-                IntakeIOSim.obtainFuelFromHopper();
-                
-                // Select shooter offset based on which ball we're shooting
-                Translation2d shooterOffset;
-                if (i == 0) {
-                    shooterOffset = CENTER_SHOOTER_OFFSET;
-                } else if (i == 1) {
-                    shooterOffset = LEFT_SHOOTER_OFFSET;
-                } else {
-                    shooterOffset = RIGHT_SHOOTER_OFFSET;
-                }
+            IntakeIOSim.obtainFuelFromHopper();
 
-                SimulatedArena.getInstance().addGamePieceProjectile(
-                    new ReefscapeAlgaeOnFly(
-                        robotPose.getTranslation(),
-                        shooterOffset,
-                        driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                        robotPose.getRotation(),
-                        Inches.of(6),
-                        MetersPerSecond.of(params.velocityMPS),
-                        Degrees.of(params.angleDegrees)
-                    )
-                );
+            Translation2d shooterOffset;
+            switch (shooterIndex) {
+                case 0: shooterOffset = CENTER_SHOOTER_OFFSET; break;
+                case 1: shooterOffset = LEFT_SHOOTER_OFFSET; break;
+                default: shooterOffset = RIGHT_SHOOTER_OFFSET; break;
             }
 
+            SimulatedArena.getInstance().addGamePieceProjectile(
+                new ReefscapeAlgaeOnFly(
+                    robotPose.getTranslation(),
+                    shooterOffset,
+                    driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                    robotPose.getRotation(),
+                    Inches.of(6),
+                    MetersPerSecond.of(params.velocityMPS),
+                    Degrees.of(params.angleDegrees)
+                )
+            );
+
+            shooterIndex = (shooterIndex + 1) % 3;
             timer = 0;
+
         } else {
             timer++;
         }
@@ -104,7 +99,6 @@ public class ShootFuel extends Command {
     private record ShootingParams(double angleDegrees, double velocityMPS) {}
 
     private ShootingParams getShootingParams(double distance) {
-        // Clamp to table bounds
         if (distance <= SHOOTING_TABLE[0][0]) {
             return new ShootingParams(SHOOTING_TABLE[0][1], SHOOTING_TABLE[0][2]);
         }
@@ -112,22 +106,20 @@ public class ShootFuel extends Command {
             int last = SHOOTING_TABLE.length - 1;
             return new ShootingParams(SHOOTING_TABLE[last][1], SHOOTING_TABLE[last][2]);
         }
-        
-        // Find the two points to interpolate between
+
         for (int i = 0; i < SHOOTING_TABLE.length - 1; i++) {
             if (distance >= SHOOTING_TABLE[i][0] && distance <= SHOOTING_TABLE[i + 1][0]) {
                 double d0 = SHOOTING_TABLE[i][0];
                 double d1 = SHOOTING_TABLE[i + 1][0];
-                double t = (distance - d0) / (d1 - d0);  // interpolation factor
-                
+                double t = (distance - d0) / (d1 - d0);
+
                 double angle = SHOOTING_TABLE[i][1] + t * (SHOOTING_TABLE[i + 1][1] - SHOOTING_TABLE[i][1]);
                 double velocity = SHOOTING_TABLE[i][2] + t * (SHOOTING_TABLE[i + 1][2] - SHOOTING_TABLE[i][2]);
-                
+
                 return new ShootingParams(angle, velocity);
             }
         }
-        
-        // Fallback (shouldn't reach here)
+
         return new ShootingParams(75.0, 7.0);
     }
 }
