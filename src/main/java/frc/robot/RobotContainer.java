@@ -16,6 +16,8 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -28,6 +30,7 @@ import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.JoystickDrive;
+import frc.robot.commands.drive.JoystickDriveAndAimAtTarget;
 import frc.robot.constants.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
@@ -184,9 +187,9 @@ public class RobotContainer {
         IntSupplier pov =
                 // driver.getController().getHID()::getPOV;
                 () -> -1;
-        final JoystickDrive joystickDrive = new JoystickDrive(driveInput, ()->true, pov, drive);
+        final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
-        JoystickDrive.instance = Optional.of(joystickDrive);
+        // Command.instance = Optional.of(joystickDrive);
 
         /* auto alignment example, delete it for your project */
         // driver.autoAlignmentButtonLeft()
