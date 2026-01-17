@@ -28,7 +28,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.AUTO_Left;
 import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.Climb;
@@ -248,6 +249,10 @@ public class RobotContainer {
         //         .and(driver.l4Button())
         //         .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
+        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 0.5, 0, 0));
+
+        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
+
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
                 ? () -> drive.resetOdometry(
@@ -257,7 +262,7 @@ public class RobotContainer {
                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuel(driveSimulation));
+        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
     }
 
 //     public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {

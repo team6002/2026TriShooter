@@ -4,7 +4,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ShootFuelSim;
 import frc.robot.subsystems.drive.Drive;
 
 public class AUTO_Left extends SequentialCommandGroup {
@@ -14,7 +14,7 @@ public class AUTO_Left extends SequentialCommandGroup {
             ,drive.followPath("gotomiddle")
             ,drive.followPath("grabmiddlefuel")
             ,drive.followPath("scoreitall")
-            ,new ShootFuel(sim)
+            ,new ShootFuelSim(sim)
             ,drive.followPath("climb")
         );
 

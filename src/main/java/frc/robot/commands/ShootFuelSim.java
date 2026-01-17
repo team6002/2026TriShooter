@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
-public class ShootFuel extends Command {
+public class ShootFuelSim extends Command {
     private final AbstractDriveTrainSimulation driveSim;
     private int timer;
     private int shooterIndex = 0;
@@ -40,7 +40,7 @@ public class ShootFuel extends Command {
     private final Pose2d RedHubPose =
         new Pose2d(new Translation2d(Units.inchesToMeters(469), Units.inchesToMeters(159)), null);
 
-    public ShootFuel(AbstractDriveTrainSimulation driveSim){
+    public ShootFuelSim(AbstractDriveTrainSimulation driveSim){
         this.driveSim = driveSim;
     }
 
