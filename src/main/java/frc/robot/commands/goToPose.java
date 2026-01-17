@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.drive.DriveCommands;
 import frc.robot.subsystems.drive.Drive;
 
 public class goToPose extends SequentialCommandGroup {
@@ -24,7 +25,7 @@ public class goToPose extends SequentialCommandGroup {
                 }),
 
                 // Step 2: Drive toward target using joystick-style drive
-                frc.robot.commands.DriveCommands.joystickDrive(
+                DriveCommands.joystickDrive(
                     drive,
                     () -> {
                         double dx = targetPose.getX() - driveSimulation.getSimulatedDriveTrainPose().getX();
@@ -68,7 +69,7 @@ public class goToPose extends SequentialCommandGroup {
                 }),
 
                 // Step 2: Drive toward target using joystick-style drive
-                frc.robot.commands.DriveCommands.joystickDrive(
+                DriveCommands.joystickDrive(
                     drive,
                     () -> {
                         double dx = targetPose.getX() - drive.getPose().getX();

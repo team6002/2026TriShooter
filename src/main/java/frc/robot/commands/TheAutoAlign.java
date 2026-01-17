@@ -36,6 +36,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -57,7 +58,7 @@ public class TheAutoAlign extends SequentialCommandGroup {
                             new Translation2d(0, 0),
                             Rotation2d.fromDegrees(rotationDeg)
                         );
-                        new goToPose(target.plus(offset), sim, drive, tolerance).schedule();
+                        CommandScheduler.getInstance().schedule(new goToPose(target.plus(offset), drive, tolerance));
                     }
                 }),
 
@@ -83,7 +84,7 @@ public class TheAutoAlign extends SequentialCommandGroup {
                             new Translation2d(0, 0),
                             Rotation2d.fromDegrees(rotationDeg)
                         );
-                        new goToPose(target.plus(offset), drive, tolerance).schedule();
+                        CommandScheduler.getInstance().schedule(new goToPose(target.plus(offset), drive, tolerance));
                     }
                 }),
 
