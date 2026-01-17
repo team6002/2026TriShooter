@@ -27,7 +27,7 @@ public class IntakeIOSim implements IntakeIO {
                 LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, IntakeConstants.kGearRatio),
                 DCMotor.getNeo550(2));
 
-        intakeSimulation = IntakeSimulation.InTheFrameIntake("Algae", driveSim,
+        intakeSimulation = IntakeSimulation.InTheFrameIntake("Fuel", driveSim,
             Inches.of(20), IntakeSide.FRONT, 48);
 
         intakeSimulation.startIntake();

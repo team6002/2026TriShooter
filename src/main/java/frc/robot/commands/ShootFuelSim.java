@@ -6,7 +6,7 @@ import static edu.wpi.first.units.Units.Radians;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -59,7 +59,7 @@ public class ShootFuelSim extends Command {
             }
 
             SimulatedArena.getInstance().addGamePieceProjectile(
-                new ReefscapeAlgaeOnFly(
+                new RebuiltFuelOnFly(
                     robotPose.getTranslation(),
                     shooterOffset,
                     driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
