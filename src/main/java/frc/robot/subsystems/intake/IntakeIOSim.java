@@ -85,4 +85,8 @@ public class IntakeIOSim implements IntakeIO {
     public static int numObjectsInHopper(){
         return intakeSimulation.getGamePiecesAmount();
     }
+
+    public static void putFuelInHopperSim(int fuel) {
+        for (int i = 0; i < fuel; i++) intakeSimulation.addGamePieceToIntake();
+    }
 }

@@ -27,9 +27,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.AUTO_Left;
 import frc.robot.autos.AUTO_Middle;
-import frc.robot.commands.ShootFuel;
-import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.DriveCommands;
+import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.TheAutoAlign;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.Climb;
@@ -207,8 +207,8 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive));
-        autoChooser.addOption("Auto Left", new AUTO_Left(drive));
+        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive, driveSimulation));
+        autoChooser.addOption("Auto Left", new AUTO_Left(drive, driveSimulation));
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -240,6 +240,19 @@ public class RobotContainer {
         drive.setDefaultCommand(joystickDrive);
         // Command.instance = Optional.of(joystickDrive);
 
+        /* auto alignment example, delete it for your project */
+        // driver.autoAlignmentButtonLeft()
+        //         .and(driver.l4Button())
+        //         .whileTrue(autoAlign(ReefAlignment.Side.LEFT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
+
+        // driver.autoAlignmentButtonRight()
+        //         .and(driver.l4Button())
+        //         .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
+
+        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 0.5, 0, 0));
+
+        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
+
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
                 ? () -> drive.resetOdometry(
@@ -249,12 +262,12 @@ public class RobotContainer {
                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        //map the correct command based on if robot is running in real or sim mode
-        if(RobotBase.isReal())  driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter)
-                .onlyWhile(()-> driver.scoreButton().getAsBoolean()));
-
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
     }
+
+//     public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {
+//         return ReefAlignment.alignToNearestBranch(drive, aprilTagVision, ledStatusLight, side, autoAlignmentConfig);
+//     }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
