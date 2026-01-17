@@ -156,7 +156,7 @@ public class Module {
     /** Runs the module with the specified setpoint state. Returns the optimized state. */
     public SwerveModuleState forceRunSetPoint(
             SwerveModuleState newSetpoint, Force robotRelativeFeedforwardForceX, Force robotRelativeFeedforwardForceY) {
-        newSetpoint.optimize(getSteerFacing());
+        newSetpoint.optimize(backLeftZeroRotation);
 
         double desiredMotorVelocityRadPerSec =
                 newSetpoint.speedMetersPerSecond / WHEEL_RADIUS.in(Meters) * DRIVE_GEAR_RATIO;
@@ -166,8 +166,6 @@ public class Module {
         double moduleFeedforwardForceNewtons =
                 force2d.getNorm() * force2d.getAngle().minus(getSteerFacing()).getCos();
         double wheelFeedforwardTorque = moduleFeedforwardForceNewtons * WHEEL_RADIUS.in(Meters);
-        // double motorFeedforwardTorque = wheelFeedforwardTorque / DRIVE_GEAR_RATIO;
-        // if (!USE_TORQUE_FEEDFORWARD) motorFeedforwardTorque = 0;
         io.setDriveVelocity(desiredMotorVelocityRadPerSec); // , NewtonMeters.of(motorFeedforwardTorque));
         Logger.recordOutput("ModuleFeedforwards/" + index + "/Wheel FF Torque (N*M)", wheelFeedforwardTorque);
         io.setTurnPosition(newSetpoint.angle);

@@ -58,4 +58,10 @@
     "edu.wpi.first.math.**.struct.*",
   ],
   "java.dependency.enableDependencyCheckup": false
+<<<<<<< HEAD
+  ]
+=======
+  ],
+  "java.dependency.enableDependencyCheckup": false
+>>>>>>> e50c867 (update to 2026)
 }

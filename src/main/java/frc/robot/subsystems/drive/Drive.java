@@ -196,26 +196,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         gyroDisconnectedAlert.set(!gyroInputs.connected && Robot.CURRENT_ROBOT_MODE != RobotMode.SIM);
         RobotState.getInstance().updateAlerts();
 
-        // gyroConfigurationFailed.set(gyroInputs.configurationFailed);
-        // gyroDisconnectedAlert.set(!gyroInputs.configurationFailed && !gyroInputs.connected);
-        // canBusHighUtilization.setText(
-        //         "Drivetrain CanBus high utilization: " + (int) (canBusInputs.utilization * 100) + "%");
-        // canBusHighUtilization.set(canBusInputs.utilization > 0.8);
-        // batteryBrownoutAlert.set(batteryBrownoutDebouncer.calculate(RobotController.isBrownedOut()));
-        // drivetrainOverCurrentAlert.set(drivetrainOverCurrentDebouncer.calculate(
-        //         getDriveTrainTotalCurrentAmps() > OVER_CURRENT_WARNING.in(Amps)));
-
         Logger.recordOutput(
                 "RobotState/SensorLessOdometryPose", RobotState.getInstance().getSensorLessOdometryPose());
         Logger.recordOutput(
                 "RobotState/PrimaryEstimatorPose", RobotState.getInstance().getPrimaryEstimatorPose());
-        // Logger.recordOutput(
-        //         "RobotState/PrimaryEstimatorPoseWith3dRot",
-        //         new Pose3d(
-        //                 new Translation3d(RobotState.getInstance()
-        //                         .getPrimaryEstimatorPose()
-        //                         .getTranslation()),
-        //                 getDriveTrain3dOrientation()));
         Logger.recordOutput(
                 "RobotState/VisionSensitivePose", RobotState.getInstance().getVisionPose());
         Logger.recordOutput(
@@ -223,9 +207,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         Logger.recordOutput(
                 "RobotState/ControlLoopPoseWithLookAhead",
                 RobotState.getInstance().getPoseWithLookAhead());
-
-        // robotTipping = robotTippingDebouncer.calculate(
-
     }
 
     /**

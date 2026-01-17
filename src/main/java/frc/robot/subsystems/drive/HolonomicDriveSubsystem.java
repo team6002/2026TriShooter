@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.LocalADStarAK;
@@ -149,10 +150,9 @@ public interface HolonomicDriveSubsystem extends Subsystem {
         Alert pathPlannerWarmUpInProgressAlert =
                 AlertsManager.create("PathPlanner Warm-Up in progress", Alert.AlertType.kWarning);
         pathPlannerWarmUpInProgressAlert.set(true);
-        PathfindingCommand.warmupCommand()
+        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand()
                 .finallyDo(() -> pathPlannerWarmUpInProgressAlert.set(false))
-                .until(DriverStation::isEnabled)
-                .schedule();
+                .until(DriverStation::isEnabled));
     }
 
     static boolean isZero(ChassisSpeeds chassisSpeeds) {

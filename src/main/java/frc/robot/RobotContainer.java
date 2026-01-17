@@ -16,7 +16,9 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,9 +28,17 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.AUTO_Left;
 import frc.robot.autos.AUTO_Middle;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.TheAutoAlign;
+import frc.robot.commands.ShootFuel;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
+import frc.robot.subsystems.climb.Climb;
+import frc.robot.subsystems.climb.ClimbIO;
+import frc.robot.subsystems.climb.ClimbIOSim;
+import frc.robot.subsystems.climb.ClimbIOSpark;
+import frc.robot.subsystems.conveyor.Conveyor;
+import frc.robot.subsystems.conveyor.ConveyorIO;
+import frc.robot.subsystems.conveyor.ConveyorIOSim;
+import frc.robot.subsystems.conveyor.ConveyorIOSpark;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIONavX;
@@ -36,7 +46,23 @@ import frc.robot.subsystems.drive.IO.GyroIOSim;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.drive.IO.ModuleIOSim;
 import frc.robot.subsystems.drive.IO.ModuleIOSpark;
+import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodIO;
+import frc.robot.subsystems.hood.HoodIOSim;
+import frc.robot.subsystems.hood.HoodIOSpark;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeIOSpark;
+import frc.robot.subsystems.kicker.Kicker;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOSim;
+import frc.robot.subsystems.kicker.KickerIOSpark;
 import frc.robot.subsystems.led.LEDStatusLight;
+import frc.robot.subsystems.shooter.Shooter;
+import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOSim;
+import frc.robot.subsystems.shooter.ShooterIOSpark;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.vision.apriltags.AprilTagVision;
 import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
@@ -48,6 +74,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -59,6 +86,12 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
     // Subsystems
     public final Drive drive;
+    public final Shooter shooter;
+    public final Intake intake;
+    public final Conveyor conveyor;
+    public final Kicker kicker;
+    public final Hood hood;
+    public final Climb climb;
     public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
@@ -88,6 +121,13 @@ public class RobotContainer {
                         new ModuleIOSpark(3),
                         (pose) -> {});
 
+                shooter = new Shooter(new ShooterIOSpark());
+                intake = new Intake(new IntakeIOSpark());
+                conveyor = new Conveyor(new ConveyorIOSpark());
+                kicker = new Kicker(new KickerIOSpark());
+                hood = new Hood(new HoodIOSpark());
+                climb = new Climb(new ClimbIOSpark());
+
                 this.vision = new Vision(
                         drive,
                         new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
@@ -112,6 +152,13 @@ public class RobotContainer {
                         new ModuleIOSim(driveSimulation.getModules()[2]),
                         new ModuleIOSim(driveSimulation.getModules()[3]),
                         driveSimulation::setSimulationWorldPose);
+
+                shooter = new Shooter(new ShooterIOSim());
+                intake = new Intake(new IntakeIOSim(driveSimulation));
+                conveyor = new Conveyor(new ConveyorIOSim());
+                kicker = new Kicker(new KickerIOSim());
+                hood = new Hood(new HoodIOSim());
+                climb = new Climb(new ClimbIOSim());
 
                 vision = new Vision(
                         drive,
@@ -143,9 +190,14 @@ public class RobotContainer {
                         new ModuleIO() {},
                         (pose) -> {});
 
-                vision = new Vision(drive, new VisionIO() {}
-                // new VisionIO() {}
-                );
+                shooter = new Shooter(new ShooterIO() {});
+                intake = new Intake(new IntakeIO() {});
+                conveyor = new Conveyor(new ConveyorIO() {});
+                kicker = new Kicker(new KickerIO() {});
+                hood = new Hood(new HoodIO() {});
+                climb = new Climb(new ClimbIO() {});
+
+                vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
                 break;
         }
@@ -196,10 +248,6 @@ public class RobotContainer {
         //         .and(driver.l4Button())
         //         .whileTrue(autoAlign(ReefAlignment.Side.RIGHT, DriveControlLoops.REEF_ALIGNMENT_CONFIG));
 
-        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 0.5, 0, 0));
-
-        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
-
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
                 ? () -> drive.resetOdometry(
@@ -208,6 +256,8 @@ public class RobotContainer {
                 : () -> drive.resetOdometry(
                         new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+
+        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuel(driveSimulation));
     }
 
 //     public Command autoAlign(ReefAlignment.Side side, AutoAlignment.AutoAlignmentConfigurations autoAlignmentConfig) {
@@ -228,6 +278,11 @@ public class RobotContainer {
 
         drive.resetOdometry(new Pose2d(3.1, 4, new Rotation2d()));
         SimulatedArena.getInstance().resetFieldForAuto();
+
+        for(int i = 0; i < 100; i++){
+                SimulatedArena.getInstance().addGamePiece(
+                        new ReefscapeAlgaeOnField(new Translation2d(7 + Math.random()*2, 1 + Math.random() * 6)));
+        }
     }
 
     public void updateSimulation() {
@@ -236,7 +291,7 @@ public class RobotContainer {
         SimulatedArena.getInstance().simulationPeriodic();
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
         Logger.recordOutput(
-                "FieldSimulation/Coral", SimulatedArena.getInstance().getGamePiecesArrayByType("Coral"));
+                "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput(
                 "FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
     }

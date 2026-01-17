@@ -61,15 +61,15 @@ public class DriveConstants {
     public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.PI / 2);
 
     // Device CAN IDs
-    public static final int frontLeftDriveCanId = 10;
-    public static final int frontRightDriveCanId = 19;
-    public static final int backLeftDriveCanId = 8;
-    public static final int backRightDriveCanId = 2;
+    public static final int frontLeftDriveCanId = 1;
+    public static final int frontRightDriveCanId = 3;
+    public static final int backLeftDriveCanId = 5;
+    public static final int backRightDriveCanId = 7;
 
-    public static final int frontLeftTurnCanId = 7;
-    public static final int frontRightTurnCanId = 5;
-    public static final int backLeftTurnCanId = 9;
-    public static final int backRightTurnCanId = 1;
+    public static final int frontLeftTurnCanId = 2;
+    public static final int frontRightTurnCanId = 4;
+    public static final int backLeftTurnCanId = 6;
+    public static final int backRightTurnCanId = 8;
 
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 60;
@@ -132,7 +132,7 @@ public class DriveConstants {
     public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
             .withCustomModuleTranslations(moduleTranslations)
             .withRobotMass(Kilogram.of(robotMassKg))
-            .withGyro(COTS.ofPigeon2())
+            .withGyro(COTS.ofNav2X())
             .withSwerveModule(new SwerveModuleSimulationConfig(
                     driveGearbox,
                     turnGearbox,
@@ -151,11 +151,10 @@ public class DriveConstants {
 
     public static final Mass ROBOT_MASS = Kilograms.of(50); // robot weight with bumpers
 
-    /** TODO: change motor type to match your robot */
     public static final DCMotor DRIVE_MOTOR_MODEL = DCMotor.getNeoVortex(1);
 
     public static final DCMotor STEER_MOTOR_MODEL = DCMotor.getNeo550(1);
-    /** numbers imported from {@link TunerConstants} TODO: for REV chassis, replace them with actual numbers */
+    
     public static final Distance WHEEL_RADIUS = Inches.of(1.39);
 
     public static final double DRIVE_GEAR_RATIO = driveMotorReduction;
