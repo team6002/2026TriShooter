@@ -27,49 +27,21 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.AUTO_Left;
 import frc.robot.autos.AUTO_Middle;
-import frc.robot.commands.ShootFuel;
-import frc.robot.commands.ShootFuelSim;
-import frc.robot.commands.TheAutoAlign;
+import frc.robot.commands.*;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbIO;
-import frc.robot.subsystems.climb.ClimbIOSim;
-import frc.robot.subsystems.climb.ClimbIOSpark;
-import frc.robot.subsystems.conveyor.Conveyor;
-import frc.robot.subsystems.conveyor.ConveyorIO;
-import frc.robot.subsystems.conveyor.ConveyorIOSim;
-import frc.robot.subsystems.conveyor.ConveyorIOSpark;
+import frc.robot.subsystems.climb.*;
+import frc.robot.subsystems.conveyor.*;
 import frc.robot.subsystems.drive.*;
-import frc.robot.subsystems.drive.IO.GyroIO;
-import frc.robot.subsystems.drive.IO.GyroIONavX;
-import frc.robot.subsystems.drive.IO.GyroIOSim;
-import frc.robot.subsystems.drive.IO.ModuleIO;
-import frc.robot.subsystems.drive.IO.ModuleIOSim;
-import frc.robot.subsystems.drive.IO.ModuleIOSpark;
-import frc.robot.subsystems.hood.Hood;
-import frc.robot.subsystems.hood.HoodIO;
-import frc.robot.subsystems.hood.HoodIOSim;
-import frc.robot.subsystems.hood.HoodIOSpark;
-import frc.robot.subsystems.intake.Intake;
-import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeIOSpark;
-import frc.robot.subsystems.kicker.Kicker;
-import frc.robot.subsystems.kicker.KickerIO;
-import frc.robot.subsystems.kicker.KickerIOSim;
-import frc.robot.subsystems.kicker.KickerIOSpark;
-import frc.robot.subsystems.led.LEDStatusLight;
-import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterIOSpark;
+import frc.robot.subsystems.drive.IO.*;
+import frc.robot.subsystems.hood.*;
+import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.kicker.*;
+import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
-import frc.robot.subsystems.vision.apriltags.AprilTagVision;
-import frc.robot.subsystems.vision.apriltags.AprilTagVisionIOReal;
-import frc.robot.subsystems.vision.apriltags.ApriltagVisionIOSim;
-import frc.robot.subsystems.vision.apriltags.PhotonCameraProperties;
+import frc.robot.subsystems.vision.apriltags.*;
+import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
 import java.util.List;
@@ -232,11 +204,6 @@ public class RobotContainer {
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
 
-
-        driver.autoAlignmentButtonRight().onTrue(new TheAutoAlign(driveSimulation, vision, drive, 0.5, 0, 0));
-
-        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
-
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
                 ? () -> drive.resetOdometry(
@@ -248,6 +215,8 @@ public class RobotContainer {
 
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation));
         if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
+
+        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(drive, ()->-driveInput.joystickYSupplier.getAsDouble(), ()->-driveInput.joystickXSupplier.getAsDouble(), ()->new Rotation2d(Math.atan2(4-drive.getPose().getY(), 4-drive.getPose().getX()))));
     }
 
     /**
