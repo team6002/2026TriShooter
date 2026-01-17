@@ -23,5 +23,10 @@ public class ClimbConfig {
                         ClimbConstants.kD)
                 .outputRange(ClimbConstants.kMinOutput, ClimbConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        climbConfig.closedLoop.feedForward.svag(
+                ClimbConstants.kS,
+                ClimbConstants.kV,
+                ClimbConstants.kA,
+                ClimbConstants.kG);
     }
 }

@@ -25,6 +25,11 @@ public class ShooterConfig {
                         ShooterConstants.kD)
                 .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        shooterConfig.closedLoop.feedForward.svag(
+                ShooterConstants.kS,
+                ShooterConstants.kV,
+                ShooterConstants.kA,
+                ShooterConstants.kG);
 
         leftShooterConfig
                 .disableFollowerMode()
@@ -41,6 +46,11 @@ public class ShooterConfig {
                         ShooterConstants.kD)
                 .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        leftShooterConfig.closedLoop.feedForward.svag(
+                ShooterConstants.kS,
+                ShooterConstants.kV,
+                ShooterConstants.kA,
+                ShooterConstants.kG);
 
         rightShooterConfig
                 .disableFollowerMode()
@@ -57,5 +67,10 @@ public class ShooterConfig {
                         ShooterConstants.kD)
                 .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        rightShooterConfig.closedLoop.feedForward.svag(
+                ShooterConstants.kS,
+                ShooterConstants.kV,
+                ShooterConstants.kA,
+                ShooterConstants.kG);
     }
 }

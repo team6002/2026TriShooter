@@ -24,6 +24,11 @@ public class IntakeConfig {
                         IntakeConstants.kD)
                 .outputRange(IntakeConstants.kMinOutput, IntakeConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        intakeConfig.closedLoop.feedForward.svag(
+                IntakeConstants.kS, 
+                IntakeConstants.kV, 
+                IntakeConstants.kA, 
+                IntakeConstants.kG);
 
         intakeFollowerConfig
                 .follow(IntakeConstants.kIntakeCanId, true)

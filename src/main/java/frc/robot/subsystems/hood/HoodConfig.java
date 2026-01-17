@@ -23,5 +23,10 @@ public class HoodConfig {
                         HoodConstants.kD)
                 .outputRange(HoodConstants.kMinOutput, HoodConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        hoodConfig.closedLoop.feedForward.svag(
+                HoodConstants.kS,
+                HoodConstants.kV,
+                HoodConstants.kA,
+                HoodConstants.kG);
     }
 }

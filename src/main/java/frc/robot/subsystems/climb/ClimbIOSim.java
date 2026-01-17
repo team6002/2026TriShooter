@@ -1,6 +1,7 @@
 package frc.robot.subsystems.climb;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -12,6 +13,9 @@ public class ClimbIOSim implements ClimbIO {
 
     private final PIDController climbPIDController =
             new PIDController(ClimbConstants.kPSim, ClimbConstants.kISim, ClimbConstants.kDSim);
+    private final SimpleMotorFeedforward climbFeedforward =
+            new SimpleMotorFeedforward(ClimbConstants.kS, ClimbConstants.kV,
+                    ClimbConstants.kA);
     private double reference = 0;
     public static double objectsInHopper = 0;
 
@@ -61,7 +65,10 @@ public class ClimbIOSim implements ClimbIO {
 
     @Override
     public void PID() {
-        climbSim.setInput(climbPIDController.calculate(climbSim.getAngularVelocityRadPerSec(), reference)); 
+        climbSim.setInput(
+            climbPIDController.calculate(getVelocity(), reference) 
+            + climbFeedforward.calculateWithVelocities(getVelocity(), reference)
+        ); 
     }
 
     @Override

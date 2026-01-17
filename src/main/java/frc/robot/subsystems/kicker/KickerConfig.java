@@ -24,6 +24,11 @@ public class KickerConfig {
                         KickerConstants.kD)
                 .outputRange(KickerConstants.kMinOutput, KickerConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+        kickerConfig.closedLoop.feedForward.svag(
+                KickerConstants.kS,
+                KickerConstants.kV,
+                KickerConstants.kA,
+                KickerConstants.kG);
 
         kickerFollowerConfig
                 .follow(KickerConstants.kKickerCanId, true)

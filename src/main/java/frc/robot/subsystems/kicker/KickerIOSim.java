@@ -1,6 +1,7 @@
 package frc.robot.subsystems.kicker;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -11,6 +12,9 @@ public class KickerIOSim implements KickerIO {
     private final DCMotorSim kickerSim;
     private final PIDController kickerPIDController =
             new PIDController(KickerConstants.kPSim, KickerConstants.kISim, KickerConstants.kDSim);
+    private final SimpleMotorFeedforward kickerFeedforward =
+            new SimpleMotorFeedforward(KickerConstants.kS, KickerConstants.kV,
+                    KickerConstants.kA);
     private double reference = 0;
     public static double objectsInHopper = 0;
 
@@ -55,7 +59,10 @@ public class KickerIOSim implements KickerIO {
 
     @Override
     public void PID() {
-        kickerSim.setInput(kickerPIDController.calculate(kickerSim.getAngularVelocityRadPerSec(), reference));
+        kickerSim.setInput(
+            kickerPIDController.calculate(kickerSim.getAngularVelocityRadPerSec(), reference)
+            + kickerFeedforward.calculateWithVelocities(getVelocity(), reference)
+        );
     }
 
     @Override

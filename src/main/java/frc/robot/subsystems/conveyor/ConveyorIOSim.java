@@ -1,6 +1,7 @@
 package frc.robot.subsystems.conveyor;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
@@ -11,6 +12,8 @@ public class ConveyorIOSim implements ConveyorIO {
     private final DCMotorSim conveyorSim;
     private final PIDController conveyorPIDController =
             new PIDController(ConveyorConstants.kSimP, ConveyorConstants.kSimI, ConveyorConstants.kSimD);
+    private final SimpleMotorFeedforward conveyorFeedforward =
+            new SimpleMotorFeedforward(ConveyorConstants.kSSim, ConveyorConstants.kVSim, ConveyorConstants.kASim);
     private double reference = 0;
     public static double objectsInHopper = 0;
 
@@ -55,7 +58,10 @@ public class ConveyorIOSim implements ConveyorIO {
 
     @Override
     public void PID() {
-        conveyorSim.setInput(conveyorPIDController.calculate(conveyorSim.getAngularVelocityRadPerSec(), reference));
+        conveyorSim.setInput(
+            conveyorPIDController.calculate(conveyorSim.getAngularVelocityRadPerSec(), reference)
+            + conveyorFeedforward.calculate(getVelocity(), reference)
+        );
     }
 
     @Override
