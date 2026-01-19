@@ -26,6 +26,9 @@ public class HoodConstants {
     public static final boolean kInverted = true;
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
+
+    public static final double kMinAngleRad = 0;
+    public static final double kMaxAngleRad = Math.toRadians(90);
     
     public static final double kGearRatio = 1;
 }

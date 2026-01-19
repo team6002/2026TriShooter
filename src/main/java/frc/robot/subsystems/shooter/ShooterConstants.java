@@ -33,19 +33,18 @@ public class ShooterConstants {
 
     public static final double kShoot = 4500;
     public static final double kOff = 0;
-    public static final double kReverse = -6;
-    public static final double kClimb = -1;
     public static final double kHolding = 2;
 
     public static final double kGearRatio = 1;
 
-    public static final double[][] SHOOTING_TABLE = {
-        {0.5, 78, 6.25},
-        {1.5, 75, 7.00},
-        {2.50, 72, 8},
-        {3.50, 69, 8.5},
-        {4.50, 66, 9.0},
-        {5.50, 63, 9.5}
+    private static final double[][] SHOOTING_TABLE = {
+        {1.00, 77.0, 6.43},
+        {2.00, 72.6, 7.24},
+        {3.00, 65.0, 7.65},
+        {4.00, 65.1, 8.47},
+        {5.00, 45.6, 9.08},
+        {6.00, 46.9, 9.49},
+        {7.00, 39.8, 10.51}
     };
 
     public static final record ShootingParams(double angRad, double velocityMPS) {}

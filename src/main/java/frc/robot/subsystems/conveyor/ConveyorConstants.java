@@ -30,12 +30,10 @@ public class ConveyorConstants {
 
     public static final double kConvey = 4500;
     public static final double kOff = 0;
-    public static final double kReverse = -6;
-    public static final double kClimb = -1;
-    public static final double kHolding = 2;
+    public static final double kReverse = -4500;
 
     // sim constants
-    public static final double kGearRatio = 216.5;
+    public static final double kGearRatio = 2;
     public static final double kSimP = 0.0;
     public static final double kSimI = 0.0;
     public static final double kSimD = 0.0;

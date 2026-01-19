@@ -53,4 +53,9 @@ public class ShootFuel extends Command{
         // this command ends either when interrupted by another command or when shoot button is released
         return false;
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        shooter.setVoltage(ShooterConstants.kHolding);
+    }
 }

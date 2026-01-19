@@ -9,25 +9,19 @@ import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
 import frc.robot.constants.FieldConstants;
 
 public class ShootFuelSim extends Command {
     private final AbstractDriveTrainSimulation driveSim;
     private int timer;
-    private int shooterIndex = 0;
-
-    private static final Translation2d CENTER_SHOOTER_OFFSET =
-        new Translation2d(Units.inchesToMeters(-12), 0);
-    private static final Translation2d LEFT_SHOOTER_OFFSET =
-        new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(6));
-    private static final Translation2d RIGHT_SHOOTER_OFFSET =
-        new Translation2d(Units.inchesToMeters(-12), Units.inchesToMeters(-6));
 
     public ShootFuelSim(AbstractDriveTrainSimulation driveSim){
         this.driveSim = driveSim;
@@ -36,49 +30,77 @@ public class ShootFuelSim extends Command {
     @Override
     public void initialize(){
         timer = 0;
-        shooterIndex = 0;
-
         if(!RobotBase.isSimulation()) return;
     }
 
     @Override
     public void execute(){
         if (timer > 3 && IntakeIOSim.numObjectsInHopper() > 0) {
+
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
 
-            double distance = robotPose.getTranslation().getDistance(FieldConstants.HubPose);
-            ShooterConstants.ShootingParams params = ShooterConstants.getShootingParams(distance);
+            // Calculate predicted target position and use that distance for params
+            ShootingResult result = calculateShot(robotPose, FieldConstants.HubPose);
 
             IntakeIOSim.obtainFuelFromHopper();
-
-            Translation2d shooterOffset;
-            switch (shooterIndex) {
-                case 0: shooterOffset = CENTER_SHOOTER_OFFSET; break;
-                case 1: shooterOffset = LEFT_SHOOTER_OFFSET; break;
-                default: shooterOffset = RIGHT_SHOOTER_OFFSET; break;
-            }
 
             SimulatedArena.getInstance().addGamePieceProjectile(
                 new RebuiltFuelOnFly(
                     robotPose.getTranslation(),
-                    shooterOffset,
+                    new Translation2d(), // no offset for now
                     driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                    robotPose.getRotation(),
+                    robotPose.getRotation().plus(result.turretAngleRobot),
                     Inches.of(6),
-                    MetersPerSecond.of(params.velocityMPS()),
-                    Radians.of(params.angRad())
+                    MetersPerSecond.of(result.params.velocityMPS()),
+                    Radians.of(result.params.angRad())
                 )
             );
 
-            shooterIndex = (shooterIndex + 1) % 3;
             timer = 0;
         } else {
             timer++;
         }
     }
 
-    @Override
-    public boolean isFinished(){
-        return IntakeIOSim.numObjectsInHopper() <= 0;
+    private record ShootingResult(Rotation2d turretAngleRobot, ShootingParams params) {}
+
+    private ShootingResult calculateShot(Pose2d robotPose, Translation2d hubPosition) {
+        Translation2d shooterPos = robotPose.getTranslation();
+        
+        // Robot velocity (field-relative)
+        ChassisSpeeds speeds = driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative();
+        Translation2d robotVel = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        
+        // Target moves opposite robot motion
+        Translation2d relativeVel = robotVel.unaryMinus();
+
+        // Iterative solution: refine both target position AND shooting params
+        // Start with current distance to hub
+        double distance = shooterPos.getDistance(hubPosition);
+        ShootingParams params = ShooterConstants.getShootingParams(distance);
+        
+        Translation2d targetPos = hubPosition;
+        
+        // Iterate to converge on both target position and correct params
+        for (int i = 0; i < 10; i++) {
+            // Recalculate params based on predicted distance
+            double predictedDistance = shooterPos.getDistance(targetPos);
+            params = ShooterConstants.getShootingParams(predictedDistance);
+            
+            // Horizontal projectile speed with updated params
+            double projSpeed = Math.cos(params.angRad()) * params.velocityMPS();
+            
+            // Update target position based on flight time
+            Translation2d toTarget = targetPos.minus(shooterPos);
+            double t = toTarget.getNorm() / projSpeed;
+            targetPos = hubPosition.plus(relativeVel.times(t));
+        }
+
+        // Final angle calculation
+        Translation2d finalVec = targetPos.minus(shooterPos);
+        Rotation2d fieldAngle = finalVec.getAngle();
+        Rotation2d turretAngleRobot = fieldAngle.minus(robotPose.getRotation());
+
+        return new ShootingResult(turretAngleRobot, params);
     }
 }

@@ -12,8 +12,8 @@ public class FieldConstants {
         public static final Translation2d BlueHubPose = new Translation2d(Units.inchesToMeters(182), Units.inchesToMeters(159));
         public static final Translation2d RedHubPose = new Translation2d(Units.inchesToMeters(469), Units.inchesToMeters(159));
         
-        public static final DriverStation.Alliance Alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
-        public static final Translation2d HubPose = (Alliance == DriverStation.Alliance.Blue) ? BlueHubPose : RedHubPose;
+        public static DriverStation.Alliance Alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+        public static Translation2d HubPose = (Alliance == DriverStation.Alliance.Blue) ? BlueHubPose : RedHubPose;
 
         public static final Distance ROBOT_TO_TARGET_DISTANCE = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
         // for simulation
@@ -22,4 +22,8 @@ public class FieldConstants {
         // "AdvantageKit/RealOutputs/RobotToSelectedBranchTarget" - X Axis
         : Centimeters.of(40.0);
 
+        public static void updateAlliance(){
+                Alliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+                HubPose = (Alliance == DriverStation.Alliance.Blue) ? BlueHubPose : RedHubPose;
+        }
 }
