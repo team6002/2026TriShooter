@@ -62,6 +62,13 @@ public class ShootFuelSim extends Command {
         }
     }
 
+    @Override
+    public boolean isFinished() {
+        // Example: fire until hopper is empty, then end
+        return IntakeIOSim.numObjectsInHopper() == 0 || !RobotBase.isSimulation();
+    }
+
+
     private record ShootingResult(Rotation2d turretAngleRobot, ShootingParams params) {}
 
     private ShootingResult calculateShot(Pose2d robotPose, Translation2d hubPosition) {

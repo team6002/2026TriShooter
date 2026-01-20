@@ -245,7 +245,9 @@ public class RobotContainer {
         if (DriverStation.getAlliance().get() == Alliance.Red) {
                 drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
         } else {
+                // if ()
                 drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
+                // drive.resetOdometry();
         }
 
         
@@ -262,6 +264,7 @@ public class RobotContainer {
 
         SimulatedArena.getInstance().simulationPeriodic();
 
+        Logger.recordOutput("FieldSimulation/FuelInIntake", IntakeIOSim.numObjectsInHopper());
         Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
         Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
