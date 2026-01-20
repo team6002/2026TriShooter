@@ -38,13 +38,17 @@ public class ShooterConstants {
     public static final double kGearRatio = 1;
 
     private static final double[][] SHOOTING_TABLE = {
-        {1.00, 77.0, 6.43},
-        {2.00, 72.6, 7.24},
-        {3.00, 65.0, 7.65},
-        {4.00, 65.1, 8.47},
-        {5.00, 45.6, 9.08},
-        {6.00, 46.9, 9.49},
-        {7.00, 39.8, 10.51}
+        {0.00, 90.0, 15.00},
+        {1.00, 72.3, 5.61},
+        {2.00, 66.6, 6.43},
+        {3.00, 48.5, 7.24},
+        {4.00, 44.0, 8.06},
+        {5.00, 40.4, 8.88},
+        {6.00, 39.4, 9.49},
+        {7.00, 36.4, 10.31},
+        {8.00, 35.4, 10.92},
+        {9.00, 34.4, 11.53},
+        {10.00, 33.4, 12.14}
     };
 
     public static final record ShootingParams(double angRad, double velocityMPS) {}
