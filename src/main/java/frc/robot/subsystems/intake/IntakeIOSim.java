@@ -1,11 +1,15 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 import org.ironmaple.simulation.IntakeSimulation;
 import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -13,6 +17,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 
 public class IntakeIOSim implements IntakeIO {
 
@@ -26,16 +31,29 @@ public class IntakeIOSim implements IntakeIO {
     private double reference = 0;
     public static double objectsInHopper = 0;
 
+    private final LoggedMechanism2d intakeMechanism;
+    private final LoggedMechanismRoot2d intakeRoot;
+    private final LoggedMechanismLigament2d intakeVisualizer = new LoggedMechanismLigament2d(
+        "intake", 
+        Inches.of(10), 
+        Degrees.of(-85),
+        65,
+        new Color8Bit(255, 92, 0)
+    );
+
     public IntakeIOSim(AbstractDriveTrainSimulation driveSim) {
         intakeSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, IntakeConstants.kGearRatio),
                 DCMotor.getNeo550(2));
+        
+        intakeMechanism = new LoggedMechanism2d(Inches.of(24), Inches.of(10));
+        intakeRoot = intakeMechanism.getRoot("Intake", Units.inchesToMeters(26), Units.inchesToMeters(0));
+        intakeRoot.append(intakeVisualizer);
 
         intakeSimulation = IntakeSimulation.OverTheBumperIntake("Fuel", driveSim,
             Inches.of(24), Inches.of(10), IntakeSide.FRONT, 48);
 
         intakeSimulation.startIntake();
-        // intakeSimulation.addGamePiecesToIntake(48);
     }
 
     @Override
@@ -84,6 +102,7 @@ public class IntakeIOSim implements IntakeIO {
         intakeSim.update(0.02);
 
         Logger.recordOutput("Intake/FuelInHopper",  numObjectsInHopper());
+        Logger.recordOutput("IntakeVisualizer", intakeMechanism);
     }
 
     public static boolean obtainFuelFromHopper(){
