@@ -175,8 +175,8 @@ public class RobotContainer {
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
         autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide(drive, driveSimulation, true));
+        autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide(drive, driveSimulation, true));
+        autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide(drive, driveSimulation, false));
         autoChooser.addOption("Auto Left Side", new AUTO_Side(drive, driveSimulation, false));
         autoChooser.addOption("Auto Right Side", new AUTO_Side(drive, driveSimulation, true));
         autoChooser.addOption("Auto Right", new AUTO_Right(drive, driveSimulation, false));
