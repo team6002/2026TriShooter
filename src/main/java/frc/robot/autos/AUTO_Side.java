@@ -3,7 +3,6 @@ package frc.robot.autos;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.subsystems.drive.Drive;
@@ -15,10 +14,8 @@ public class AUTO_Side extends SequentialCommandGroup {
             ,drive.followPath("gotomiddleL1", mirrored)
             ,drive.followPath("grabfuelL1", mirrored)
             ,drive.followPath("gotolineL1", mirrored)
-            ,new ParallelCommandGroup(
-                drive.followPath("climbshootR1", mirrored)
-                ,new ShootFuelSim(sim)
-            )
+            ,drive.followPath("climbshootR1", mirrored)
+            ,new ShootFuelSim(sim)
         );
 
         // addCommands(
