@@ -9,11 +9,12 @@ public class Intake extends SubsystemBase {
     private final IntakeIO io;
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-    private final SysIdRoutine sysIdRoutine;
+    private final SysIdRoutine intakeSysIdRoutine;
+    private final SysIdRoutine intakeExtenderSysIdRoutine;
 
     public Intake(IntakeIO io) {
         this.io = io;
-        this.sysIdRoutine = new SysIdRoutine(
+        this.intakeSysIdRoutine = new SysIdRoutine(
             new SysIdRoutine.Config(null, null, null, 
                 (state) -> Logger.recordOutput("/Intake/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
@@ -22,10 +23,24 @@ public class Intake extends SubsystemBase {
                 this
             )
         );
+
+        this.intakeExtenderSysIdRoutine = new SysIdRoutine(
+            new SysIdRoutine.Config(null, null, null, 
+                (state) -> Logger.recordOutput("/Intake/ExtenderSysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
+                null,
+                this
+            )
+        );
     }
 
-    public SysIdRoutine getSysIdRoutine() {
-        return sysIdRoutine;
+    public SysIdRoutine getIntakeSysIdRoutine() {
+        return intakeSysIdRoutine;
+    }
+
+    public SysIdRoutine getExtenderSysIdRoutine() {
+        return intakeExtenderSysIdRoutine;
     }
 
     public double getReference() {
@@ -50,6 +65,30 @@ public class Intake extends SubsystemBase {
 
     public void setReference(double velocity) {
         io.setReference(velocity);
+    }
+
+    public double getExtenderReference() {
+        return io.getExtenderReference();
+    }
+
+    public double getExtenderVelocity() {
+        return io.getExtenderVelocity();
+    }
+
+    public double getExtenderCurrent() {
+        return io.getExtenderCurrent();
+    }
+
+    public double getExtenderVoltage() {
+        return io.getExtenderVoltage();
+    }
+
+    public void setExtenderVoltage(double voltage) {
+        io.setExtenderVoltage(voltage);
+    }
+
+    public void setExtenderReference(double velocity) {
+        io.setExtenderReference(velocity);
     }
 
     @Override
