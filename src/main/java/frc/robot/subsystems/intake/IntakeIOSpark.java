@@ -2,11 +2,13 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
 public class IntakeIOSpark implements IntakeIO {
     private final SparkMax intakeMotor;
@@ -17,16 +19,29 @@ public class IntakeIOSpark implements IntakeIO {
     private double intakeReference;
     private ControlType intakeType;
 
+    private final SparkMax intakeExtenderMotor;
+    private final AbsoluteEncoder intakeExtenderEncoder;
+    private final SparkClosedLoopController intakeExtenderController;
+
+    private double intakeExtenderReference;
+    private ControlType intakeExtenderType;
+    private boolean lowCurrentMode = false;
+
+
     public IntakeIOSpark() {
         // initialize motor
         intakeMotor = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
         intakeMotorFollower = new SparkMax(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
+        intakeExtenderMotor = new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
+
         // initialize PID controller
         intakeController = intakeMotor.getClosedLoopController();
+        intakeExtenderController = intakeExtenderMotor.getClosedLoopController();
 
         // initalize encoder
         intakeEncoder = intakeMotor.getEncoder();
+        intakeExtenderEncoder = intakeExtenderMotor.getAbsoluteEncoder();
 
         // apply config
         intakeMotor.configure(
@@ -38,6 +53,9 @@ public class IntakeIOSpark implements IntakeIO {
         // reset target speed in init
         intakeReference = 0;
         intakeType = ControlType.kVoltage;
+
+        intakeExtenderReference = 0;
+        intakeExtenderType = ControlType.kMAXMotionPositionControl;
     }
 
     @Override
@@ -46,21 +64,17 @@ public class IntakeIOSpark implements IntakeIO {
         inputs.intakeCurrent = getCurrent();
         inputs.intakeVoltage = getVoltage();
         inputs.intakeVelocity = getVelocity();
+
+        inputs.extenderReference = getExtenderReference();
+        inputs.extenderCurrent = getExtenderCurrent();
+        inputs.extenderVoltage = getExtenderVoltage();
+        inputs.extenderVelocity = getExtenderVelocity();
     }
 
     @Override
-    public double getVelocity() {
-        return intakeEncoder.getVelocity();
-    }
-
-    @Override
-    public double getCurrent() {
-        return intakeMotor.getOutputCurrent();
-    }
-
-    @Override
-    public double getVoltage() {
-        return intakeMotor.getBusVoltage() * intakeMotor.getAppliedOutput();
+    public void setReference(double velocity) {
+        intakeReference = velocity;
+        intakeType = ControlType.kVelocity;
     }
 
     @Override
@@ -75,13 +89,86 @@ public class IntakeIOSpark implements IntakeIO {
     }
 
     @Override
-    public void setReference(double velocity) {
-        intakeReference = velocity;
-        intakeType = ControlType.kVelocity;
+    public double getVoltage() {
+        return intakeMotor.getBusVoltage() * intakeMotor.getAppliedOutput();
+    }
+
+    @Override
+    public double getVelocity() {
+        return intakeEncoder.getVelocity();
+    }
+
+    @Override
+    public double getCurrent() {
+        return intakeMotor.getOutputCurrent();
+    }
+
+    @Override
+    public void setExtenderReference(double velocity) {
+        intakeExtenderReference = velocity;
+        intakeExtenderType = ControlType.kMAXMotionPositionControl;
+    }
+
+    @Override
+    public double getExtenderReference() {
+        return intakeExtenderReference;
+    }
+
+    @Override
+    public void setExtenderVoltage(double voltage) {
+        intakeExtenderReference = voltage;
+        intakeExtenderType = ControlType.kVoltage;
+    }
+
+    @Override
+    public double getExtenderVoltage() {
+        return intakeExtenderMotor.getBusVoltage() * intakeExtenderMotor.getAppliedOutput();
+    }
+
+    @Override
+    public double getExtenderVelocity() {
+        return intakeExtenderEncoder.getVelocity();
+    }
+
+    @Override
+    public double getExtenderCurrent() {
+        return intakeExtenderMotor.getOutputCurrent();
+    }
+    
+    @Override
+    public boolean getExtenderInPosition() {
+        double positionError = Math.abs(intakeExtenderEncoder.getPosition() - intakeExtenderReference);
+        return positionError < ExtenderConstants.kPositionTolerance;
     }
 
     @Override
     public void PID() {
         intakeController.setSetpoint(intakeReference, intakeType);
+        intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType);
+
+        // Low current ONLY when fully extended and holding position
+        boolean shouldBeLow =
+            intakeReference == ExtenderConstants.kExtended &&
+            getExtenderInPosition();
+
+        // Switch to low current mode
+        if (shouldBeLow && !lowCurrentMode) {
+            lowCurrentMode = true;
+            intakeExtenderMotor.configure(
+                IntakeConfig.intakeExtenderConfig.smartCurrentLimit(10),
+                ResetMode.kNoResetSafeParameters,
+                PersistMode.kNoPersistParameters
+            );
+        }
+
+        // Switch back to high current mode
+        else if (!shouldBeLow && lowCurrentMode) {
+            lowCurrentMode = false;
+            intakeExtenderMotor.configure(
+                IntakeConfig.intakeExtenderConfig.smartCurrentLimit(40),
+                ResetMode.kNoResetSafeParameters,
+                PersistMode.kNoPersistParameters
+            );
+        }
     }
 }

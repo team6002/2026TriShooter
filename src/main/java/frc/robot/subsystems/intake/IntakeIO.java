@@ -9,6 +9,12 @@ public interface IntakeIO {
         public double intakeVoltage;
         public double intakeVelocity;
         public double intakeReference;
+
+        public double extenderCurrent;
+        public double extenderVoltage;
+        public double extenderVelocity;
+        public double extenderReference;
+        public boolean extenderInPosition;
     }
 
     /** Updates the set of loggable inputs. */
@@ -33,6 +39,30 @@ public interface IntakeIO {
     public default void setVoltage(double voltage) {}
 
     public default void setReference(double velocity) {}
+
+    public default double getExtenderCurrent() {
+        return 0;
+    }
+
+    public default double getExtenderVoltage() {
+        return 0;
+    }
+
+    public default double getExtenderReference() {
+        return 0;
+    }
+
+    public default double getExtenderVelocity() {
+        return 0;
+    }
+
+    public default boolean getExtenderInPosition() {
+        return false;
+    }
+
+    public default void setExtenderVoltage(double voltage) {}
+
+    public default void setExtenderReference(double velocity) {}
 
     public default void PID() {}
 
