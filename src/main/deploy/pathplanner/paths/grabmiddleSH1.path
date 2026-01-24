@@ -47,11 +47,11 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0362473347548056,
-      "rotationDegrees": 90.0
+      "rotationDegrees": -90.0
     },
     {
       "waypointRelativePos": 1.5522388059701544,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [],
@@ -73,7 +73,7 @@
   "folder": "Side Hump Auto",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }

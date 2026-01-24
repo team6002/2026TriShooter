@@ -68,7 +68,7 @@ public class IntakeIOSim implements IntakeIO {
             Inches.of(24), Inches.of(10), IntakeSide.BACK, 75);
 
         intakeSimulation.startIntake();
-        intakeSimulation.addGamePiecesToIntake(75);
+        // intakeSimulation.addGamePiecesToIntake(75);
     }
 
     @Override

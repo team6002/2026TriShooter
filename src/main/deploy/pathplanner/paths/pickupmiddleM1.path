@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 5.979857346647646,
-        "y": 0.45746077032810256
+        "y": 0.4574607703281025
       },
       "nextControl": {
         "x": 6.433368902681701,
@@ -46,8 +46,8 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4136460554370832,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.6353944562899776,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
@@ -63,7 +63,7 @@
   },
   "goalEndState": {
     "velocity": 1.0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "Middle Auto",
