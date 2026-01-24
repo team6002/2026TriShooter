@@ -488,8 +488,12 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             ),
             this
         )
-        .finallyDo(()-> ChassisHeadingController.getInstance()
-            .setHeadingRequest(new ChassisHeadingController.NullRequest())
+        .finallyDo(
+            ()-> { 
+                ChassisHeadingController.getInstance()
+                    .setHeadingRequest(new ChassisHeadingController.NullRequest());
+                stop();
+            }
         )
         .until(()-> ChassisHeadingController.getInstance().atSetPoint());
     }
