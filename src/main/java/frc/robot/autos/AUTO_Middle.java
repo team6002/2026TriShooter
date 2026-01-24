@@ -19,7 +19,7 @@ public class AUTO_Middle extends SequentialCommandGroup {
     public AUTO_Middle(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
         addCommands(
             new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8))
-            ,new InstantCommand(()->drive.setAutoStartPose("pickupHPM1", mirrored))
+            ,drive.setAutoStartPose("pickupHPM1", mirrored)
             ,drive.followPath("pickupHPM1", mirrored)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,new WaitCommand(2)
