@@ -175,6 +175,7 @@ public class RobotContainer {
         // autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, true));
         // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
         // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
+        autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
         autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump(drive, true, driveSimulation));
         autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig(drive, driveSimulation));
         autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall(drive, driveSimulation));
@@ -249,6 +250,8 @@ public class RobotContainer {
         }
 
         SimulatedArena.getInstance().resetFieldForAuto();
+
+        IntakeIOSim.setFuelInHopper(0);
 
         // for (int i = 0; i<48; i++) IntakeIOSim.obtainFuelFromHopper();
     }

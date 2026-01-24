@@ -11,7 +11,7 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 public class AUTO_LeftSmall extends SequentialCommandGroup {
     public AUTO_LeftSmall(Drive drive, SwerveDriveSimulation sim) {
         addCommands(
-            new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8))
+            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8))
             ,drive.setAutoStartPose("gotodepotL1", false)
             ,drive.followPath("gotodepotL1", false)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))

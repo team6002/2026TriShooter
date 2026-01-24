@@ -11,14 +11,14 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 public class AUTO_LeftBig extends SequentialCommandGroup {
     public AUTO_LeftBig(Drive drive, SwerveDriveSimulation sim) {
         addCommands(
-            new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8))
+            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8))
             ,drive.setAutoStartPose("gotomiddleL1", false)
             ,drive.followPath("gotomiddleL1", false)
             ,drive.followPath("grabmiddleL1", false)
             ,drive.followPath("gotostartL1", false)
             ,drive.followPath("gotodepotL1", false)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
-            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(4)
+            ,drive.aimAtTarget(FieldConstants.getHubPose())
             ,new ShootFuelSim(sim)
             ,drive.followPath("climbL1", false)
         );

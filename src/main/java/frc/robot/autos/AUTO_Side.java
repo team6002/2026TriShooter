@@ -11,7 +11,7 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 public class AUTO_Side extends SequentialCommandGroup {
     public AUTO_Side(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
         addCommands(
-            new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8)),
+            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8)),
             drive.setAutoStartPose("gotomiddleS1", mirrored)
             ,drive.followPath("gotomiddleS1", mirrored)
             ,drive.followPath("grabfuelS1", mirrored)

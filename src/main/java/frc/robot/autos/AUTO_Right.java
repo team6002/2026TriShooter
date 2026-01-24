@@ -11,7 +11,7 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 public class AUTO_Right extends SequentialCommandGroup {
     public AUTO_Right(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
         addCommands(
-            new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8))
+            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8))
             ,drive.setAutoStartPose("getmiddleR1", false)
             ,drive.followPath("getmiddleR1", false)
             ,drive.followPath("gotolineR1", false)

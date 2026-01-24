@@ -169,6 +169,10 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     public static void putFuelInHopperSim(int fuel) {
-        intakeSimulation.addGamePiecesToIntake(fuel);
+        setFuelInHopper(numObjectsInHopper()+fuel);
+    }
+
+    public static void setFuelInHopper(int fuel) {
+        intakeSimulation.setGamePiecesCount(fuel);
     }
 }

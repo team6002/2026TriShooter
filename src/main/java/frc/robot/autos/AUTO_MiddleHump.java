@@ -10,19 +10,18 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
-public class AUTO_Middle extends SequentialCommandGroup {
-    public AUTO_Middle(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
+public class AUTO_MiddleHump extends SequentialCommandGroup {
+    public AUTO_MiddleHump(Drive drive, SwerveDriveSimulation sim) {
         addCommands(
-            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8))
-            ,drive.setAutoStartPose("pickupHPM1", mirrored)
-            ,drive.followPath("pickupHPM1", mirrored)
-            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
-            ,new WaitCommand(2)
+            drive.followPath("gotomiddleM3", false)
+            ,drive.followPath("pickmiddleM3", false)
+            ,drive.followPath("gotoHPM3", false)
             ,drive.aimAtTarget(FieldConstants.getHubPose())
             ,new ShootFuelSim(sim)
-            ,drive.followPath("pickupmiddleM1", mirrored)
-            ,drive.followPath("shootclimbM1", mirrored)
+            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
+            ,new WaitCommand(2)
             ,new ShootFuelSim(sim)
+            ,drive.followPath("climbshootM3", false)
         );
     }
 }
