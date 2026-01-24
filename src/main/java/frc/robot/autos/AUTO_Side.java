@@ -2,17 +2,20 @@ package frc.robot.autos;
 
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.intake.IntakeIOSim;
 
 public class AUTO_Side extends SequentialCommandGroup {
     public AUTO_Side(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
         addCommands(
-            drive.setAutoStartPose("gotomiddleL1", mirrored)
-            ,drive.followPath("gotomiddleL1", mirrored)
-            ,drive.followPath("grabfuelL1", mirrored)
-            ,drive.followPath("gotolineL1", mirrored)
+            new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8)),
+            drive.setAutoStartPose("gotomiddleS1", mirrored)
+            ,drive.followPath("gotomiddleS1", mirrored)
+            ,drive.followPath("grabfuelS1", mirrored)
+            ,drive.followPath("gotolineS1", mirrored)
             ,drive.followPath("climbshootR1", mirrored)
             ,new ShootFuelSim(sim)
         );

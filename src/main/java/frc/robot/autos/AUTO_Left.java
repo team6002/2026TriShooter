@@ -11,16 +11,15 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
-public class AUTO_SideHump extends SequentialCommandGroup {
-    public AUTO_SideHump(Drive drive, Boolean mirrored, SwerveDriveSimulation sim) {
+public class AUTO_Left extends SequentialCommandGroup {
+    public AUTO_Left(Drive drive, Boolean mirrored, SwerveDriveSimulation sim) {
         addCommands(
             new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8)),
-            drive.setAutoStartPose("gotomiddleSH1", mirrored)
-            ,drive.followPath("gotomiddleSH1", mirrored)
-            ,drive.followPath("grabmiddleSH1", mirrored)
-            ,new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
+            drive.setAutoStartPose("gotodepotL1", mirrored),
+            drive.followPath("gotodepotL1", mirrored),
+            new InstantCommand(()->sim.rotateAboutCenter(FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle().getRadians() + (DriverStation.getAlliance().get() == Alliance.Blue ? 0 : Math.PI)))
+            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,new ShootFuelSim(sim)
-            ,drive.followPath("climbSH1", mirrored)
         );
     }
 }

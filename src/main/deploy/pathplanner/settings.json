@@ -5,9 +5,10 @@
   "pathFolders": [
     "Middle Auto",
     "Middle Side Auto",
-    "Side Hump Auto",
+    "Left Auto 1",
     "Right Auto",
-    "Side Auto"
+    "Side Auto",
+    "Side Hump Auto"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

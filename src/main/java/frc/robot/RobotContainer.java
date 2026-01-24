@@ -45,7 +45,6 @@ import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
-
 import java.util.List;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -180,7 +179,9 @@ public class RobotContainer {
         autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide(drive, driveSimulation, false));
         autoChooser.addOption("Auto Left Side", new AUTO_Side(drive, driveSimulation, false));
         autoChooser.addOption("Auto Right Side", new AUTO_Side(drive, driveSimulation, true));
+        autoChooser.addOption("Auto Left Side Hump", new AUTO_SideHump(drive, true, driveSimulation));
         autoChooser.addOption("Auto Right Side Hump", new AUTO_SideHump(drive, false, driveSimulation));
+        autoChooser.addOption("Auto Left", new AUTO_Left(drive, false, driveSimulation));
         autoChooser.addOption("Auto Right", new AUTO_Right(drive, driveSimulation, false));
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
@@ -250,7 +251,9 @@ public class RobotContainer {
                 // drive.resetOdometry();
         }
 
-        
+        for (int i = 0; i < IntakeIOSim.numObjectsInHopper(); i++)
+            IntakeIOSim.obtainFuelFromHopper();
+
         SimulatedArena.getInstance().resetFieldForAuto();
     }
 
