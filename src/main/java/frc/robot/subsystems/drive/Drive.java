@@ -439,21 +439,30 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     /**attempt to load a pathplanner path with the path name and return that path's start pose, if it fail print an error message and stack trace to the DS */
-    public void setAutoStartPose(String pathName, Boolean mirrored){
-        PathPlannerPath path;
-        try{
-            path = mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : PathPlannerPath.fromPathFile(pathName);
-            path = DriverStation.getAlliance().get() == Alliance.Red ? path.flipPath() : path;
-        }catch (Exception e) {
-           DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
-           return;
+    public Command setAutoStartPose(String pathName, Boolean mirrored) {
+        // 1. Declare a final variable that will be used in the lambda
+        final PathPlannerPath finalPath;
+
+        try {
+            PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
+            
+            if (mirrored) {
+                loadedPath = loadedPath.mirrorPath();
+            }
+
+            // Handle Alliance flipping
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+                loadedPath = loadedPath.flipPath();
+            }
+            
+            finalPath = loadedPath; // This is the only assignment to finalPath
+        } catch (Exception e) {
+            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+            return Commands.none(); // Better than returning an empty anonymous Command
         }
-        // if (DriverStation.getAlliance().get() == Alliance.Red) {
-        //     resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(9.5, 0, new Rotation2d(Math.PI))));
-        // } else {
-        //     resetOdometry(path.getStartingHolonomicPose().get().transformBy(new Transform2d(0, 0, new Rotation2d())));
-        // }
-        resetOdometry(path.getStartingHolonomicPose().get());
+
+        // Now finalPath is effectively final and safe for the lambda
+        return this.runOnce(() -> resetOdometry(finalPath.getStartingHolonomicPose().get()));
     }
 
     /** Turns the motor brakes on */
