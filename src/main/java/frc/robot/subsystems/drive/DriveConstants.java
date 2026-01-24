@@ -167,7 +167,7 @@ public class DriveConstants {
         new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
     };
 
-public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
+    public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
         .withCustomModuleTranslations(moduleTranslations)
         .withRobotMass(Kilogram.of(robotMassKg))
         .withGyro(COTS.ofNav2X())

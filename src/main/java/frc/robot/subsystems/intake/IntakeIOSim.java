@@ -65,10 +65,9 @@ public class IntakeIOSim implements IntakeIO {
         intakeRoot.append(intakeVisualizer);
 
         intakeSimulation = IntakeSimulation.OverTheBumperIntake("Fuel", driveSim,
-            Inches.of(24), Inches.of(10), IntakeSide.BACK, 75);
+            Inches.of(24), Inches.of(10), IntakeSide.BACK, 48);
 
         intakeSimulation.startIntake();
-        // intakeSimulation.addGamePiecesToIntake(75);
     }
 
     @Override
