@@ -18,7 +18,7 @@ public class AUTO_LeftBig extends SequentialCommandGroup {
             ,drive.followPath("gotostartL1", false)
             ,drive.followPath("gotodepotL1", false)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
-            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(2)
+            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(4)
             ,new ShootFuelSim(sim)
             ,drive.followPath("climbL1", false)
         );

@@ -171,15 +171,15 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-        autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, true));
-        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
+        // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle(drive, driveSimulation, false));
+        // autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, true));
+        // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
+        // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
         autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump(drive, driveSimulation, true));
         autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig(drive, driveSimulation));
         autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall(drive, driveSimulation));
-        autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
-        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
+        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
+        // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
         autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump(drive, driveSimulation, false));        
         
         // Set up SysId routines
@@ -249,6 +249,8 @@ public class RobotContainer {
         }
 
         SimulatedArena.getInstance().resetFieldForAuto();
+
+        for (int i = 0; i<48; i++) IntakeIOSim.obtainFuelFromHopper();
     }
 
     public void updateSimulation() {

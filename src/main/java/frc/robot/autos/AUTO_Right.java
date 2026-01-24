@@ -17,7 +17,7 @@ public class AUTO_Right extends SequentialCommandGroup {
             ,drive.followPath("getmiddleR1", false)
             ,drive.followPath("gotolineR1", false)
             ,drive.followPath("gotoHPR1", false)
-            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(2)
+            ,drive.aimAtTarget(FieldConstants.getHubPose())
             ,new ShootFuelSim(sim)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,drive.followPath("climbshootR1", false)

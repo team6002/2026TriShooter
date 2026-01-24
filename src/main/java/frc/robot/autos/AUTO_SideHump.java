@@ -16,7 +16,7 @@ public class AUTO_SideHump extends SequentialCommandGroup {
             drive.setAutoStartPose("gotomiddleSH1", mirrored)
             ,drive.followPath("gotomiddleSH1", mirrored)
             ,drive.followPath("grabmiddleSH1", mirrored)
-            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(2)
+            ,drive.aimAtTarget(FieldConstants.getHubPose())
             ,new ShootFuelSim(sim)
             ,drive.followPath("climbSH1", mirrored)
         );

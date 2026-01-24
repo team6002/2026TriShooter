@@ -18,7 +18,7 @@ public class AUTO_Middle extends SequentialCommandGroup {
             ,drive.followPath("pickupHPM1", mirrored)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,new WaitCommand(2)
-            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(2)
+            ,drive.aimAtTarget(FieldConstants.getHubPose())
             ,new ShootFuelSim(sim)
             ,drive.followPath("pickupmiddleM1", mirrored)
             ,drive.followPath("shootclimbM1", mirrored)
