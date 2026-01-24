@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
+import frc.robot.commands.drive.AimAtTarget;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
@@ -225,6 +226,8 @@ public class RobotContainer {
             ()-> -driveInput.joystickXSupplier.getAsDouble(),
             ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle())
         );
+
+        driver.autoAlignmentButtonRight().onTrue(new AimAtTarget(drive, FieldConstants.getHubPose()));
     }
 
     /**
@@ -260,7 +263,6 @@ public class RobotContainer {
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", DriverStation.getAlliance().toString());
-
     }
 
     public static boolean motorBrakeEnabled = false;

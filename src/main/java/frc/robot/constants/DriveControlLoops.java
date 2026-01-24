@@ -15,7 +15,7 @@ import frc.robot.utils.CustomPIDs.MaplePIDController;
 public class DriveControlLoops {
     public static final boolean ENABLE_SOFTWARE_CONSTRAIN = true;
     public static final AngularVelocity ANGULAR_VELOCITY_SOFT_CONSTRAIN = RotationsPerSecond.of(1.0);
-    public static final AngularAcceleration ANGULAR_ACCELERATION_SOFT_CONSTRAIN = RotationsPerSecondPerSecond.of(2.4);
+    public static final AngularAcceleration ANGULAR_ACCELERATION_SOFT_CONSTRAIN = RotationsPerSecondPerSecond.of(1.5);/* 2.4 */
     public static final LinearVelocity MOVEMENT_VELOCITY_SOFT_CONSTRAIN = MetersPerSecond.of(5.2);
     public static final LinearVelocity AUTO_ALIGNMENT_VELOCITY_LIMIT = MetersPerSecond.of(2.5);
     public static final LinearAcceleration ACCELERATION_SOFT_CONSTRAIN = MetersPerSecondPerSecond.of(8.0);
@@ -30,7 +30,7 @@ public class DriveControlLoops {
     public static final LinearVelocity SWERVE_VELOCITY_DEADBAND = MetersPerSecond.of(0.03);
     public static final MaplePIDController.MaplePIDConfig CHASSIS_ROTATION_CLOSE_LOOP =
             new MaplePIDController.MaplePIDConfig(
-                    Math.toRadians(360), Math.toRadians(90), 0, Math.toRadians(2), 0, true, 0);
+                    Math.toRadians(180)/* 360 */, Math.toRadians(120) /* 90 */, 0, Math.toRadians(2), 0, true, 0);
 
     public static final MaplePIDController.MaplePIDConfig CHASSIS_TRANSLATION_CLOSE_LOOP =
             new MaplePIDController.MaplePIDConfig(3, 0.5, 0, 0.03, 0, false, 0);
