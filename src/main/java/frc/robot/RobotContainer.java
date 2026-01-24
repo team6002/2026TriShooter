@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -28,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.commands.drive.AimAtTarget;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
@@ -79,7 +77,7 @@ public class RobotContainer {
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
 
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
         final List<PhotonCameraProperties> camerasProperties =
                 VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
@@ -88,12 +86,12 @@ public class RobotContainer {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
                 drive = new Drive(
-                        new GyroIONavX(),
-                        new ModuleIOSpark(0),
-                        new ModuleIOSpark(1),
-                        new ModuleIOSpark(2),
-                        new ModuleIOSpark(3),
-                        (pose) -> {});
+                    new GyroIONavX(),
+                    new ModuleIOSpark(0),
+                    new ModuleIOSpark(1),
+                    new ModuleIOSpark(2),
+                    new ModuleIOSpark(3),
+                    (pose) -> {});
 
                 shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
@@ -103,8 +101,8 @@ public class RobotContainer {
                 climb = new Climb(new ClimbIOSpark());
 
                 this.vision = new Vision(
-                        drive,
-                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                    drive,
+                    new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
                 );
 
                 aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
@@ -113,17 +111,17 @@ public class RobotContainer {
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
-                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.5, 4, new Rotation2d()));
+                    new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.5, 4, new Rotation2d()));
                 // add the simulated drivetrain to the simulation field
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 // Sim robot, instantiate physics sim IO implementations
                 drive = new Drive(
-                        new GyroIOSim(driveSimulation.getGyroSimulation()),
-                        new ModuleIOSim(driveSimulation.getModules()[0]),
-                        new ModuleIOSim(driveSimulation.getModules()[1]),
-                        new ModuleIOSim(driveSimulation.getModules()[2]),
-                        new ModuleIOSim(driveSimulation.getModules()[3]),
-                        driveSimulation::setSimulationWorldPose);
+                    new GyroIOSim(driveSimulation.getGyroSimulation()),
+                    new ModuleIOSim(driveSimulation.getModules()[0]),
+                    new ModuleIOSim(driveSimulation.getModules()[1]),
+                    new ModuleIOSim(driveSimulation.getModules()[2]),
+                    new ModuleIOSim(driveSimulation.getModules()[3]),
+                    driveSimulation::setSimulationWorldPose);
 
                 shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
@@ -133,30 +131,29 @@ public class RobotContainer {
                 climb = new Climb(new ClimbIOSim());
 
                 vision = new Vision(
-                        drive,
-                        new VisionIOPhotonVisionSim(
-                                Vision_Constants.camera0Name,
-                                Vision_Constants.robotToCamera0,
-                                driveSimulation::getSimulatedDriveTrainPose)
+                    drive,
+                    new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera0Name,
+                        Vision_Constants.robotToCamera0,
+                        driveSimulation::getSimulatedDriveTrainPose)
                 );
 
                 aprilTagVision = new AprilTagVision(
-                        new ApriltagVisionIOSim(
-                                camerasProperties,
-                                VisionConstants.fieldLayout,
-                                driveSimulation::getSimulatedDriveTrainPose),
-                        camerasProperties);
-
+                    new ApriltagVisionIOSim(
+                        camerasProperties,
+                        VisionConstants.fieldLayout,
+                        driveSimulation::getSimulatedDriveTrainPose),
+                    camerasProperties);
                 break;
             default:
                 // Replayed robot, disable IO implementations
                 drive = new Drive(
-                        new GyroIO() {},
-                        new ModuleIO() {},
-                        new ModuleIO() {},
-                        new ModuleIO() {},
-                        new ModuleIO() {},
-                        (pose) -> {});
+                    new GyroIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    new ModuleIO() {},
+                    (pose) -> {});
 
                 shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
@@ -179,8 +176,8 @@ public class RobotContainer {
         autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
         autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
         autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump(drive, driveSimulation, true));
-        autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_Left(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_Left(drive, driveSimulation, true));
+        autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig(drive, driveSimulation));
+        autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall(drive, driveSimulation));
         autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
         autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
         autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump(drive, driveSimulation, false));        
@@ -230,7 +227,7 @@ public class RobotContainer {
             ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle())
         );
 
-        driver.autoAlignmentButtonRight().onTrue(new AimAtTarget(drive, FieldConstants.getHubPose()));
+        driver.autoAlignmentButtonRight().onTrue(drive.aimAtTarget(FieldConstants.getHubPose()));
     }
 
     /**
@@ -245,16 +242,11 @@ public class RobotContainer {
     public void resetSimulationField() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
-        if (FieldConstants.getAlliance() == Alliance.Red) {
-                drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
+        if (FieldConstants.getAlliance() == Alliance.Blue) {
+            drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
         } else {
-                // if ()
-                drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
-                // drive.resetOdometry();
+            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
         }
-
-        for (int i = 0; i < IntakeIOSim.numObjectsInHopper(); i++)
-            IntakeIOSim.obtainFuelFromHopper();
 
         SimulatedArena.getInstance().resetFieldForAuto();
     }
@@ -267,9 +259,7 @@ public class RobotContainer {
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
-        Logger.recordOutput("FieldSimulation/Alliance", DriverStation.getAlliance().toString());
-        Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
-        Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
+        Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
     }
 
     public static boolean motorBrakeEnabled = false;
@@ -279,8 +269,6 @@ public class RobotContainer {
 
         System.out.println("Set motor brake: " + brakeModeEnabled);
         drive.setMotorBrake(brakeModeEnabled);
-        // arm.setMotorBrake(brakeModeEnabled);
-        // elevator.setMotorBrake(brakeModeEnabled);
 
         motorBrakeEnabled = brakeModeEnabled;
     }
@@ -292,8 +280,6 @@ public class RobotContainer {
                         : drive.getPose());
         if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM)
             field.getObject("Odometry").setPose(drive.getPose());
-
-        // ReefAlignment.updateDashboard();
 
         AlertsManager.updateLEDAndLog(ledStatusLight);
     }

@@ -5,7 +5,6 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.ShootFuelSim;
-import frc.robot.commands.drive.AimAtTarget;
 import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -18,7 +17,7 @@ public class AUTO_Right extends SequentialCommandGroup {
             ,drive.followPath("getmiddleR1", false)
             ,drive.followPath("gotolineR1", false)
             ,drive.followPath("gotoHPR1", false)
-            ,new AimAtTarget(drive, FieldConstants.getHubPose())
+            ,drive.aimAtTarget(FieldConstants.getHubPose()).withTimeout(2)
             ,new ShootFuelSim(sim)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,drive.followPath("climbshootR1", false)

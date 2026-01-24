@@ -49,23 +49,19 @@ public class ShootFuelSim extends Command {
             double distance = robotPose.getTranslation().getDistance(FieldConstants.getHubPose());
             ShootingParams params = ShooterConstants.getShootingParams(distance);
 
-            for (Translation2d shooterOffset : SHOOTER_OFFSETS) {
-                if (IntakeIOSim.numObjectsInHopper() <= 0) break;
+            IntakeIOSim.obtainFuelFromHopper();
 
-                IntakeIOSim.obtainFuelFromHopper();
-
-                SimulatedArena.getInstance().addGamePieceProjectile(
-                    new RebuiltFuelOnFly(
-                        robotPose.getTranslation(),
-                        shooterOffset,
-                        driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                        robotPose.getRotation(),
-                        Inches.of(21),
-                        MetersPerSecond.of(params.velocityMPS()),
-                        Radians.of(params.angRad())
-                    )
-                );
-            }
+            SimulatedArena.getInstance().addGamePieceProjectile(
+                new RebuiltFuelOnFly(
+                    robotPose.getTranslation(),
+                    SHOOTER_OFFSETS[(int)(Math.random()*3)],
+                    driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                    robotPose.getRotation(),
+                    Inches.of(21),
+                    MetersPerSecond.of(params.velocityMPS()),
+                    Radians.of(params.angRad())
+                )
+            );
 
             timer = 0;
         } else {

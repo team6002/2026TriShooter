@@ -31,6 +31,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -48,12 +49,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
 import frc.robot.RobotState;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.ChassisHeadingController;
+import frc.robot.utils.ChassisHeadingController.FaceToTargetRequest;
 import frc.robot.utils.LocalADStarAK;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -114,7 +117,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                 this::runRobotCentricChassisSpeeds,
                 new PPHolonomicDriveController(new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
                 ppConfig,
-                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                () -> FieldConstants.getAlliance() == Alliance.Red,
                 this);
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback((activePath) -> {
@@ -472,5 +475,39 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     public static Pose2d getPoseStatic(){
         return RobotState.getInstance().getPoseWithLookAhead();
+    }
+
+    public Command aimAtTarget(Translation2d target) {
+        return Commands.startRun(
+            () -> ChassisHeadingController.getInstance().setHeadingRequest(
+                new FaceToTargetRequest(() -> target, null)
+            ),
+            ()-> runRobotCentricSpeedsWithFeedforwards(
+                new ChassisSpeeds(), 
+                DriveFeedforwards.zeros(4)
+            ),
+            this
+        )
+        .finallyDo(()-> ChassisHeadingController.getInstance()
+            .setHeadingRequest(new ChassisHeadingController.NullRequest())
+        )
+        .until(()-> ChassisHeadingController.getInstance().atSetPoint());
+    }
+
+    public Command aimAtTargetShooterOptimized(Translation2d target) {
+        return Commands.startRun(
+            () -> ChassisHeadingController.getInstance().setHeadingRequest(
+                new FaceToTargetRequest(() -> target, null)
+            ),
+            ()-> runRobotCentricSpeedsWithFeedforwards(
+                new ChassisSpeeds(), 
+                DriveFeedforwards.zeros(4)
+            ),
+            this
+        )
+        .finallyDo(()-> ChassisHeadingController.getInstance()
+            .setHeadingRequest(new ChassisHeadingController.NullRequest())
+        )
+        .until(()-> ChassisHeadingController.getInstance().atSetPoint());
     }
 }

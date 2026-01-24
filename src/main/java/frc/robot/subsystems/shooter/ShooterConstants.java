@@ -37,7 +37,7 @@ public class ShooterConstants {
 
     public static final double kGearRatio = 1;
 
-    private static final double[][] SHOOTING_TABLE = {
+    public static final double[][] SHOOTING_TABLE = {
         {1.0, 83, 6.02},
         {2.0, 65.43, 6.43},
         {3.0, 56.90, 7.04},
