@@ -96,6 +96,6 @@ public class Intake extends SubsystemBase {
         io.updateInputs(inputs);
         // io.PID();
         io.periodic();
-        Logger.processInputs("Intake", inputs);
+        Logger.processInputs(this.getName(), inputs);
     }
 }

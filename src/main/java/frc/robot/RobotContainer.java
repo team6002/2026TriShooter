@@ -27,8 +27,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
+import frc.robot.commands.drive.ClockDrive;
 import frc.robot.commands.drive.DriveCommands;
-import frc.robot.commands.drive.JoystickDrive;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.conveyor.*;
@@ -44,7 +44,9 @@ import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
 import java.util.List;
-import java.util.function.IntSupplier;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -76,6 +78,10 @@ public class RobotContainer {
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
+
+    
+    private final AtomicReference<Optional<Rotation2d>> rotationalTargetOverride =
+        new AtomicReference<>(Optional.empty());
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
@@ -202,9 +208,14 @@ public class RobotContainer {
     public void configureButtonBindings() {
         /* joystick drive command */
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
-        IntSupplier pov = () -> -1;
-        final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
-        drive.setDefaultCommand(joystickDrive);
+        final ClockDrive clockDrive = new ClockDrive(
+            drive,
+            driveInput, 
+            driver.rotationalAxisX(),
+            driver.rotationalAxisY(),
+            rotationalTargetOverride
+        );
+        drive.setDefaultCommand(clockDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -218,11 +229,12 @@ public class RobotContainer {
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation).until(()-> !driver.scoreButton().getAsBoolean()));
         if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
-        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(
-            drive, 
-            ()-> -driveInput.joystickYSupplier.getAsDouble(), 
-            ()-> -driveInput.joystickXSupplier.getAsDouble(),
-            ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle())
+        driver.autoAlignmentButtonLeft().whileTrue(
+            ShooterConstants.kShooterOptimization.chassisAimAtSpeakerDuringAuto(
+                rotationalTargetOverride,
+                ()-> FieldConstants.getHubPose(),
+                drive
+            )
         );
 
         driver.autoAlignmentButtonRight().onTrue(drive.aimAtTarget(FieldConstants.getHubPose()));

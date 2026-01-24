@@ -1,13 +1,13 @@
 package frc.robot.utils;
 
-import static frc.robot.utils.CustomConfigs.MapleInterpolationTable.Variable;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.HolonomicDriveSubsystem;
 import frc.robot.utils.CustomConfigs.MapleInterpolationTable;
+import frc.robot.utils.CustomConfigs.MapleInterpolationTable.Variable;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -165,6 +165,10 @@ public class MapleShooterOptimization {
                     driveSubsystem.getMeasuredChassisSpeedsFieldRelative());
             rotationalTargetOverride.set(Optional.of(desiredChassisFacing));
             complete = driveSubsystem.getFacing().minus(desiredChassisFacing).getDegrees() < 3;
+
+            Logger.recordOutput("AutoAim/Running", true); 
+            Logger.recordOutput("AutoAim/DesiredFacing", desiredChassisFacing.getDegrees()); 
+            Logger.recordOutput("AutoAim/OverrideSet", true);
         }
 
         @Override
