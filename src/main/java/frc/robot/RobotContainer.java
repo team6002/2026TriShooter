@@ -16,7 +16,6 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
@@ -241,14 +240,11 @@ public class RobotContainer {
     public void resetSimulationField() {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
-        if (DriverStation.getAlliance().get() == Alliance.Red) {
-            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
-        } else {
+        if (FieldConstants.getAlliance() == Alliance.Blue) {
             drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
+        } else {
+            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
         }
-
-        for (int i = 0; i < IntakeIOSim.numObjectsInHopper(); i++)
-            IntakeIOSim.obtainFuelFromHopper();
 
         SimulatedArena.getInstance().resetFieldForAuto();
     }
@@ -261,7 +257,7 @@ public class RobotContainer {
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
-        Logger.recordOutput("FieldSimulation/Alliance", DriverStation.getAlliance().toString());
+        Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
     }
 
     public static boolean motorBrakeEnabled = false;
