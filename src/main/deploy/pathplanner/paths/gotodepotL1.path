@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.4,
-        "y": 5.594108416547789
+        "y": 5.6
       },
       "prevControl": null,
       "nextControl": {
         "x": 4.023776536845272,
-        "y": 5.492754023864227
+        "y": 5.498645607316438
       },
       "isLocked": false,
       "linkedName": null
@@ -33,8 +33,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -45,9 +45,9 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Left Auto 1",
+  "folder": "Left Auto 1 (Depot)",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 4.0,
     "rotation": 45.0
   },
   "useDefaultConstraints": true

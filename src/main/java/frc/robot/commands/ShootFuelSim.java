@@ -43,7 +43,7 @@ public class ShootFuelSim extends Command {
 
     @Override
     public void execute(){
-        if (timer >= 3 && IntakeIOSim.numObjectsInHopper() > 0) {
+        if (timer >= 10 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
 
             double distance = robotPose.getTranslation().getDistance(FieldConstants.getHubPose());
