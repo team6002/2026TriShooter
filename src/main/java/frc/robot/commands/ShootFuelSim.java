@@ -22,9 +22,9 @@ public class ShootFuelSim extends Command {
     private final AbstractDriveTrainSimulation driveSim;
     private int timer;
 
-    private static final Translation2d CENTER_SHOOTER_OFFSET = new Translation2d(0, 0);
-    private static final Translation2d LEFT_SHOOTER_OFFSET = new Translation2d(0, Units.inchesToMeters(6));
-    private static final Translation2d RIGHT_SHOOTER_OFFSET = new Translation2d(0, Units.inchesToMeters(-6));
+    private static final Translation2d CENTER_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(5.5), 0);
+    private static final Translation2d LEFT_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(5.5), Units.inchesToMeters(6));
+    private static final Translation2d RIGHT_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(5.5), Units.inchesToMeters(-6));
     private static final Translation2d[] SHOOTER_OFFSETS = {
         CENTER_SHOOTER_OFFSET,
         LEFT_SHOOTER_OFFSET,
@@ -46,25 +46,26 @@ public class ShootFuelSim extends Command {
         if (timer >= 3 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
 
-            // Pick random shooter
-            Translation2d shooterOffset = SHOOTER_OFFSETS[(int)(Math.random() * 3)];
-
             double distance = robotPose.getTranslation().getDistance(FieldConstants.getHubPose());
             ShootingParams params = ShooterConstants.getShootingParams(distance);
 
-            IntakeIOSim.obtainFuelFromHopper();
+            for (Translation2d shooterOffset : SHOOTER_OFFSETS) {
+                if (IntakeIOSim.numObjectsInHopper() <= 0) break;
 
-            SimulatedArena.getInstance().addGamePieceProjectile(
-                new RebuiltFuelOnFly(
-                    robotPose.getTranslation(),
-                    shooterOffset,  // Robot-relative offset
-                    driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                    robotPose.getRotation(),  // Fixed shooter aims where robot faces
-                    Inches.of(24), // shooter height from floor
-                    MetersPerSecond.of(params.velocityMPS()),
-                    Radians.of(params.angRad())
-                )
-            );
+                IntakeIOSim.obtainFuelFromHopper();
+
+                SimulatedArena.getInstance().addGamePieceProjectile(
+                    new RebuiltFuelOnFly(
+                        robotPose.getTranslation(),
+                        shooterOffset,
+                        driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                        robotPose.getRotation(),
+                        Inches.of(21),
+                        MetersPerSecond.of(params.velocityMPS()),
+                        Radians.of(params.angRad())
+                    )
+                );
+            }
 
             timer = 0;
         } else {

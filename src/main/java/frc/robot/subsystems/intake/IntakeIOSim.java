@@ -45,9 +45,9 @@ public class IntakeIOSim implements IntakeIO {
     private final LoggedMechanismRoot2d intakeRoot;
     private final LoggedMechanismLigament2d intakeVisualizer = new LoggedMechanismLigament2d(
         "intake", 
-        Inches.of(10), 
-        Degrees.of(-85),
-        65,
+        Inches.of(1), 
+        Degrees.of(-87.5),
+        50,
         new Color8Bit(255, 92, 0)
     );
 
@@ -61,13 +61,14 @@ public class IntakeIOSim implements IntakeIO {
                 DCMotor.getNEO(1));
         
         intakeMechanism = new LoggedMechanism2d(Inches.of(24), Inches.of(10));
-        intakeRoot = intakeMechanism.getRoot("Intake", Units.inchesToMeters(26), Units.inchesToMeters(0));
+        intakeRoot = intakeMechanism.getRoot("Intake", Units.inchesToMeters(-16), Units.inchesToMeters(0));
         intakeRoot.append(intakeVisualizer);
 
         intakeSimulation = IntakeSimulation.OverTheBumperIntake("Fuel", driveSim,
-            Inches.of(24), Inches.of(10), IntakeSide.FRONT, 48);
+            Inches.of(24), Inches.of(10), IntakeSide.BACK, 75);
 
         intakeSimulation.startIntake();
+        intakeSimulation.addGamePiecesToIntake(75);
     }
 
     @Override

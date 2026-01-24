@@ -131,21 +131,6 @@ public class DriveConstants {
                     1),
             moduleTranslations);
 
-    public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
-            .withCustomModuleTranslations(moduleTranslations)
-            .withRobotMass(Kilogram.of(robotMassKg))
-            .withGyro(COTS.ofNav2X())
-            .withSwerveModule(new SwerveModuleSimulationConfig(
-                    driveGearbox,
-                    turnGearbox,
-                    driveMotorReduction,
-                    turnMotorReduction,
-                    Volts.of(0.1),
-                    Volts.of(0.1),
-                    Meters.of(wheelRadiusMeters),
-                    KilogramSquareMeters.of(0.02),
-                    wheelCOF));
-
     // these are needed for maple holomicDriveSystem
 
     /** numbers that needs to be changed to fit each robot TODO: change these numbers to match your robot */
@@ -162,7 +147,7 @@ public class DriveConstants {
     public static final double DRIVE_GEAR_RATIO = driveMotorReduction;
     public static final double STEER_GEAR_RATIO = turnMotorReduction;
 
-    public static final Distance BUMPER_WIDTH = Inches.of(30), BUMPER_LENGTH = Inches.of(30);
+    public static final Distance BUMPER_WIDTH = Inches.of(30.25), BUMPER_LENGTH = Inches.of(30.25);
     // https://unacademy.com/content/upsc/study-material/physics/moment-of-inertia-of-rectangle-section/
     public static final MomentOfInertia ROBOT_MOI = KilogramSquareMeters.of(ROBOT_MASS.in(Kilograms)
             * (BUMPER_WIDTH.in(Meters) * BUMPER_WIDTH.in(Meters) + BUMPER_LENGTH.in(Meters) * BUMPER_LENGTH.in(Meters))
@@ -181,6 +166,22 @@ public class DriveConstants {
         new Translation2d(-trackWidth / 2.0, wheelBase / 2.0),
         new Translation2d(-trackWidth / 2.0, -wheelBase / 2.0)
     };
+
+public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
+        .withCustomModuleTranslations(moduleTranslations)
+        .withRobotMass(Kilogram.of(robotMassKg))
+        .withGyro(COTS.ofNav2X())
+        .withBumperSize(BUMPER_LENGTH, BUMPER_WIDTH)
+        .withSwerveModule(new SwerveModuleSimulationConfig(
+                driveGearbox,
+                turnGearbox,
+                driveMotorReduction,
+                turnMotorReduction,
+                Volts.of(0.1),
+                Volts.of(0.1),
+                Meters.of(wheelRadiusMeters),
+                KilogramSquareMeters.of(0.02),
+                wheelCOF));
 
     private static final double GRAVITY_CONSTANT = 9.8;
     public static final Distance DRIVE_BASE_RADIUS = Meters.of(MODULE_TRANSLATIONS[0].getNorm());
