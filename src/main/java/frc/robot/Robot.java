@@ -11,6 +11,9 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.drive.DriveConstants;
 import java.util.HashMap;
+
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
@@ -91,6 +94,10 @@ public class Robot extends LoggedRobot {
                 put(DriveConstants.backRightTurnCanId, "back right Turn");
             }
         }));
+
+        SimulatedArena.overrideInstance(new Arena2026Rebuilt(false));
+
+
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
         robotContainer = new RobotContainer();
