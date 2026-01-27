@@ -454,7 +454,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             }
 
             // Handle Alliance flipping
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+            if (DriverStation.getAlliance().isPresent() && FieldConstants.getAlliance() == Alliance.Red) {
                 loadedPath = loadedPath.flipPath();
             }
             

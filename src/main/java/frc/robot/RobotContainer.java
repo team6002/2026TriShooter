@@ -175,14 +175,17 @@ public class RobotContainer {
         // autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, true));
         // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
         // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
-        autoChooser.addOption("Auto Middle Right Side Hump #H", new AUTO_MiddleHumpFull(drive, false, driveSimulation));        
-        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleHumpFull(drive, true, driveSimulation));        
+        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
+        // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
+        
+        // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
+        autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleHumpFull(drive, false, driveSimulation));        
+        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleHumpFull(drive, true, driveSimulation));  
+        autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe(drive, driveSimulation));
+        autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe(drive, driveSimulation));      
         autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump(drive, true, driveSimulation));
         autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig(drive, driveSimulation));
         autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall(drive, driveSimulation));
-        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
-        // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
         autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump(drive, false, driveSimulation));        
         autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig(drive, driveSimulation));     
         autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall(drive, driveSimulation));        
@@ -250,7 +253,7 @@ public class RobotContainer {
         if (FieldConstants.getAlliance() == Alliance.Blue) {
             drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
         } else {
-            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
+            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d(Math.PI)));
         }
 
         SimulatedArena.getInstance().resetFieldForAuto();
