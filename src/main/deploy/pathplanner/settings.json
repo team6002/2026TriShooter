@@ -3,10 +3,11 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Left Auto 1 (Depot)",
+    "Left Auto (Depot)",
     "Middle Auto",
-    "Middle Side Auto",
     "Middle Hump Auto",
+    "Middle Side Auto",
+    "Middle Hump Auto 2",
     "Right Auto",
     "Side Auto",
     "Side Hump Auto"

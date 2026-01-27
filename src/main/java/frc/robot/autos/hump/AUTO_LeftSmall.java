@@ -1,4 +1,4 @@
-package frc.robot.autos;
+package frc.robot.autos.hump;
 
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -8,14 +8,10 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
-public class AUTO_LeftBig extends SequentialCommandGroup {
-    public AUTO_LeftBig(Drive drive, SwerveDriveSimulation sim) {
+public class AUTO_LeftSmall extends SequentialCommandGroup {
+    public AUTO_LeftSmall(Drive drive, SwerveDriveSimulation sim) {
         addCommands(
-            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8))
-            ,drive.setAutoStartPose("gotomiddleL1", false)
-            ,drive.followPath("gotomiddleL1", false)
-            ,drive.followPath("grabmiddleL1", false)
-            ,drive.followPath("gotostartL1", false)
+            drive.setAutoStartPose("gotodepotL1", false)
             ,drive.followPath("gotodepotL1", false)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,drive.aimAtTarget(FieldConstants.getHubPose())

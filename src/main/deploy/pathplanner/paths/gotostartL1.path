@@ -61,7 +61,7 @@
     "rotation": 45.0
   },
   "reversed": false,
-  "folder": "Left Auto 1 (Depot)",
+  "folder": "Left Auto (Depot)",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

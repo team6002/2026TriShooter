@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.autos.*;
+import frc.robot.autos.hump.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.DriveCommands;
 import frc.robot.commands.drive.JoystickDrive;
@@ -176,13 +176,17 @@ public class RobotContainer {
         // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
         // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
         autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
+        autoChooser.addOption("Auto Middle Right Side Hump #H", new AUTO_MiddleHumpFull(drive, false, driveSimulation));        
+        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleHumpFull(drive, true, driveSimulation));        
         autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump(drive, true, driveSimulation));
         autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig(drive, driveSimulation));
         autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall(drive, driveSimulation));
         // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
         // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
         autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump(drive, false, driveSimulation));        
-        
+        autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig(drive, driveSimulation));     
+        autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall(drive, driveSimulation));        
+
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -251,7 +255,7 @@ public class RobotContainer {
 
         SimulatedArena.getInstance().resetFieldForAuto();
 
-        IntakeIOSim.setFuelInHopper(0);
+        IntakeIOSim.setFuelInHopper(8);
 
         // for (int i = 0; i<48; i++) IntakeIOSim.obtainFuelFromHopper();
     }
@@ -265,6 +269,9 @@ public class RobotContainer {
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
+
+        Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
+        Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
     }
 
     public static boolean motorBrakeEnabled = false;

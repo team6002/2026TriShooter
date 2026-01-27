@@ -8,27 +8,48 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.7697202398933247,
-        "y": 2.58959190972376
+        "x": 3.1904724073728032,
+        "y": 2.3636248265707738
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.75,
-        "y": 0.75
+        "x": 4.750684736091298,
+        "y": 2.5
       },
       "prevControl": {
-        "x": 0.4050865834656574,
-        "y": 0.5947456369833398
+        "x": 3.758870736088583,
+        "y": 2.636223602573561
+      },
+      "nextControl": {
+        "x": 5.110850481165634,
+        "y": 2.4505319794664295
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.7,
+        "y": 1.0
+      },
+      "prevControl": {
+        "x": 6.3568243259743245,
+        "y": 1.7089937188272286
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": -45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Middle Hump Auto",
   "idealStartingState": {
-    "velocity": 4.0,
-    "rotation": 45.0
+    "velocity": 0.0,
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

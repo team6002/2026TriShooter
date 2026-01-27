@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 7.696420882246444,
-        "y": 4.7499743785192905
+        "y": 4.749974378519291
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Left Auto 1 (Depot)",
+  "folder": "Left Auto (Depot)",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 90.0

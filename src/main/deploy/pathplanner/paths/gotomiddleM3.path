@@ -47,7 +47,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1.0,
-      "rotationDegrees": 45.0
+      "rotationDegrees": -45.0
     }
   ],
   "constraintZones": [],
@@ -69,7 +69,7 @@
   "folder": "Middle Hump Auto",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 45.0
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }
