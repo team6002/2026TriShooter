@@ -97,7 +97,8 @@ public class RobotContainer {
                     new ModuleIOSpark(1),
                     new ModuleIOSpark(2),
                     new ModuleIOSpark(3),
-                    (pose) -> {});
+                    (pose) -> {},
+                    null);
 
                 shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
@@ -127,7 +128,8 @@ public class RobotContainer {
                     new ModuleIOSim(driveSimulation.getModules()[1]),
                     new ModuleIOSim(driveSimulation.getModules()[2]),
                     new ModuleIOSim(driveSimulation.getModules()[3]),
-                    driveSimulation::setSimulationWorldPose);
+                    driveSimulation::setSimulationWorldPose,
+                    driveSimulation);
 
                 shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
@@ -159,7 +161,8 @@ public class RobotContainer {
                     new ModuleIO() {},
                     new ModuleIO() {},
                     new ModuleIO() {},
-                    (pose) -> {});
+                    (pose) -> {},
+                    null);
 
                 shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
@@ -229,13 +232,13 @@ public class RobotContainer {
         if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation).until(()-> !driver.scoreButton().getAsBoolean()));
         if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
-        driver.autoAlignmentButtonLeft().whileTrue(
-            ShooterConstants.kShooterOptimization.chassisAimAtSpeakerDuringAuto(
-                rotationalTargetOverride,
-                ()-> FieldConstants.getHubPose(),
-                drive
-            )
-        );
+        // driver.autoAlignmentButtonLeft().whileTrue(
+        //     ShooterConstants.kShooterOptimization.chassisAimAtSpeakerDuringAuto(
+        //         rotationalTargetOverride,
+        //         ()-> FieldConstants.getHubPose(),
+        //         drive
+        //     )
+        // );
 
         driver.autoAlignmentButtonRight().onTrue(drive.aimAtTarget(FieldConstants.getHubPose()));
     }

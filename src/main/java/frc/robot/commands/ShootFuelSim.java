@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.Radians;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.AbstractDriveTrainSimulation;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -48,7 +49,7 @@ public class ShootFuelSim extends Command {
 
     @Override
     public void execute(){
-        if (timer >= 3 && IntakeIOSim.numObjectsInHopper() > 0) {
+        if (timer >= 5 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
             
             int maxShots = Math.min(3, IntakeIOSim.numObjectsInHopper());
@@ -114,6 +115,12 @@ public class ShootFuelSim extends Command {
             Translation2d toTarget = targetPos.minus(shooterPos);
             double t = toTarget.getNorm() / projSpeed;
             targetPos = hubPosition.plus(relativeVel.times(t));
+
+            Logger.recordOutput("Lead/currentDistance", distance);
+            Logger.recordOutput("Lead/predictedDistance", predictedDistance);
+            Logger.recordOutput("Lead/flightTime", params.tofSeconds());
+            Logger.recordOutput("Lead/robotVelX", robotVel.getX());
+            Logger.recordOutput("Lead/robotVelY", robotVel.getY());
         }
 
         return params;

@@ -63,6 +63,8 @@ import java.util.OptionalDouble;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -89,19 +91,23 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     private SwerveSetpoint setpoint;
 
+    private final SwerveDriveSimulation driveSim;
+
     public Drive(
             GyroIO gyroIO,
             ModuleIO flModuleIO,
             ModuleIO frModuleIO,
             ModuleIO blModuleIO,
             ModuleIO brModuleIO,
-            Consumer<Pose2d> resetSimulationPoseCallBack) {
+            Consumer<Pose2d> resetSimulationPoseCallBack,
+            SwerveDriveSimulation driveSim) {
         this.gyroIO = gyroIO;
         this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
         modules[0] = new Module(flModuleIO, 0);
         modules[1] = new Module(frModuleIO, 1);
         modules[2] = new Module(blModuleIO, 2);
         modules[3] = new Module(brModuleIO, 3);
+        this.driveSim = driveSim;
 
         // Usage reporting for swerve template
         HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -145,6 +151,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             module.periodic();
         }
         odometryLock.unlock();
+
+        var speeds = getMeasuredChassisSpeedsFieldRelative();
+        Logger.recordOutput("Sim/vx", speeds.vxMetersPerSecond);
+        Logger.recordOutput("Sim/vy", speeds.vyMetersPerSecond);
+        Logger.recordOutput("Sim/omega", speeds.omegaRadiansPerSecond);
 
         // Stop moving when disabled
         if (DriverStation.isDisabled()) {
@@ -391,6 +402,17 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         return RobotState.getInstance().getRobotRelativeSpeeds();
     }
 
+    @Override
+    public ChassisSpeeds getMeasuredChassisSpeedsFieldRelative() {
+        if (Robot.isSimulation()) {
+            var fieldSpeeds = driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative();
+            return ChassisSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, getRotation());
+        }
+
+        return RobotState.getInstance().getRobotRelativeSpeeds();
+    }
+
+
     /** Returns the current odometry rotation. */
     public Rotation2d getRotation() {
         return getPose().getRotation();
@@ -478,27 +500,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     public Command aimAtTarget(Translation2d target) {
-        return Commands.startRun(
-            () -> ChassisHeadingController.getInstance().setHeadingRequest(
-                new FaceToTargetRequest(() -> target, null)
-            ),
-            ()-> runRobotCentricSpeedsWithFeedforwards(
-                new ChassisSpeeds(), 
-                DriveFeedforwards.zeros(4)
-            ),
-            this
-        )
-        .finallyDo(
-            ()-> { 
-                ChassisHeadingController.getInstance()
-                    .setHeadingRequest(new ChassisHeadingController.NullRequest());
-                stop();
-            }
-        )
-        .until(()-> ChassisHeadingController.getInstance().atSetPoint());
-    }
-
-    public Command aimAtTargetShooterOptimized(Translation2d target) {
         return Commands.startRun(
             () -> ChassisHeadingController.getInstance().setHeadingRequest(
                 new FaceToTargetRequest(() -> target, null)

@@ -63,27 +63,30 @@ public class ShooterConstants {
 
     public static final MapleShooterOptimization kShooterOptimization = new MapleShooterOptimization(
         "shooterOptimization",
-        extractColumn(0), // distance, Meters
-        extractColumn(1), // hood angle, Degrees
-        extractColumn(2), // shooter velocity, Meters Per Second
-        extractColumn(3)  // TOF, Secods
+        extractColumn(0), // distance, meters
+        extractColumn(1), // hood angle, degrees
+        extractColumn(2), // shooter velocity, m/s
+        extractColumn(3)  // time of flight, seconds
     );
 
-    public static final record ShootingParams(double angRad, double velocityMPS) {}
+    // ⭐ Updated to include TOF
+    public static final record ShootingParams(double angRad, double velocityMPS, double tofSeconds) {}
 
     public static final ShootingParams getShootingParams(double distance) {
         // Clamp to table bounds
         if (distance <= SHOOTING_TABLE[0][0]) {
             return new ShootingParams(
-                Units.degreesToRadians(SHOOTING_TABLE[0][1]), 
-                SHOOTING_TABLE[0][2]
+                Units.degreesToRadians(SHOOTING_TABLE[0][1]),
+                SHOOTING_TABLE[0][2],
+                SHOOTING_TABLE[0][3]
             );
         }
         if (distance >= SHOOTING_TABLE[SHOOTING_TABLE.length - 1][0]) {
             int last = SHOOTING_TABLE.length - 1;
             return new ShootingParams(
-                Units.degreesToRadians(SHOOTING_TABLE[last][1]), 
-                SHOOTING_TABLE[last][2]
+                Units.degreesToRadians(SHOOTING_TABLE[last][1]),
+                SHOOTING_TABLE[last][2],
+                SHOOTING_TABLE[last][3]
             );
         }
 
@@ -94,14 +97,22 @@ public class ShooterConstants {
                 double d1 = SHOOTING_TABLE[i + 1][0];
                 double t = (distance - d0) / (d1 - d0);
 
-                double angle = SHOOTING_TABLE[i][1] + t * (SHOOTING_TABLE[i + 1][1] - SHOOTING_TABLE[i][1]);
-                double velocity = SHOOTING_TABLE[i][2] + t * (SHOOTING_TABLE[i + 1][2] - SHOOTING_TABLE[i][2]);
+                double angle =
+                    SHOOTING_TABLE[i][1] + t * (SHOOTING_TABLE[i + 1][1] - SHOOTING_TABLE[i][1]);
+                double velocity =
+                    SHOOTING_TABLE[i][2] + t * (SHOOTING_TABLE[i + 1][2] - SHOOTING_TABLE[i][2]);
+                double tof =
+                    SHOOTING_TABLE[i][3] + t * (SHOOTING_TABLE[i + 1][3] - SHOOTING_TABLE[i][3]);
 
-                return new ShootingParams(Units.degreesToRadians(angle), velocity);
+                return new ShootingParams(
+                    Units.degreesToRadians(angle),
+                    velocity,
+                    tof
+                );
             }
         }
 
-        // Fallback (should never reach here)
-        return new ShootingParams(Units.degreesToRadians(75), 7.0);
+        // Fallback (should never hit)
+        return new ShootingParams(Units.degreesToRadians(75), 7.0, 1.0);
     }
 }

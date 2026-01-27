@@ -48,24 +48,48 @@ public class ClockDrive extends Command {
 
     @Override
     public void execute() {
+
         ChassisSpeeds pilotInputSpeed = input.getJoystickChassisSpeeds(
             driveSubsystem.getChassisMaxLinearVelocityMetersPerSec(),
-            driveSubsystem.getChassisMaxAngularVelocity());
+            driveSubsystem.getChassisMaxAngularVelocity()
+        );
 
         Optional<Rotation2d> override = rotationalTargetOverride.get();
 
         if (override.isPresent()) {
-            // Auto-aim mode: shooter optimization owns rotation
+            Rotation2d rawTarget = override.get();
+            Rotation2d current = driveSubsystem.getFacing();
+
+            // Make target continuous relative to current angle
+            double continuous = current.getRadians() +
+                rawTarget.minus(current).getRadians();
+
+            Rotation2d continuousTarget = new Rotation2d(continuous);
+
             ChassisHeadingController.getInstance()
-                .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(override.get()));
-            pilotInputSpeed.omegaRadiansPerSecond = 
+                .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(continuousTarget));
+
+            ChassisSpeeds robotSpeeds = driveSubsystem.getMeasuredChassisSpeedsRobotRelative();
+
+            ChassisSpeeds corrected = new ChassisSpeeds(
+                0.0,
+                0.0,
+                robotSpeeds.omegaRadiansPerSecond
+            );
+
+            pilotInputSpeed.omegaRadiansPerSecond =
                 ChassisHeadingController.getInstance().calculate(
-                    driveSubsystem.getMeasuredChassisSpeedsFieldRelative(), 
+                    corrected,
                     driveSubsystem.getPose()
                 ).orElse(0);
-        } 
+
+            Logger.recordOutput("Aim/desiredFacing", continuousTarget.getDegrees());
+            Logger.recordOutput("Aim/currentFacing", current.getDegrees());
+            Logger.recordOutput("Aim/errorDegrees",
+                current.minus(continuousTarget).getDegrees());
+            Logger.recordOutput("Aim/atSetpoint", ChassisHeadingController.getInstance().atSetPoint());
+        }
         else {
-            // Normal ClockDrive: right stick chooses facing
             Translation2d headingVector =
                 new Translation2d(rotationXSupplier.getAsDouble(), rotationYSupplier.getAsDouble());
 
@@ -78,8 +102,8 @@ public class ClockDrive extends Command {
                 .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(currentDesiredFacing));
         }
 
-        Logger.recordOutput("ClockDrive/OverridePresent", rotationalTargetOverride.get().isPresent());
-        Logger.recordOutput("ClockDrive/OverrideValue", rotationalTargetOverride.get().orElse(null));
+        Logger.recordOutput("ClockDrive/OverridePresent", override.isPresent());
+        Logger.recordOutput("ClockDrive/OverrideValue", override.orElse(null));
 
         driveSubsystem.runDriverStationCentricChassisSpeeds(pilotInputSpeed, true);
     }
