@@ -43,6 +43,11 @@ public class Vision_Constants {
             new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-10.75), Units.inchesToMeters(8.875)),
             new Rotation3d(0, Math.toRadians(5), Math.toRadians(30)));
 
+        public static final Transform3d robotToCamera3 = new Transform3d(
+            new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(12), Units.inchesToMeters(7)),
+            new Rotation3d(0, Math.toRadians(0), Math.toRadians(-90)));
+
+
     // Basic filtering thresholds
     public static double maxAmbiguity = 0.3;
     public static double maxZError = 0.75;

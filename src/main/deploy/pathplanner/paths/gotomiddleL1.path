@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.4,
-        "y": 5.6
+        "y": 5.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.122182596291013,
-        "y": 4.895420827389444
+        "x": 6.251569186875891,
+        "y": 4.339058487874465
       },
       "isLocked": false,
       "linkedName": null
@@ -20,15 +20,20 @@
         "y": 7.0
       },
       "prevControl": {
-        "x": 6.600912981455064,
-        "y": 7.379643366619116
+        "x": 6.342139800285306,
+        "y": 6.849158345221112
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1727078891258004,
+      "rotationDegrees": 45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -45,7 +50,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Left Auto (Depot)",
+  "folder": "Left Hump Auto (Depot)",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 45.0

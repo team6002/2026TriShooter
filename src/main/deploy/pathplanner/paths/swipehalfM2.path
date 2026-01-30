@@ -41,7 +41,7 @@
       },
       "nextControl": {
         "x": 7.731731279853446,
-        "y": 1.9837099563931642
+        "y": 1.9837099563931644
       },
       "isLocked": false,
       "linkedName": null
@@ -86,7 +86,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Middle Side Auto",
+  "folder": "Middle Side Hump Auto",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
