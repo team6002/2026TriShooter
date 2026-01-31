@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
+import frc.robot.autos.hump.AUTO_SideHump;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
@@ -174,11 +175,8 @@ public class RobotContainer {
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
         autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle());
         autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide());
-        autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide());
         autoChooser.addOption("Auto Left Side", new AUTO_Side());
-        autoChooser.addOption("Auto Right Side", new AUTO_Side());
         autoChooser.addOption("Auto Left Side Hump", new AUTO_SideHump());
-        autoChooser.addOption("Auto Right Side Hump", new AUTO_SideHump());
         autoChooser.addOption("Auto Left", new AUTO_Left());
         autoChooser.addOption("Auto Right", new AUTO_Right());
         // Set up SysId routines

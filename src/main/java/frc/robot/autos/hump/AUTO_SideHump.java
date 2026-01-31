@@ -1,4 +1,4 @@
-package frc.robot.autos;
+package frc.robot.autos.hump;
 
 import java.io.IOException;
 
@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.autos.Auto;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.constants.RobotMode;
