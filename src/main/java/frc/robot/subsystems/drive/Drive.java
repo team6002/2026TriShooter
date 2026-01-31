@@ -323,22 +323,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     @Override
     public void runRobotCentricChassisSpeeds(ChassisSpeeds speeds) {
-        // Calculate module setpoints
-        speeds = ChassisSpeeds.discretize(speeds, 0.02);
-        SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
-
-        // Log unoptimized setpoints
-        Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
-
-        // Send setpoints to modules
-        for (int i = 0; i < 4; i++) {
-            modules[i].runSetpoint(setpointStates[i]);
-        }
-
-        // Log optimized setpoints (runSetpoint mutates each state)
-        Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+        this.setpoint = new SwerveSetpoint(speeds, getModuleStates(), null);
+        executeSetpoint();
     }
 
     @Override
@@ -362,15 +348,19 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         SwerveDriveKinematics.desaturateWheelSpeeds(setPointStates, CHASSIS_MAX_VELOCITY);
 
         // Send setpoints to modules
-        SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
-        for (int i = 0; i < 4; i++)
-            optimizedSetpointStates[i] = modules[i].runSetPoint(
-                    setPointStates[i],
-                    setpoint.feedforwards().robotRelativeForcesX()[i],
-                    setpoint.feedforwards().robotRelativeForcesY()[i]);
+        for (int i = 0; i < 4; i++) {
+            if (setpoint.feedforwards() == null) {
+                modules[i].runSetpoint(setPointStates[i]);
+            } else {
+                modules[i].runSetPoint(
+                        setPointStates[i],
+                        setpoint.feedforwards().robotRelativeForcesX()[i],
+                        setpoint.feedforwards().robotRelativeForcesY()[i]);
+            }
+        }
 
         Logger.recordOutput("SwerveStates/Setpoints", setPointStates);
-        Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
+        Logger.recordOutput("SwerveStates/SetpointsOptimized", setPointStates);
     }
 
     @Override
@@ -405,5 +395,15 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     public void setMotorBrake(boolean motorBrakeEnabled) {
         for (int i = 0; i < 4; i++) modules[i].setMotorBrake(motorBrakeEnabled);
+    }
+
+    @Override
+    public ChassisSpeeds getMeasuredChassisSpeedsFieldRelative() {
+        ChassisSpeeds robotRelative = getChassisSpeeds();
+        return ChassisSpeeds.fromRobotRelativeSpeeds(robotRelative, getRotation());
+    }
+
+    public void resetPose(Pose2d pose) {
+        resetOdometry(pose);
     }
 }

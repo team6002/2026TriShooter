@@ -55,7 +55,7 @@ public class Kicker extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        // io.PID();
+        io.PID();
         io.periodic();
         Logger.processInputs(this.getName(), inputs);
     }

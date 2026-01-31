@@ -197,8 +197,12 @@ public class ChassisHeadingController {
         chassisRotationState =
                 chassisRotationProfile.calculate(Robot.defaultPeriodSecs, chassisRotationState, goalState);
 
+        final double unwrappedCurrentRotation =
+            goalState.position - targetedRotation.minus(robotPose.getRotation()).getRadians();
+
         final double feedBackSpeed =
-                chassisRotationCloseLoop.calculate(robotPose.getRotation().getRadians(), chassisRotationState.position);
+            chassisRotationCloseLoop.calculate(unwrappedCurrentRotation, chassisRotationState.position);
+
         final double feedForwardSpeedRadPerSec =
                 Math.abs(targetedRotation.minus(robotPose.getRotation()).getDegrees()) < 15
                         ? desiredAngularVelocityRadPerSec

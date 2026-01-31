@@ -6,7 +6,7 @@ import frc.robot.utils.MapleShooterOptimization;
 public class ShooterConstants {
     public static final int kShooterCanId = 9;
     public static final int kLeftShooterCanId = 10;
-    public static final int kRightShooterCanId = 11;
+    public static final int kRightShooterCanId = 17;
 
     public static final double kP = 0.0;
     public static final double kI = 0.0;

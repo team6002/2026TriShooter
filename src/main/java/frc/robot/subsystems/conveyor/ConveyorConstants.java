@@ -1,7 +1,7 @@
 package frc.robot.subsystems.conveyor;
 
 public class ConveyorConstants {
-    public static final int kConveyorCanId = 17;
+    public static final int kConveyorCanId = 13;
 
     public static final double kP = 0.0006;
     public static final double kI = 0.0;

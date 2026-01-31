@@ -1,8 +1,7 @@
 package frc.robot.subsystems.kicker;
 
 public class KickerConstants {
-    public static final int kKickerCanId = 15;
-    public static final int kKickerFollowerCanId = 16;
+    public static final int kKickerCanId = 16;
 
     public static final double kP = 0.0006;
     public static final double kI = 0.0;

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
@@ -44,8 +44,7 @@ import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.IntSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -60,10 +59,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
     // Subsystems
     public final Drive drive;
-    // public final Shooter shooter;
+    public final Shooter shooter;
     public final Intake intake;
     public final Conveyor conveyor;
-    // public final Kicker kicker;
+    public final Kicker kicker;
     // public final Hood hood;
     // public final Climb climb;
     // public final Vision vision;
@@ -78,10 +77,6 @@ public class RobotContainer {
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Auto> autoChooser;
-
-    
-    private final AtomicReference<Optional<Rotation2d>> rotationalTargetOverride =
-        new AtomicReference<>(Optional.empty());
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
@@ -99,10 +94,10 @@ public class RobotContainer {
                     new ModuleIOSpark(3),
                     (pose) -> {});
 
-                // shooter = new Shooter(new ShooterIOSpark());
+                shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
                 conveyor = new Conveyor(new ConveyorIOSpark());
-                // kicker = new Kicker(new KickerIOSpark());
+                kicker = new Kicker(new KickerIOSpark());
                 // hood = new Hood(new HoodIOSpark());
                 // climb = new Climb(new ClimbIOSpark());
 
@@ -129,10 +124,10 @@ public class RobotContainer {
                     new ModuleIOSim(driveSimulation.getModules()[3]),
                     driveSimulation::setSimulationWorldPose);
 
-                // shooter = new Shooter(new ShooterIOSim());
+                shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
                 conveyor = new Conveyor(new ConveyorIOSim());
-                // kicker = new Kicker(new KickerIOSim());
+                kicker = new Kicker(new KickerIOSim());
                 // hood = new Hood(new HoodIOSim());
                 // climb = new Climb(new ClimbIOSim());
 
@@ -161,10 +156,10 @@ public class RobotContainer {
                     new ModuleIO() {},
                     (pose) -> {});
 
-                // shooter = new Shooter(new ShooterIO() {});
+                shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
                 conveyor = new Conveyor(new ConveyorIO() {});
-                // kicker = new Kicker(new KickerIO() {});
+                kicker = new Kicker(new KickerIO() {});
                 // hood = new Hood(new HoodIO() {});
                 // climb = new Climb(new ClimbIO() {});
 
@@ -208,20 +203,23 @@ public class RobotContainer {
     public void configureButtonBindings() {
         /* joystick drive command */
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
-        final ClockDrive clockDrive = new ClockDrive(
-            drive,
-            driveInput, 
-            driver.rotationalAxisX(),
-            driver.rotationalAxisY(),
-            rotationalTargetOverride
-        );
-        drive.setDefaultCommand(clockDrive);
+        IntSupplier pov = () -> -1;
+        final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
+        drive.setDefaultCommand(joystickDrive);
+        // final ClockDrive clockDrive = new ClockDrive(
+        //     drive,
+        //     driveInput, 
+        //     driver.rotationalAxisX(),
+        //     driver.rotationalAxisY(),
+        //     rotationalTargetOverride
+        // );
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
             ? () -> drive.resetOdometry(
                 driveSimulation
-                    .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
+                    .getSimulatedDriveTrainPose())
+                // reset odometry to actual robot pose during simulation
             : () -> drive.resetOdometry(
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
@@ -240,16 +238,22 @@ public class RobotContainer {
             )
         );
 
-        // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
-        //     .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
+        driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
+            .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
 
-        // driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
-        //     .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
+        driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
+            .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
 
-        // driver.aButton().onTrue(intake.getExtenderSysIdRoutine().quasistatic(Direction.kForward));
-        // driver.bButton().onTrue(intake.getExtenderSysIdRoutine().quasistatic(Direction.kReverse));
-        // driver.xButton().onTrue(intake.getExtenderSysIdRoutine().dynamic(Direction.kForward));
-        // driver.yButton().onTrue(intake.getExtenderSysIdRoutine().dynamic(Direction.kReverse));
+        driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kConvey)))
+            .onFalse(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kOff)));
+
+        driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
+            .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
+
+        driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
+        driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));
+        driver.xButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kForward));
+        driver.yButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kReverse));
     }
 
     /**
