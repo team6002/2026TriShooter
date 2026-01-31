@@ -28,11 +28,8 @@ public class KickerConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kKick = 4500;
+    public static final double kKick = 10;
     public static final double kOff = 0;
-    public static final double kReverse = -6;
-    public static final double kClimb = -1;
-    public static final double kHolding = 2;
 
     public static final double kGearRatio = 3;
 }

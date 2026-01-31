@@ -39,7 +39,7 @@ import org.ironmaple.simulation.drivesims.configs.DriveTrainSimulationConfig;
 import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
 
 public class DriveConstants {
-    public static final double maxSpeedMetersPerSec = 4.8;
+    public static final double maxSpeedMetersPerSec = 4.8;//4.8
     public static final LinearVelocity CHASSIS_MAX_VELOCITY = MetersPerSecond.of(maxSpeedMetersPerSec);
     public static final double odometryFrequency = 100.0; // Hz
     public static final double trackWidth = Units.inchesToMeters(23.5);
@@ -61,15 +61,15 @@ public class DriveConstants {
     public static final Rotation2d backRightZeroRotation = new Rotation2d(Math.PI / 2);
 
     // Device CAN IDs
-    public static final int frontLeftDriveCanId = 1;
-    public static final int frontRightDriveCanId = 3;
-    public static final int backLeftDriveCanId = 5;
-    public static final int backRightDriveCanId = 7;
+    public static final int frontLeftDriveCanId = 62;
+    public static final int frontRightDriveCanId = 19;
+    public static final int backLeftDriveCanId = 8;
+    public static final int backRightDriveCanId = 11;
 
-    public static final int frontLeftTurnCanId = 2;
-    public static final int frontRightTurnCanId = 4;
-    public static final int backLeftTurnCanId = 6;
-    public static final int backRightTurnCanId = 8;
+    public static final int frontLeftTurnCanId = 1;
+    public static final int frontRightTurnCanId = 18;
+    public static final int backLeftTurnCanId = 9;
+    public static final int backRightTurnCanId = 10;
 
     // Drive motor configuration
     public static final int driveMotorCurrentLimit = 60;

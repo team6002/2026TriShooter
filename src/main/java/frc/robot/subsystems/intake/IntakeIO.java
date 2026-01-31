@@ -9,11 +9,13 @@ public interface IntakeIO {
         public double intakeVoltage;
         public double intakeVelocity;
         public double intakeReference;
+        public double intakePosition;
 
         public double extenderCurrent;
         public double extenderVoltage;
         public double extenderVelocity;
         public double extenderReference;
+        public double extenderPosition;
         public boolean extenderInPosition;
     }
 
@@ -36,6 +38,10 @@ public interface IntakeIO {
         return 0;
     }
 
+    public default double getPosition() {
+        return 0;
+    }
+
     public default void setVoltage(double voltage) {}
 
     public default void setReference(double velocity) {}
@@ -53,6 +59,10 @@ public interface IntakeIO {
     }
 
     public default double getExtenderVelocity() {
+        return 0;
+    }
+
+    public default double getExtenderPosition(){
         return 0;
     }
 

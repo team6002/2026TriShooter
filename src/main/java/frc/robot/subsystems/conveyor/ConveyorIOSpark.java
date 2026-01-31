@@ -10,7 +10,6 @@ import com.revrobotics.spark.SparkMax;
 
 public class ConveyorIOSpark implements ConveyorIO {
     private final SparkMax conveyorMotor;
-    private final SparkMax conveyorFollowerMotor;
     private final RelativeEncoder conveyorEncoder;
     private final SparkClosedLoopController conveyorController;
 
@@ -20,8 +19,6 @@ public class ConveyorIOSpark implements ConveyorIO {
     public ConveyorIOSpark() {
         // initialize motor
         conveyorMotor = new SparkMax(ConveyorConstants.kConveyorCanId, MotorType.kBrushless);
-        conveyorFollowerMotor =
-                new SparkMax(ConveyorConstants.kConveyorFollowerCanId, MotorType.kBrushless);
 
         // initialize PID controller
         conveyorController = conveyorMotor.getClosedLoopController();
@@ -32,8 +29,6 @@ public class ConveyorIOSpark implements ConveyorIO {
         // apply config
         conveyorMotor.configure(
                 ConveyorConfig.conveyorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        conveyorFollowerMotor.configure(
-                ConveyorConfig.conveyorFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         conveyorReference = 0;

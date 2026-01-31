@@ -13,10 +13,11 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.DoubleSupplier;
 
 import org.ironmaple.utils.FieldMirroringUtils;
-import org.littletonrobotics.junction.Logger;
 
 public class ClockDrive extends Command {
     public static final double ROTATION_AXIS_THRESHOLD = 0.5;
+    public static final double LINEAR_DEADBAND = 0.05;
+    public static final double ROTATION_DEADBAND = 0.05;
 
     private final HolonomicDriveSubsystem driveSubsystem;
     private final MapleJoystickDriveInput input;
@@ -46,13 +47,34 @@ public class ClockDrive extends Command {
         currentDesiredFacing = driveSubsystem.getFacing();
     }
 
+    private Translation2d applyRotationDeadband(double x, double y) {
+        Translation2d vec = new Translation2d(x, y);
+        if (vec.getNorm() < ROTATION_DEADBAND) {
+            return new Translation2d(0.0, 0.0);
+        }
+        return vec;
+    }
+
     @Override
     public void execute() {
 
+        double maxLinear = driveSubsystem.getChassisMaxLinearVelocityMetersPerSec();
+        double maxAngular = driveSubsystem.getChassisMaxAngularVelocity();
+
         ChassisSpeeds pilotInputSpeed = input.getJoystickChassisSpeeds(
-            driveSubsystem.getChassisMaxLinearVelocityMetersPerSec(),
-            driveSubsystem.getChassisMaxAngularVelocity()
+            maxLinear,
+            maxAngular
         );
+
+        double linMag = Math.hypot(
+            pilotInputSpeed.vxMetersPerSecond,
+            pilotInputSpeed.vyMetersPerSecond
+        );
+
+        if (linMag < LINEAR_DEADBAND * maxLinear) {
+            pilotInputSpeed.vxMetersPerSecond = 0.0;
+            pilotInputSpeed.vyMetersPerSecond = 0.0;
+        }
 
         Optional<Rotation2d> override = rotationalTargetOverride.get();
 
@@ -60,7 +82,6 @@ public class ClockDrive extends Command {
             Rotation2d rawTarget = override.get();
             Rotation2d current = driveSubsystem.getFacing();
 
-            // Make target continuous relative to current angle
             double continuous = current.getRadians() +
                 rawTarget.minus(current).getRadians();
 
@@ -82,16 +103,12 @@ public class ClockDrive extends Command {
                     corrected,
                     driveSubsystem.getPose()
                 ).orElse(0);
-
-            Logger.recordOutput("Aim/desiredFacing", continuousTarget.getDegrees());
-            Logger.recordOutput("Aim/currentFacing", current.getDegrees());
-            Logger.recordOutput("Aim/errorDegrees",
-                current.minus(continuousTarget).getDegrees());
-            Logger.recordOutput("Aim/atSetpoint", ChassisHeadingController.getInstance().atSetPoint());
         }
         else {
-            Translation2d headingVector =
-                new Translation2d(rotationXSupplier.getAsDouble(), rotationYSupplier.getAsDouble());
+            Translation2d headingVector = applyRotationDeadband(
+                rotationXSupplier.getAsDouble(),
+                rotationYSupplier.getAsDouble()
+            );
 
             if (headingVector.getNorm() > ROTATION_AXIS_THRESHOLD) {
                 currentDesiredFacing = headingVector.getAngle()
@@ -101,9 +118,6 @@ public class ClockDrive extends Command {
             ChassisHeadingController.getInstance()
                 .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(currentDesiredFacing));
         }
-
-        Logger.recordOutput("ClockDrive/OverridePresent", override.isPresent());
-        Logger.recordOutput("ClockDrive/OverrideValue", override.orElse(null));
 
         driveSubsystem.runDriverStationCentricChassisSpeeds(pilotInputSpeed, true);
     }

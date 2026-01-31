@@ -24,11 +24,14 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.ClockDrive;
 import frc.robot.commands.drive.DriveCommands;
+import frc.robot.commands.drive.JoystickDriveAndAimAtTarget;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.conveyor.*;
@@ -60,16 +63,16 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
     // Subsystems
     public final Drive drive;
-    public final Shooter shooter;
+    // public final Shooter shooter;
     public final Intake intake;
     public final Conveyor conveyor;
-    public final Kicker kicker;
-    public final Hood hood;
-    public final Climb climb;
-    public final Vision vision;
+    // public final Kicker kicker;
+    // public final Hood hood;
+    // public final Climb climb;
+    // public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
-    public final AprilTagVision aprilTagVision;
+    // public final AprilTagVision aprilTagVision;
     private SwerveDriveSimulation driveSimulation = null;
 
     private final Field2d field = new Field2d();
@@ -100,21 +103,21 @@ public class RobotContainer {
                     (pose) -> {},
                     null);
 
-                shooter = new Shooter(new ShooterIOSpark());
+                // shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
                 conveyor = new Conveyor(new ConveyorIOSpark());
-                kicker = new Kicker(new KickerIOSpark());
-                hood = new Hood(new HoodIOSpark());
-                climb = new Climb(new ClimbIOSpark());
+                // kicker = new Kicker(new KickerIOSpark());
+                // hood = new Hood(new HoodIOSpark());
+                // climb = new Climb(new ClimbIOSpark());
 
-                this.vision = new Vision(
-                    drive,
-                    new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
-                );
+                // this.vision = new Vision(
+                //     drive,
+                //     new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                // );
 
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
+                // aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
+
                 break;
-
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
@@ -131,27 +134,27 @@ public class RobotContainer {
                     driveSimulation::setSimulationWorldPose,
                     driveSimulation);
 
-                shooter = new Shooter(new ShooterIOSim());
+                // shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
                 conveyor = new Conveyor(new ConveyorIOSim());
-                kicker = new Kicker(new KickerIOSim());
-                hood = new Hood(new HoodIOSim());
-                climb = new Climb(new ClimbIOSim());
+                // kicker = new Kicker(new KickerIOSim());
+                // hood = new Hood(new HoodIOSim());
+                // climb = new Climb(new ClimbIOSim());
 
-                vision = new Vision(
-                    drive,
-                    new VisionIOPhotonVisionSim(
-                        Vision_Constants.camera0Name,
-                        Vision_Constants.robotToCamera0,
-                        driveSimulation::getSimulatedDriveTrainPose)
-                );
+                // vision = new Vision(
+                //     drive,
+                //     new VisionIOPhotonVisionSim(
+                //         Vision_Constants.camera0Name,
+                //         Vision_Constants.robotToCamera0,
+                //         driveSimulation::getSimulatedDriveTrainPose)
+                // );
 
-                aprilTagVision = new AprilTagVision(
-                    new ApriltagVisionIOSim(
-                        camerasProperties,
-                        VisionConstants.fieldLayout,
-                        driveSimulation::getSimulatedDriveTrainPose),
-                    camerasProperties);
+                // aprilTagVision = new AprilTagVision(
+                //     new ApriltagVisionIOSim(
+                //         camerasProperties,
+                //         VisionConstants.fieldLayout,
+                //         driveSimulation::getSimulatedDriveTrainPose),
+                //     camerasProperties);
                 break;
             default:
                 // Replayed robot, disable IO implementations
@@ -164,15 +167,15 @@ public class RobotContainer {
                     (pose) -> {},
                     null);
 
-                shooter = new Shooter(new ShooterIO() {});
+                // shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
                 conveyor = new Conveyor(new ConveyorIO() {});
-                kicker = new Kicker(new KickerIO() {});
-                hood = new Hood(new HoodIO() {});
-                climb = new Climb(new ClimbIO() {});
+                // kicker = new Kicker(new KickerIO() {});
+                // hood = new Hood(new HoodIO() {});
+                // climb = new Climb(new ClimbIO() {});
 
-                vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-                aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
+                // vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+                // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
                 break;
         }
 
@@ -229,18 +232,32 @@ public class RobotContainer {
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation).until(()-> !driver.scoreButton().getAsBoolean()));
-        if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
+        if(RobotBase.isSimulation()) driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+        // if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
-        // driver.autoAlignmentButtonLeft().whileTrue(
-        //     ShooterConstants.kShooterOptimization.chassisAimAtSpeakerDuringAuto(
-        //         rotationalTargetOverride,
-        //         ()-> FieldConstants.getHubPose(),
-        //         drive
-        //     )
-        // );
+        driver.autoAlignmentButtonLeft().whileTrue(
+            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                driveInput
+                ,drive
+                ,()-> FieldConstants.getHubPose()
+                ,ShooterConstants.kShooterOptimization
+                ,1
+                ,false
+            )
+        );
 
         driver.autoAlignmentButtonRight().onTrue(drive.aimAtTarget(FieldConstants.getHubPose()));
+
+        // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
+        //     .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
+
+        // driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
+
+        // driver.aButton().onTrue(intake.getExtenderSysIdRoutine().quasistatic(Direction.kForward));
+        // driver.bButton().onTrue(intake.getExtenderSysIdRoutine().quasistatic(Direction.kReverse));
+        // driver.xButton().onTrue(intake.getExtenderSysIdRoutine().dynamic(Direction.kForward));
+        // driver.yButton().onTrue(intake.getExtenderSysIdRoutine().dynamic(Direction.kReverse));
     }
 
     /**

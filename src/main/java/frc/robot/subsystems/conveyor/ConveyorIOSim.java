@@ -20,7 +20,7 @@ public class ConveyorIOSim implements ConveyorIO {
     public ConveyorIOSim() {
         conveyorSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, ConveyorConstants.kGearRatio),
-                DCMotor.getNeo550(2));
+                DCMotor.getNeo550(1));
     }
 
     @Override

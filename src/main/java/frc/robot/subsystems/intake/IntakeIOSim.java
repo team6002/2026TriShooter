@@ -54,7 +54,7 @@ public class IntakeIOSim implements IntakeIO {
     public IntakeIOSim(AbstractDriveTrainSimulation driveSim) {
         intakeSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, IntakeConstants.kGearRatio),
-                DCMotor.getNEO(2));
+                DCMotor.getNEO(1));
         
         intakeExtenderSim = new DCMotorSim(
                 LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .1, ExtenderConstants.kGearRatio),

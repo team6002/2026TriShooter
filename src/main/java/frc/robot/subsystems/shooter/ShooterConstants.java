@@ -40,7 +40,7 @@ public class ShooterConstants {
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {
-        {1.0,  83.00, 6.02,  0.7608},
+        {1.0,  85.00, 6.02,  0.7608},
         {2.0,  65.43, 6.43,  0.7482},
         {3.0,  56.90, 7.04,  0.7641},
         {4.0,  58.75, 7.86,  0.9812},

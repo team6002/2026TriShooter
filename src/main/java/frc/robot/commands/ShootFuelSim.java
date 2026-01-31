@@ -28,9 +28,9 @@ public class ShootFuelSim extends Command {
     private final AbstractDriveTrainSimulation driveSim;
     private int timer;
 
-    private static final Translation2d CENTER_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(5.5), 0);
-    private static final Translation2d LEFT_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(5.5), Units.inchesToMeters(6));
-    private static final Translation2d RIGHT_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(5.5), Units.inchesToMeters(-6));
+    private static final Translation2d CENTER_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(7), 0);
+    private static final Translation2d LEFT_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(7), Units.inchesToMeters(6));
+    private static final Translation2d RIGHT_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(7), Units.inchesToMeters(-6));
     private static final Translation2d[] SHOOTER_OFFSETS = {
         CENTER_SHOOTER_OFFSET,
         LEFT_SHOOTER_OFFSET,

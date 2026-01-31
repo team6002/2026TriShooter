@@ -2,7 +2,6 @@ package frc.robot.subsystems.conveyor;
 
 public class ConveyorConstants {
     public static final int kConveyorCanId = 17;
-    public static final int kConveyorFollowerCanId = 18;
 
     public static final double kP = 0.0006;
     public static final double kI = 0.0;
@@ -28,12 +27,12 @@ public class ConveyorConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kConvey = 4500;
+    public static final double kConvey = 10;
     public static final double kOff = 0;
-    public static final double kReverse = -4500;
+
+    public static final double kGearRatio = 3;
 
     // sim constants
-    public static final double kGearRatio = 2;
     public static final double kSimP = 0.0;
     public static final double kSimI = 0.0;
     public static final double kSimD = 0.0;
