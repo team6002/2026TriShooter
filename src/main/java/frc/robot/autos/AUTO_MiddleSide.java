@@ -1,21 +1,41 @@
 package frc.robot.autos;
 
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import java.io.IOException;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.constants.RobotMode;
 
-public class AUTO_MiddleSide extends SequentialCommandGroup {
-    public AUTO_MiddleSide(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
-        addCommands(
-            new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(8))
-            ,drive.setAutoStartPose("swipehalfM2", mirrored)
-            ,drive.followPath("swipehalfM2", mirrored)
-            ,drive.followPath("shootfuelM2", mirrored)
-            ,new ShootFuelSim(sim)
+public class AUTO_MiddleSide implements Auto {
+    @Override
+    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+        return Commands.sequence(
+            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            ,followPath("swipehalfM2")
+            ,followPath("shootfuelM2")
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+                new ShootFuelSim(robot.driveSimulation)
         );
+    }
+
+    @Override
+    public Pose2d getStartingPoseAtBlueAlliance() {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("swipehalfM2");
+            return path.getStartingHolonomicPose().orElse(new Pose2d());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return new Pose2d();
     }
 }

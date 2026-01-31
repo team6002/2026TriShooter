@@ -18,8 +18,10 @@ public class ShootFuel extends Command{
     private final Kicker kicker;
     private final Hood hood;
     private final Shooter shooter;
+    private final Drive drive;
 
-    public ShootFuel(Conveyor conveyor, Intake intake, Kicker kicker, Hood hood, Shooter shooter) {
+    public ShootFuel(Drive drive, Conveyor conveyor, Intake intake, Kicker kicker, Hood hood, Shooter shooter) {
+        this.drive = drive;
         this.conveyor = conveyor;
         this.intake = intake;
         this.kicker = kicker;
@@ -38,7 +40,7 @@ public class ShootFuel extends Command{
     @Override
     public void execute() {
         // calculate distance to hub
-        double distance = Drive.getPoseStatic().getTranslation().getDistance(FieldConstants.getHubPose());
+        double distance = drive.getPose().getTranslation().getDistance(FieldConstants.getHubPose());
 
         ShooterConstants.ShootingParams params = ShooterConstants.getShootingParams(distance);
 

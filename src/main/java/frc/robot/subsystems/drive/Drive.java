@@ -19,11 +19,11 @@ import static frc.robot.subsystems.drive.DriveConstants.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
+
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -31,7 +31,6 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -44,27 +43,21 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.RobotState;
-import frc.robot.constants.FieldConstants;
-import frc.robot.constants.RobotMode;
+import frc.robot.constants.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.ChassisHeadingController;
-import frc.robot.utils.ChassisHeadingController.FaceToTargetRequest;
 import frc.robot.utils.LocalADStarAK;
-import java.util.Optional;
+
 import java.util.OptionalDouble;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -76,6 +69,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     private final SysIdRoutine sysId;
     private final Alert gyroDisconnectedAlert =
             new Alert("Disconnected gyro, using kinematics as fallback.", AlertType.kError);
+
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(moduleTranslations);
     private Rotation2d rawGyroRotation = new Rotation2d();
     private final SwerveModulePosition[] lastModulePositions = // For delta tracking
@@ -91,23 +85,19 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     private SwerveSetpoint setpoint;
 
-    private final SwerveDriveSimulation driveSim;
-
     public Drive(
             GyroIO gyroIO,
             ModuleIO flModuleIO,
             ModuleIO frModuleIO,
             ModuleIO blModuleIO,
             ModuleIO brModuleIO,
-            Consumer<Pose2d> resetSimulationPoseCallBack,
-            SwerveDriveSimulation driveSim) {
+            Consumer<Pose2d> resetSimulationPoseCallBack) {
         this.gyroIO = gyroIO;
         this.resetSimulationPoseCallBack = resetSimulationPoseCallBack;
         modules[0] = new Module(flModuleIO, 0);
         modules[1] = new Module(frModuleIO, 1);
         modules[2] = new Module(blModuleIO, 2);
         modules[3] = new Module(brModuleIO, 3);
-        this.driveSim = driveSim;
 
         // Usage reporting for swerve template
         HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -120,10 +110,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                 this::getPose,
                 this::resetOdometry,
                 this::getChassisSpeeds,
-                this::runRobotCentricChassisSpeeds,
+                this::runVelocity,
                 new PPHolonomicDriveController(new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
                 ppConfig,
-                () -> FieldConstants.getAlliance() == Alliance.Red,
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
         Pathfinding.setPathfinder(new LocalADStarAK());
         PathPlannerLogging.setLogActivePathCallback((activePath) -> {
@@ -138,8 +128,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                 new SysIdRoutine.Config(
                         null, null, null, (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this));
-
-        this.setpoint = new SwerveSetpoint(new ChassisSpeeds(), getModuleStates(), DriveFeedforwards.zeros(4));
     }
 
     @Override
@@ -151,11 +139,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             module.periodic();
         }
         odometryLock.unlock();
-
-        var speeds = getMeasuredChassisSpeedsFieldRelative();
-        Logger.recordOutput("Sim/vx", speeds.vxMetersPerSecond);
-        Logger.recordOutput("Sim/vy", speeds.vyMetersPerSecond);
-        Logger.recordOutput("Sim/omega", speeds.omegaRadiansPerSecond);
 
         // Stop moving when disabled
         if (DriverStation.isDisabled()) {
@@ -197,28 +180,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
             // Apply update
             poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
-            RobotState.getInstance()
-                    .addOdometryObservation(new RobotState.OdometryObservation(
-                            modulePositions, Optional.of(rawGyroRotation), sampleTimestamps[i]));
         }
-
-        
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Robot.CURRENT_ROBOT_MODE != RobotMode.SIM);
-        RobotState.getInstance().updateAlerts();
-
-        Logger.recordOutput(
-                "RobotState/SensorLessOdometryPose", RobotState.getInstance().getSensorLessOdometryPose());
-        Logger.recordOutput(
-                "RobotState/PrimaryEstimatorPose", RobotState.getInstance().getPrimaryEstimatorPose());
-        Logger.recordOutput(
-                "RobotState/VisionSensitivePose", RobotState.getInstance().getVisionPose());
-        Logger.recordOutput(
-                "RobotState/ControlLoopPose", RobotState.getInstance().getPose());
-        Logger.recordOutput(
-                "RobotState/ControlLoopPoseWithLookAhead",
-                RobotState.getInstance().getPoseWithLookAhead());
     }
 
     /**
@@ -226,26 +191,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
      *
      * @param speeds Speeds in meters/sec
      */
-    @Override
-    public void runRobotCentricChassisSpeeds(ChassisSpeeds speeds) {
-        // Calculate module setpoints
-        speeds = ChassisSpeeds.discretize(speeds, 0.02);
-        SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
-
-        // Log unoptimized setpoints
-        Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
-        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
-
-        // Send setpoints to modules
-        for (int i = 0; i < 4; i++) {
-            modules[i].runSetpoint(setpointStates[i]);
-        }
-
-        // Log optimized setpoints (runSetpoint mutates each state)
-        Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
-    }
-
     public void runVelocity(ChassisSpeeds speeds) {
         // Calculate module setpoints
         speeds = ChassisSpeeds.discretize(speeds, 0.02);
@@ -265,38 +210,6 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
     }
 
-    @Override
-    public void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
-        this.setpoint = new SwerveSetpoint(speeds, getModuleStates(), feedforwards);
-        executeSetpoint();
-    }
-
-    private void executeSetpoint() {
-        OptionalDouble angularVelocityOverride =
-                ChassisHeadingController.getInstance().calculate(getMeasuredChassisSpeedsFieldRelative(), getPose());
-        ChassisSpeeds speeds = setpoint.robotRelativeSpeeds();
-
-        if (angularVelocityOverride.isPresent()) {
-            speeds = new ChassisSpeeds(
-                    speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, angularVelocityOverride.getAsDouble());
-            speeds = ChassisSpeeds.discretize(speeds, Robot.defaultPeriodSecs);
-        }
-
-        SwerveModuleState[] setPointStates = DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
-        SwerveDriveKinematics.desaturateWheelSpeeds(setPointStates, CHASSIS_MAX_VELOCITY);
-
-        // Send setpoints to modules
-        SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
-        for (int i = 0; i < 4; i++)
-            optimizedSetpointStates[i] = modules[i].runSetPoint(
-                    setPointStates[i],
-                    setpoint.feedforwards().robotRelativeForcesX()[i],
-                    setpoint.feedforwards().robotRelativeForcesY()[i]);
-
-        Logger.recordOutput("SwerveStates/Setpoints", setPointStates);
-        Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
-    }
-
     /** Runs the drive in a straight line with the specified drive output. */
     public void runCharacterization(double output) {
         for (int i = 0; i < 4; i++) {
@@ -305,20 +218,15 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     /** Stops the drive. */
-    @Override
     public void stop() {
-        runRobotCentricChassisSpeeds(new ChassisSpeeds());
-        Rotation2d[] swerveHeadings = new Rotation2d[modules.length];
-        for (int i = 0; i < swerveHeadings.length; i++) swerveHeadings[i] = new Rotation2d();
-        DRIVE_KINEMATICS.resetHeadings(swerveHeadings);
-        HolonomicDriveSubsystem.super.stop();
+        runVelocity(new ChassisSpeeds());
     }
 
     /**
      * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will return to their
      * normal orientations the next time a nonzero velocity is requested.
      */
-    public void lockChassisWithXFormation() {
+    public void stopWithX() {
         Rotation2d[] headings = new Rotation2d[4];
         for (int i = 0; i < 4; i++) {
             headings[i] = moduleTranslations[i].getAngle();
@@ -382,36 +290,9 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     /** Returns the current odometry pose. */
     @AutoLogOutput(key = "Odometry/Robot")
-    public Pose2d getPose_Odometry() {
+    public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
     }
-
-    @Override
-    // Pose is for PID control
-    public Pose2d getPose() {
-        return RobotState.getInstance().getPoseWithLookAhead();
-    }
-
-    @Override
-    public void setPose(Pose2d pose) {
-        RobotState.getInstance().resetPose(pose);
-    }
-
-    @Override
-    public ChassisSpeeds getMeasuredChassisSpeedsRobotRelative() {
-        return RobotState.getInstance().getRobotRelativeSpeeds();
-    }
-
-    @Override
-    public ChassisSpeeds getMeasuredChassisSpeedsFieldRelative() {
-        if (Robot.isSimulation()) {
-            var fieldSpeeds = driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative();
-            return ChassisSpeeds.fromFieldRelativeSpeeds(fieldSpeeds, getRotation());
-        }
-
-        return RobotState.getInstance().getRobotRelativeSpeeds();
-    }
-
 
     /** Returns the current odometry rotation. */
     public Rotation2d getRotation() {
@@ -431,92 +312,98 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     /** Returns the maximum linear speed in meters per sec. */
-    @Override
-    public double getChassisMaxLinearVelocityMetersPerSec() {
+    public double getMaxLinearSpeedMetersPerSec() {
         return maxSpeedMetersPerSec;
     }
 
-    @Override
-    public double getChassisMaxAccelerationMetersPerSecSq() {
-        return CHASSIS_MAX_ACCELERATION.in(MetersPerSecondPerSecond);
-    }
-
     /** Returns the maximum angular speed in radians per sec. */
-    @Override
-    public double getChassisMaxAngularVelocity() {
+    public double getMaxAngularSpeedRadPerSec() {
         return maxSpeedMetersPerSec / driveBaseRadius;
     }
 
     @Override
+    public void runRobotCentricChassisSpeeds(ChassisSpeeds speeds) {
+        // Calculate module setpoints
+        speeds = ChassisSpeeds.discretize(speeds, 0.02);
+        SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, maxSpeedMetersPerSec);
+
+        // Log unoptimized setpoints
+        Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
+        Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
+
+        // Send setpoints to modules
+        for (int i = 0; i < 4; i++) {
+            modules[i].runSetpoint(setpointStates[i]);
+        }
+
+        // Log optimized setpoints (runSetpoint mutates each state)
+        Logger.recordOutput("SwerveStates/SetpointsOptimized", setpointStates);
+    }
+
+    @Override
+    public void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
+        this.setpoint = new SwerveSetpoint(speeds, getModuleStates(), feedforwards);
+        executeSetpoint();
+    }
+
+    private void executeSetpoint() {
+        OptionalDouble angularVelocityOverride =
+                ChassisHeadingController.getInstance().calculate(getMeasuredChassisSpeedsFieldRelative(), getPose());
+        ChassisSpeeds speeds = setpoint.robotRelativeSpeeds();
+
+        if (angularVelocityOverride.isPresent()) {
+            speeds = new ChassisSpeeds(
+                    speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, angularVelocityOverride.getAsDouble());
+            speeds = ChassisSpeeds.discretize(speeds, Robot.defaultPeriodSecs);
+        }
+
+        SwerveModuleState[] setPointStates = DRIVE_KINEMATICS.toSwerveModuleStates(speeds);
+        SwerveDriveKinematics.desaturateWheelSpeeds(setPointStates, CHASSIS_MAX_VELOCITY);
+
+        // Send setpoints to modules
+        SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
+        for (int i = 0; i < 4; i++)
+            optimizedSetpointStates[i] = modules[i].runSetPoint(
+                    setPointStates[i],
+                    setpoint.feedforwards().robotRelativeForcesX()[i],
+                    setpoint.feedforwards().robotRelativeForcesY()[i]);
+
+        Logger.recordOutput("SwerveStates/Setpoints", setPointStates);
+        Logger.recordOutput("SwerveStates/SetpointsOptimized", optimizedSetpointStates);
+    }
+
+    @Override
+    public void setPose(Pose2d currentPose) {
+        poseEstimator.resetPosition(getRotation(), lastModulePositions, currentPose);
+    }
+
+    @Override
+    public ChassisSpeeds getMeasuredChassisSpeedsRobotRelative() {
+        return getChassisSpeeds();
+    }
+
+    @Override
+    public double getChassisMaxLinearVelocityMetersPerSec() {
+        return DriveConstants.CHASSIS_MAX_VELOCITY.baseUnitMagnitude();
+    }
+
+    @Override
+    public double getChassisMaxAccelerationMetersPerSecSq() {
+        return DriveConstants.CHASSIS_MAX_ACCELERATION.baseUnitMagnitude();
+    }
+
+    @Override
+    public double getChassisMaxAngularVelocity() {
+        return DriveConstants.CHASSIS_MAX_ANGULAR_VELOCITY.baseUnitMagnitude();
+    }
+
+    @Override
     public double getChassisMaxAngularAccelerationRadPerSecSq() {
-        return CHASSIS_MAX_ANGULAR_ACCELERATION.in(RadiansPerSecondPerSecond);
+        return DriveConstants.CHASSIS_MAX_ANGULAR_ACCELERATION.baseUnitMagnitude();
     }
 
-    public Command followPath(String pathName, Boolean mirrored){
-        PathPlannerPath path;
-        try{
-            path = mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : PathPlannerPath.fromPathFile(pathName);
-        }catch (Exception e) {
-           DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
-           return Commands.none();
-        }
-        return AutoBuilder.followPath(path);
-    }
-
-    /**attempt to load a pathplanner path with the path name and return that path's start pose, if it fail print an error message and stack trace to the DS */
-    public Command setAutoStartPose(String pathName, Boolean mirrored) {
-        // 1. Declare a final variable that will be used in the lambda
-        final PathPlannerPath finalPath;
-
-        try {
-            PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
-            
-            if (mirrored) {
-                loadedPath = loadedPath.mirrorPath();
-            }
-
-            // Handle Alliance flipping
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-                loadedPath = loadedPath.flipPath();
-            }
-            
-            finalPath = loadedPath; // This is the only assignment to finalPath
-        } catch (Exception e) {
-            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
-            return Commands.none(); // Better than returning an empty anonymous Command
-        }
-
-        // Now finalPath is effectively final and safe for the lambda
-        return this.runOnce(() -> resetOdometry(finalPath.getStartingHolonomicPose().get()));
-    }
-
-    /** Turns the motor brakes on */
     public void setMotorBrake(boolean motorBrakeEnabled) {
         for (int i = 0; i < 4; i++) modules[i].setMotorBrake(motorBrakeEnabled);
-    }
-
-    public static Pose2d getPoseStatic(){
-        return RobotState.getInstance().getPoseWithLookAhead();
-    }
-
-    public Command aimAtTarget(Translation2d target) {
-        return Commands.startRun(
-            () -> ChassisHeadingController.getInstance().setHeadingRequest(
-                new FaceToTargetRequest(() -> target, null)
-            ),
-            ()-> runRobotCentricSpeedsWithFeedforwards(
-                new ChassisSpeeds(), 
-                DriveFeedforwards.zeros(4)
-            ),
-            this
-        )
-        .finallyDo(
-            ()-> { 
-                ChassisHeadingController.getInstance()
-                    .setHeadingRequest(new ChassisHeadingController.NullRequest());
-                stop();
-            }
-        )
-        .until(()-> ChassisHeadingController.getInstance().atSetPoint());
     }
 }

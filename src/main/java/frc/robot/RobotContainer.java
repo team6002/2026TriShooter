@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,14 +23,11 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
-import frc.robot.commands.drive.ClockDrive;
-import frc.robot.commands.drive.DriveCommands;
-import frc.robot.commands.drive.JoystickDriveAndAimAtTarget;
+import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.conveyor.*;
@@ -46,6 +42,7 @@ import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -73,14 +70,14 @@ public class RobotContainer {
     public final LEDStatusLight ledStatusLight;
 
     // public final AprilTagVision aprilTagVision;
-    private SwerveDriveSimulation driveSimulation = null;
+    public SwerveDriveSimulation driveSimulation = null;
 
     private final Field2d field = new Field2d();
     // Controller
     public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
 
     // Dashboard inputs
-    private final LoggedDashboardChooser<Command> autoChooser;
+    private final LoggedDashboardChooser<Auto> autoChooser;
 
     
     private final AtomicReference<Optional<Rotation2d>> rotationalTargetOverride =
@@ -100,8 +97,7 @@ public class RobotContainer {
                     new ModuleIOSpark(1),
                     new ModuleIOSpark(2),
                     new ModuleIOSpark(3),
-                    (pose) -> {},
-                    null);
+                    (pose) -> {});
 
                 // shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
@@ -131,8 +127,7 @@ public class RobotContainer {
                     new ModuleIOSim(driveSimulation.getModules()[1]),
                     new ModuleIOSim(driveSimulation.getModules()[2]),
                     new ModuleIOSim(driveSimulation.getModules()[3]),
-                    driveSimulation::setSimulationWorldPose,
-                    driveSimulation);
+                    driveSimulation::setSimulationWorldPose);
 
                 // shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
@@ -164,8 +159,7 @@ public class RobotContainer {
                     new ModuleIO() {},
                     new ModuleIO() {},
                     new ModuleIO() {},
-                    (pose) -> {},
-                    null);
+                    (pose) -> {});
 
                 // shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
@@ -182,23 +176,23 @@ public class RobotContainer {
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
 
         // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide(drive, driveSimulation, true));
-        autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Left Side", new AUTO_Side(drive, driveSimulation, false));
-        autoChooser.addOption("Auto Right Side", new AUTO_Side(drive, driveSimulation, true));
-        autoChooser.addOption("Auto Left Side Hump", new AUTO_SideHump(drive, true, driveSimulation));
-        autoChooser.addOption("Auto Right Side Hump", new AUTO_SideHump(drive, false, driveSimulation));
-        autoChooser.addOption("Auto Left", new AUTO_Left(drive, false, driveSimulation));
-        autoChooser.addOption("Auto Right", new AUTO_Right(drive, driveSimulation, false));
+        autoChooser = new LoggedDashboardChooser<>("Auto Choices");
+        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle());
+        autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide());
+        autoChooser.addOption("Auto Middle Right", new AUTO_MiddleSide());
+        autoChooser.addOption("Auto Left Side", new AUTO_Side());
+        autoChooser.addOption("Auto Right Side", new AUTO_Side());
+        autoChooser.addOption("Auto Left Side Hump", new AUTO_SideHump());
+        autoChooser.addOption("Auto Right Side Hump", new AUTO_SideHump());
+        autoChooser.addOption("Auto Left", new AUTO_Left());
+        autoChooser.addOption("Auto Right", new AUTO_Right());
         // Set up SysId routines
-        autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        // autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        // autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -246,8 +240,6 @@ public class RobotContainer {
             )
         );
 
-        driver.autoAlignmentButtonRight().onTrue(drive.aimAtTarget(FieldConstants.getHubPose()));
-
         // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
         //     .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
 
@@ -266,7 +258,12 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        try {
+            return autoChooser.get().getAutoCommand(this);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Commands.none();
     }
 
     public void resetSimulationField() {
