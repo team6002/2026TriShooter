@@ -236,22 +236,24 @@ public class RobotContainer {
             )
         );
 
-        driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
-            .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
+        driver.autoAlignmentButtonRight().onTrue(drive.alignToTarget(()-> FieldConstants.getHubPose()));
 
-        driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
-            .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
+        // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
+        //     .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
 
-        driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kConvey)))
-            .onFalse(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kOff)));
+        // driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
 
-        driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
-            .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
+        // driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kOff)));
 
-        driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
-        driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));
-        driver.xButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kForward));
-        driver.yButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kReverse));
+        // driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
+
+        // driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
+        // driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));
+        // driver.xButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kForward));
+        // driver.yButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kReverse));
     }
 
     /**

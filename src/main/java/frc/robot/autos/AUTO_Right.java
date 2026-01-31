@@ -13,6 +13,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 
 public class AUTO_Right implements Auto {
@@ -23,7 +24,7 @@ public class AUTO_Right implements Auto {
             ,followPath("getmiddleR1")
             ,followPath("gotolineR1")
             ,followPath("gotoHPR1")
-            //auto align
+            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)

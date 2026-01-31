@@ -14,6 +14,7 @@ import frc.robot.RobotContainer;
 import frc.robot.autos.Auto;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 
 public class AUTO_MiddleHumpFull implements Auto {
@@ -23,7 +24,7 @@ public class AUTO_MiddleHumpFull implements Auto {
             Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
             ,followPath("gotomiddleMH1")
             ,followPath("grabmiddleSH1")
-            //auto align
+            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)

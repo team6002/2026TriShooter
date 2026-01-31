@@ -31,6 +31,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -43,6 +44,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
@@ -58,6 +60,8 @@ import java.util.OptionalDouble;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -405,5 +409,19 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     public void resetPose(Pose2d pose) {
         resetOdometry(pose);
+    }
+
+    public Command alignToTarget(Supplier<Translation2d> targetSupplier) {
+        return new FunctionalCommand(
+            () -> ChassisHeadingController.getInstance().setHeadingRequest(
+                    new ChassisHeadingController.FaceToTargetRequest(targetSupplier, null)
+            ),
+            () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+            interrupted -> ChassisHeadingController.getInstance()
+                    .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+            () -> ChassisHeadingController.getInstance().atSetPoint(),
+
+            this
+        );
     }
 }
