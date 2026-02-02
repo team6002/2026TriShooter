@@ -18,6 +18,7 @@ import static frc.robot.subsystems.vision.Vision_Constants.aprilTagLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import java.util.function.Supplier;
+
 import org.photonvision.simulation.PhotonCameraSim;
 import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
@@ -43,6 +44,7 @@ public class VisionIOPhotonVisionSim extends VisionIOPhotonVision {
         if (visionSim == null) {
             visionSim = new VisionSystemSim("main");
             visionSim.addAprilTags(aprilTagLayout);
+            visionSim.addVisionTargets();
         }
 
         // Add sim camera

@@ -43,6 +43,7 @@ import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
+
 import java.util.List;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -135,8 +136,8 @@ public class RobotContainer {
                     new VisionIOPhotonVisionSim(
                         Vision_Constants.camera0Name,
                         Vision_Constants.robotToCamera0,
-                        driveSimulation::getSimulatedDriveTrainPose)
-                    ,new VisionIOPhotonVisionSim(
+                        driveSimulation::getSimulatedDriveTrainPose),
+                    new VisionIOPhotonVisionSim(
                         Vision_Constants.camera1Name,
                         Vision_Constants.robotToCamera1,
                         driveSimulation::getSimulatedDriveTrainPose)
@@ -145,7 +146,7 @@ public class RobotContainer {
                         Vision_Constants.robotToCamera2,
                         driveSimulation::getSimulatedDriveTrainPose)
                     // ,new VisionIOPhotonVisionSim(
-                    //     "OtherCam",
+                    //     Vision_Constants.camera3Name,
                     //     Vision_Constants.robotToCamera3,
                     //     driveSimulation::getSimulatedDriveTrainPose)
                 );

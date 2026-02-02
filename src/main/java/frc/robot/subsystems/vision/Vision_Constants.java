@@ -28,6 +28,9 @@ public class Vision_Constants {
     public static String camera0Name = "MidCamera";
     public static String camera1Name = "LeftCamera";
     public static String camera2Name = "RightCamera";
+    public static String camera3Name = "BackCamera";
+
+    public static final double stdDevFactor = 0.825;
 
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
@@ -43,9 +46,35 @@ public class Vision_Constants {
             new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-10.75), Units.inchesToMeters(8.875)),
             new Rotation3d(0, Math.toRadians(5), Math.toRadians(30)));
 
-        public static final Transform3d robotToCamera3 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(12), Units.inchesToMeters(7)),
-            new Rotation3d(0, Math.toRadians(0), Math.toRadians(-90)));
+    // public static final Transform3d robotToCamera0 =
+    // new Transform3d(
+    //     new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(12), Units.inchesToMeters(20)),
+    //     new Rotation3d(0, Math.toRadians(-30), Math.toRadians(0))
+    // );
+    
+    // public static final Transform3d robotToCamera1 =
+    // new Transform3d(
+    //     new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(-12), Units.inchesToMeters(20)),
+    //     new Rotation3d(0, Math.toRadians(-30), Math.toRadians(0)));   // left camera looks left
+
+    // public static final Transform3d robotToCamera2 =
+    // new Transform3d(
+    //     new Translation3d(Units.inchesToMeters(-14), Units.inchesToMeters(12), Units.inchesToMeters(20)),
+    //     new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)));  // right camera looks right
+    
+    public static final Transform3d robotToCamera3 =
+    new Transform3d(
+        new Translation3d(
+            Units.inchesToMeters(-14),   // behind center
+            Units.inchesToMeters(0),     // centered
+            Units.inchesToMeters(8)      // same height
+        ),
+        new Rotation3d(
+            0,
+            Math.toRadians(0),         // slight downward tilt
+            Math.toRadians(180)          // faces backward
+        )
+    );
 
 
     // Basic filtering thresholds

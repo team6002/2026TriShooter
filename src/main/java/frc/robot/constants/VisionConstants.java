@@ -19,8 +19,6 @@ public class VisionConstants {
     public static final Time POSE_BUFFER_DURATION = Seconds.of(2.5);
     public static final Time ADDITIONAL_LATENCY_COMPENSATION = Milliseconds.of(40);
 
-    public static final double stdDevFactor = 0.8;
-
     // for filtering
     public static final Distance ROBOT_HEIGHT_TOLERANCE = Meters.of(0.1);
     public static final Angle ROBOT_PITCH_TOLERANCE = Degrees.of(6);

@@ -4,6 +4,7 @@ import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ShootFuelSim;
@@ -18,8 +19,10 @@ public class AUTO_MiddleHump extends SequentialCommandGroup {
             ,drive.followPath("gotomiddleM3", false)
             ,drive.followPath("pickmiddleM3", false)
             ,drive.followPath("gotolineM3", false)
-            ,drive.followPath("gotoHPM3", false)
-            ,drive.aimAtTarget(FieldConstants.getHubPose().plus(new Translation2d(0, -0.5)))
+            ,new ParallelCommandGroup(
+                drive.followPath("gotoHPM3", false)
+                ,drive.aimAtTarget(FieldConstants.getHubPose().plus(new Translation2d(0, -0.5)))
+            )
             ,new ShootFuelSim(sim)
             ,new WaitCommand(1)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
