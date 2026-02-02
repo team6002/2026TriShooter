@@ -25,7 +25,6 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.constants.VisionConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 
@@ -131,7 +130,7 @@ public class Vision extends SubsystemBase {
                 }
 
                 // Calculate standard deviations
-                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) * VisionConstants.stdDevFactor / observation.tagCount();
+                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) * Vision_Constants.stdDevFactor / observation.tagCount();
                 double linearStdDev = linearStdDevBaseline * stdDevFactor;
                 Logger.recordOutput("Vision/LinearStdDev", linearStdDev);
                 double angularStdDev = angularStdDevBaseline * stdDevFactor;
@@ -181,6 +180,7 @@ public class Vision extends SubsystemBase {
                 "Vision/Summary/RobotPosesRejected",
                 allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
     }
+    
 
     @FunctionalInterface
     public interface VisionConsumer {
