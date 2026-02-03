@@ -203,14 +203,7 @@ public class RobotContainer {
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
         IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
-        drive.setDefaultCommand(joystickDrive);
-        // final ClockDrive clockDrive = new ClockDrive(
-        //     drive,
-        //     driveInput, 
-        //     driver.rotationalAxisX(),
-        //     driver.rotationalAxisY(),
-        //     rotationalTargetOverride
-        // );
+        // drive.setDefaultCommand(joystickDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -225,30 +218,28 @@ public class RobotContainer {
         if(RobotBase.isSimulation()) driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
         // if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
-        driver.autoAlignmentButtonLeft().whileTrue(
-            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-                driveInput
-                ,drive
-                ,()-> FieldConstants.getHubPose()
-                ,ShooterConstants.kShooterOptimization
-                ,1
-                ,false
-            )
-        );
-
-        driver.autoAlignmentButtonRight().onTrue(drive.alignToTarget(()-> FieldConstants.getHubPose()));
+        // driver.autoAlignmentButtonLeft().whileTrue(
+        //     JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+        //         driveInput
+        //         ,drive
+        //         ,()-> FieldConstants.getHubPose()
+        //         ,ShooterConstants.kShooterOptimization
+        //         ,1
+        //         ,false
+        //     )
+        // );
 
         // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
         //     .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
 
-        // driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
-        //     .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
+        driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
+            .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
 
-        // driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kConvey)))
+        // driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(7)))
         //     .onFalse(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kOff)));
 
-        // driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
-        //     .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
+        driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
+            .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
 
         // driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
         // driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));

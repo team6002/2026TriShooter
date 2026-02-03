@@ -9,6 +9,15 @@ public interface ShooterIO {
         public double shooterVoltage;
         public double shooterVelocity;
         public double shooterReference;
+        public double shooterPos;
+
+        public double leftShooterCurrent;
+        public double leftShooterVoltage;
+        public double leftShooterVelocity;
+
+        public double rightShooterCurrent;
+        public double rightShooterVoltage;
+        public double rightShooterVelocity;
     }
 
     /** Updates the set of loggable inputs. */

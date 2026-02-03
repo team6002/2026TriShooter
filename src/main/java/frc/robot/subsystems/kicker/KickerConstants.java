@@ -27,7 +27,7 @@ public class KickerConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kKick = 10;
+    public static final double kKick = 12;
     public static final double kOff = 0;
 
     public static final double kGearRatio = 3;

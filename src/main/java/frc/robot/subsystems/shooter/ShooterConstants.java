@@ -4,8 +4,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.utils.MapleShooterOptimization;
 
 public class ShooterConstants {
-    public static final int kShooterCanId = 9;
-    public static final int kLeftShooterCanId = 10;
+    public static final int kShooterCanId = 4;
+    public static final int kLeftShooterCanId = 3;
     public static final int kRightShooterCanId = 17;
 
     public static final double kP = 0.0;
@@ -32,8 +32,9 @@ public class ShooterConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kShoot = 4500;
-    public static final double kOff = 0;
+    public static final double kMaxVelocity = Math.toRadians(27500);
+    public static final double kMaxAcceleration = Math.toRadians(55000);
+
     public static final double kHolding = 2;
 
     public static final double kGearRatio = 1;
