@@ -94,8 +94,8 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        // io.PID();
+        io.PID();
         io.periodic();
-        Logger.processInputs("Intake", inputs);
+        Logger.processInputs(this.getName(), inputs);
     }
 }

@@ -22,7 +22,7 @@ public interface DriverMap extends Subsystem {
 
     Trigger resetOdometryButton();
 
-    Trigger lockChassisWithXFormatButton();
+    Trigger xButton();
 
     Trigger autoAlignmentButtonLeft();
 
@@ -30,11 +30,11 @@ public interface DriverMap extends Subsystem {
 
     Trigger intakeButton();
 
-    Trigger l2Button();
+    Trigger aButton();
 
-    Trigger l3Button();
+    Trigger bButton();
 
-    Trigger l4Button();
+    Trigger yButton();
 
     Trigger scoreButton();
 
@@ -106,7 +106,7 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger lockChassisWithXFormatButton() {
+        public Trigger xButton() {
             return xboxController.x();
         }
 
@@ -126,17 +126,17 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger l2Button() {
+        public Trigger aButton() {
             return xboxController.a();
         }
 
         @Override
-        public Trigger l3Button() {
+        public Trigger bButton() {
             return xboxController.b();
         }
 
         @Override
-        public Trigger l4Button() {
+        public Trigger yButton() {
             return xboxController.y();
         }
 
@@ -246,7 +246,7 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger lockChassisWithXFormatButton() {
+        public Trigger xButton() {
             return ps5Controller.square();
         }
 
@@ -266,17 +266,17 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger l2Button() {
+        public Trigger aButton() {
             return ps5Controller.cross();
         }
 
         @Override
-        public Trigger l3Button() {
+        public Trigger bButton() {
             return ps5Controller.circle();
         }
 
         @Override
-        public Trigger l4Button() {
+        public Trigger yButton() {
             return ps5Controller.triangle();
         }
 

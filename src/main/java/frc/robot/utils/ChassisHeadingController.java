@@ -3,7 +3,6 @@ package frc.robot.utils;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 import static frc.robot.constants.DriveControlLoops.*;
-// import static frc.robot.constants.DriveTrainConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -198,8 +197,12 @@ public class ChassisHeadingController {
         chassisRotationState =
                 chassisRotationProfile.calculate(Robot.defaultPeriodSecs, chassisRotationState, goalState);
 
+        final double unwrappedCurrentRotation =
+            goalState.position - targetedRotation.minus(robotPose.getRotation()).getRadians();
+
         final double feedBackSpeed =
-                chassisRotationCloseLoop.calculate(robotPose.getRotation().getRadians(), chassisRotationState.position);
+            chassisRotationCloseLoop.calculate(unwrappedCurrentRotation, chassisRotationState.position);
+
         final double feedForwardSpeedRadPerSec =
                 Math.abs(targetedRotation.minus(robotPose.getRotation()).getDegrees()) < 15
                         ? desiredAngularVelocityRadPerSec

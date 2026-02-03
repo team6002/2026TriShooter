@@ -1,35 +1,43 @@
 package frc.robot.autos;
 
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import java.io.IOException;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.constants.RobotMode;
 
-public class AUTO_Side extends SequentialCommandGroup {
-    public AUTO_Side(Drive drive, SwerveDriveSimulation sim, Boolean mirrored) {
-        addCommands(
-            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8)),
-            drive.setAutoStartPose("gotomiddleS1", mirrored)
-            ,drive.followPath("gotomiddleS1", mirrored)
-            ,drive.followPath("grabfuelS1", mirrored)
-            ,drive.followPath("gotolineS1", mirrored)
-            ,drive.followPath("climbshootR1", mirrored)
-            ,new ShootFuelSim(sim)
+public class AUTO_Side implements Auto {
+    @Override
+    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+        return Commands.sequence(
+            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            ,followPath("gotomiddleS1")
+            ,followPath("grabfuelS1")
+            ,followPath("gotolineS1")
+            ,followPath("climbshootR1")
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+                new ShootFuelSim(robot.driveSimulation)
         );
+    }
 
-        // addCommands(
-        //     new InstantCommand(()->drive.setAutoStartPose("gotomiddle"))
-        //     ,drive.followPath("gotomiddle")
-        //     ,new WaitCommand(2)
-        //     ,drive.followPath("grabmiddlefuel")
-        //     ,new WaitCommand(6)
-        //     // ,drive.followPath("pickuplastcycle")
-        //     // ,drive.followPath("shootlastcycle")
-        //     // ,new WaitCommand(1.25)
-        //     ,drive.followPath("scoreitall")
-        // );
+    @Override
+    public Pose2d getStartingPoseAtBlueAlliance() {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("gotomiddleS1");
+            return path.getStartingHolonomicPose().orElse(new Pose2d());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return new Pose2d();
     }
 }

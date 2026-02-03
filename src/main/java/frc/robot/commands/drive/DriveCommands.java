@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import java.text.DecimalFormat;
@@ -82,14 +81,15 @@ public class DriveCommands {
 
                     // Convert to field relative speeds & send command
                     ChassisSpeeds speeds = new ChassisSpeeds(
-                            linearVelocity.getX() * drive.getChassisMaxLinearVelocityMetersPerSec(),
-                            linearVelocity.getY() * drive.getChassisMaxLinearVelocityMetersPerSec(),
-                            omega * drive.getChassisMaxAngularVelocity());
-                    boolean isFlipped = FieldConstants.getAlliance() == Alliance.Red;
+                            linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                            linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                            omega * drive.getMaxAngularSpeedRadPerSec());
+                    boolean isFlipped = DriverStation.getAlliance().isPresent()
+                            && DriverStation.getAlliance().get() == Alliance.Red;
                     speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                             speeds,
                             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation());
-                    drive.runRobotCentricChassisSpeeds(speeds);
+                    drive.runVelocity(speeds);
                 },
                 drive);
     }
@@ -120,8 +120,8 @@ public class DriveCommands {
 
                             // Convert to field relative speeds & send command
                             ChassisSpeeds speeds = new ChassisSpeeds(
-                                    linearVelocity.getX() * drive.getChassisMaxLinearVelocityMetersPerSec(),
-                                    linearVelocity.getY() * drive.getChassisMaxLinearVelocityMetersPerSec(),
+                                    linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                                    linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                                     omega);
                             boolean isFlipped = DriverStation.getAlliance().isPresent()
                                     && DriverStation.getAlliance().get() == Alliance.Red;
@@ -130,37 +130,13 @@ public class DriveCommands {
                                     isFlipped
                                             ? drive.getRotation().plus(new Rotation2d(Math.PI))
                                             : drive.getRotation());
-                            drive.runRobotCentricChassisSpeeds(speeds);
+                            drive.runVelocity(speeds);
                         },
                         drive)
 
                 // Reset PID controller when command starts
                 .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
     }
-
-    public static Command joystickDriveRobotCentric(
-        Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
-    return Commands.run(
-            () -> {
-                // Get linear velocity
-                Translation2d linearVelocity =
-                        getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
-
-                // Apply rotation deadband
-                double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
-
-                // Square rotation value for more precise control
-                omega = Math.copySign(omega * omega, omega);
-
-                // Convert to field relative speeds & send command
-                ChassisSpeeds speeds = new ChassisSpeeds(
-                        linearVelocity.getX() * drive.getChassisMaxLinearVelocityMetersPerSec(),
-                        linearVelocity.getY() * drive.getChassisMaxLinearVelocityMetersPerSec(),
-                        omega * drive.getChassisMaxAngularAccelerationRadPerSecSq());
-                drive.runVelocity(speeds);
-            },
-            drive);
-        }
 
     /**
      * Measures the velocity feedforward constants for the drive motors.
@@ -240,7 +216,7 @@ public class DriveCommands {
                         Commands.run(
                                 () -> {
                                     double speed = limiter.calculate(WHEEL_RADIUS_MAX_VELOCITY);
-                                    drive.runRobotCentricChassisSpeeds(new ChassisSpeeds(0.0, 0.0, speed));
+                                    drive.runVelocity(new ChassisSpeeds(0.0, 0.0, speed));
                                 },
                                 drive)),
 

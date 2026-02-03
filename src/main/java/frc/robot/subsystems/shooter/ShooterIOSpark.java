@@ -18,7 +18,7 @@ public class ShooterIOSpark implements ShooterIO {
 
     public ShooterIOSpark() {
         // initialize motor
-        shooterMotor = new SparkMax(ShooterConstants.kShooterCanId, MotorType.kBrushless);
+        shooterMotor = new SparkMax(ShooterConstants.kRightShooterCanId, MotorType.kBrushless);
 
         // initialize PID controller
         shooterController = shooterMotor.getClosedLoopController();

@@ -10,7 +10,6 @@ import com.revrobotics.spark.SparkMax;
 
 public class KickerIOSpark implements KickerIO {
     private final SparkMax kickerMotor;
-    private final SparkMax kickerMotorFollower;
     private final RelativeEncoder kickerEncoder;
     private final SparkClosedLoopController kickerController;
 
@@ -20,7 +19,6 @@ public class KickerIOSpark implements KickerIO {
     public KickerIOSpark() {
         // initialize motor
         kickerMotor = new SparkMax(KickerConstants.kKickerCanId, MotorType.kBrushless);
-        kickerMotorFollower = new SparkMax(KickerConstants.kKickerFollowerCanId, MotorType.kBrushless);
 
         // initialize PID controller
         kickerController = kickerMotor.getClosedLoopController();
@@ -31,9 +29,6 @@ public class KickerIOSpark implements KickerIO {
         // apply config
         kickerMotor.configure(
                 KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-                
-        kickerMotorFollower.configure(
-                KickerConfig.kickerFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         kickerReference = 0;

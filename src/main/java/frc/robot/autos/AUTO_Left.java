@@ -1,4 +1,4 @@
-package frc.robot.autos.hump;
+package frc.robot.autos;
 
 import java.io.IOException;
 
@@ -11,33 +11,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.autos.Auto;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 
-public class AUTO_RightBig implements Auto {
+public class AUTO_Left implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleR2", false, robot.drive)
-            ,followPath("gotomiddleR2")
-            ,followPath("pickmiddleM3")
-            ,followPath("gotolineM3")
-            ,followPath("gotoHPM3")
+            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            ,followPath("gotodepotL1")
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)
-            ,followPath("climbshootM3")
         );
     }
 
     @Override
     public Pose2d getStartingPoseAtBlueAlliance() {
         try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile("gotomiddleR2");
+            PathPlannerPath path = PathPlannerPath.fromPathFile("gotodepotL1");
             return path.getStartingHolonomicPose().orElse(new Pose2d());
         }catch(Exception e){
             e.printStackTrace();

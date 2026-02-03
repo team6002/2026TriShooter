@@ -60,6 +60,6 @@ public class Hood extends SubsystemBase {
         io.updateInputs(inputs);
         // io.PID();
         io.periodic();
-        Logger.processInputs("Shooter", inputs);
+        Logger.processInputs(this.getName(), inputs);
     }
 }

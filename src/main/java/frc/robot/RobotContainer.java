@@ -13,7 +13,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,11 +23,19 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.autos.hump.*;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.autos.*;
+import frc.robot.autos.hump.AUTO_LeftBig;
+import frc.robot.autos.hump.AUTO_LeftSmall;
+import frc.robot.autos.hump.AUTO_MiddleHumpFull;
+import frc.robot.autos.hump.AUTO_MiddleLeftSafe;
+import frc.robot.autos.hump.AUTO_MiddleRightSafe;
+import frc.robot.autos.hump.AUTO_RightBig;
+import frc.robot.autos.hump.AUTO_RightSmall;
+import frc.robot.autos.hump.AUTO_SideHump;
 import frc.robot.commands.*;
-import frc.robot.commands.drive.DriveCommands;
-import frc.robot.commands.drive.JoystickDrive;
+import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.conveyor.*;
@@ -46,6 +53,7 @@ import frc.robot.utils.MapleJoystickDriveInput;
 
 import java.util.List;
 import java.util.function.IntSupplier;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
@@ -63,20 +71,20 @@ public class RobotContainer {
     public final Intake intake;
     public final Conveyor conveyor;
     public final Kicker kicker;
-    public final Hood hood;
-    public final Climb climb;
+    // public final Hood hood;
+    // public final Climb climb;
     public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
-    public final AprilTagVision aprilTagVision;
-    private SwerveDriveSimulation driveSimulation = null;
+    // public final AprilTagVision aprilTagVision;
+    public SwerveDriveSimulation driveSimulation = null;
 
     private final Field2d field = new Field2d();
     // Controller
     public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
 
     // Dashboard inputs
-    private final LoggedDashboardChooser<Command> autoChooser;
+    private final LoggedDashboardChooser<Auto> autoChooser;
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
@@ -98,17 +106,17 @@ public class RobotContainer {
                 intake = new Intake(new IntakeIOSpark());
                 conveyor = new Conveyor(new ConveyorIOSpark());
                 kicker = new Kicker(new KickerIOSpark());
-                hood = new Hood(new HoodIOSpark());
-                climb = new Climb(new ClimbIOSpark());
+                // hood = new Hood(new HoodIOSpark());
+                // climb = new Climb(new ClimbIOSpark());
 
                 this.vision = new Vision(
                     drive,
                     new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
                 );
 
-                aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
-                break;
+                // aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
 
+                break;
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
@@ -128,8 +136,8 @@ public class RobotContainer {
                 intake = new Intake(new IntakeIOSim(driveSimulation));
                 conveyor = new Conveyor(new ConveyorIOSim());
                 kicker = new Kicker(new KickerIOSim());
-                hood = new Hood(new HoodIOSim());
-                climb = new Climb(new ClimbIOSim());
+                // hood = new Hood(new HoodIOSim());
+                // climb = new Climb(new ClimbIOSim());
 
                 vision = new Vision(
                     drive,
@@ -151,12 +159,12 @@ public class RobotContainer {
                     //     driveSimulation::getSimulatedDriveTrainPose)
                 );
 
-                aprilTagVision = new AprilTagVision(
-                    new ApriltagVisionIOSim(
-                        camerasProperties,
-                        VisionConstants.fieldLayout,
-                        driveSimulation::getSimulatedDriveTrainPose),
-                    camerasProperties);
+                // aprilTagVision = new AprilTagVision(
+                //     new ApriltagVisionIOSim(
+                //         camerasProperties,
+                //         VisionConstants.fieldLayout,
+                //         driveSimulation::getSimulatedDriveTrainPose),
+                //     camerasProperties);
                 break;
             default:
                 // Replayed robot, disable IO implementations
@@ -172,18 +180,18 @@ public class RobotContainer {
                 intake = new Intake(new IntakeIO() {});
                 conveyor = new Conveyor(new ConveyorIO() {});
                 kicker = new Kicker(new KickerIO() {});
-                hood = new Hood(new HoodIO() {});
-                climb = new Climb(new ClimbIO() {});
+                // hood = new Hood(new HoodIO() {});
+                // climb = new Climb(new ClimbIO() {});
 
                 vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-                aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
+                // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
                 break;
         }
 
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
 
         // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+        autoChooser = new LoggedDashboardChooser<>("Auto Choices");
         // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle(drive, driveSimulation, false));
         // autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, true));
         // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
@@ -192,24 +200,23 @@ public class RobotContainer {
         // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
         
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
-        autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleHumpFull(drive, false, driveSimulation));        
-        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleHumpFull(drive, true, driveSimulation));  
-        autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe(drive, driveSimulation));
-        autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe(drive, driveSimulation));      
-        autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump(drive, true, driveSimulation));
-        autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig(drive, driveSimulation));
-        autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall(drive, driveSimulation));
-        autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump(drive, false, driveSimulation));        
-        autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig(drive, driveSimulation));     
-        autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall(drive, driveSimulation));        
-
+        autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleHumpFull());        
+        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleHumpFull());  
+        autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
+        autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
+        autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump());
+        autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig());
+        autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
+        autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump());        
+        autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
+        autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
         // Set up SysId routines
-        autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        // autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        // autoChooser.addOption("Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption("Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -228,27 +235,56 @@ public class RobotContainer {
         IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
+        // final ClockDrive clockDrive = new ClockDrive(
+        //     drive,
+        //     driveInput, 
+        //     driver.rotationalAxisX(),
+        //     driver.rotationalAxisY(),
+        //     rotationalTargetOverride
+        // );
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
             ? () -> drive.resetOdometry(
                 driveSimulation
-                    .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
+                    .getSimulatedDriveTrainPose())
+                // reset odometry to actual robot pose during simulation
             : () -> drive.resetOdometry(
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        if(RobotBase.isSimulation()) driver.scoreButton().onTrue(new ShootFuelSim(driveSimulation).until(()-> !driver.scoreButton().getAsBoolean()));
-        if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
+        if(RobotBase.isSimulation()) driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+        // if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
 
-        driver.autoAlignmentButtonLeft().whileTrue(DriveCommands.joystickDriveAtAngle(
-            drive, 
-            ()-> -driveInput.joystickYSupplier.getAsDouble(), 
-            ()-> -driveInput.joystickXSupplier.getAsDouble(),
-            ()-> FieldConstants.getHubPose().minus(drive.getPose().getTranslation()).getAngle())
+        driver.autoAlignmentButtonLeft().whileTrue(
+            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                driveInput
+                ,drive
+                ,()-> FieldConstants.getHubPose()
+                ,ShooterConstants.kShooterOptimization
+                ,1
+                ,false
+            )
         );
 
-        driver.autoAlignmentButtonRight().onTrue(drive.aimAtTarget(FieldConstants.getHubPose()));
+        driver.autoAlignmentButtonRight().onTrue(drive.alignToTarget(()-> FieldConstants.getHubPose()));
+
+        // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
+        //     .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
+
+        // driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
+
+        // driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kOff)));
+
+        // driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
+        //     .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
+
+        // driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
+        // driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));
+        // driver.xButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kForward));
+        // driver.yButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kReverse));
     }
 
     /**
@@ -257,7 +293,12 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        try {
+            return autoChooser.get().getAutoCommand(this);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Commands.none();
     }
 
     public void resetSimulationField() {
@@ -266,14 +307,11 @@ public class RobotContainer {
         if (FieldConstants.getAlliance() == Alliance.Blue) {
             drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
         } else {
-            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d(Math.PI)));
+            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
         }
 
         SimulatedArena.getInstance().resetFieldForAuto();
-
         IntakeIOSim.setFuelInHopper(8);
-
-        // for (int i = 0; i<48; i++) IntakeIOSim.obtainFuelFromHopper();
     }
 
     public void updateSimulation() {

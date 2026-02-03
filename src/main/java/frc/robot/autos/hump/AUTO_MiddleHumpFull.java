@@ -1,24 +1,45 @@
 package frc.robot.autos.hump;
 
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import java.io.IOException;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import org.json.simple.parser.ParseException;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
+import frc.robot.autos.Auto;
+import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.constants.FieldConstants;
-import frc.robot.subsystems.drive.Drive;
-import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.constants.RobotMode;
 
-public class AUTO_MiddleHumpFull extends SequentialCommandGroup {
-    public AUTO_MiddleHumpFull(Drive drive, Boolean mirrored, SwerveDriveSimulation sim) {
-        addCommands(
-            new InstantCommand(()->IntakeIOSim.setFuelInHopper(8))
-            ,drive.setAutoStartPose("gotomiddleMH1", mirrored)
-            ,drive.followPath("gotomiddleMH1", mirrored)
-            ,drive.followPath("grabmiddleSH1", mirrored)
-            ,drive.aimAtTarget(FieldConstants.getHubPose())
-            ,new ShootFuelSim(sim)
-            ,drive.followPath("climbSH1", mirrored)
+public class AUTO_MiddleHumpFull implements Auto {
+    @Override
+    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+        return Commands.sequence(
+            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            ,followPath("gotomiddleMH1")
+            ,followPath("grabmiddleSH1")
+            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+                new ShootFuelSim(robot.driveSimulation)
+            ,followPath("climbSH1")
         );
+    }
+
+    @Override
+    public Pose2d getStartingPoseAtBlueAlliance() {
+        try {
+            PathPlannerPath path = PathPlannerPath.fromPathFile("gotomiddleMH1");
+            return path.getStartingHolonomicPose().orElse(new Pose2d());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return new Pose2d();
     }
 }
