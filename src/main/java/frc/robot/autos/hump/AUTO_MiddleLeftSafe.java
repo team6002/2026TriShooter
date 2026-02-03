@@ -21,7 +21,7 @@ public class AUTO_MiddleLeftSafe implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            setAutoStartPose("gotodepotMLS", false, robot.drive)
             ,followPath("gotodepotMLS")
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 

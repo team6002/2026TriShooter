@@ -4,13 +4,13 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer;
-import frc.robot.RobotState;
-import frc.robot.RobotState.NavigationMode;
 import frc.robot.constants.FieldConstants;
+import frc.robot.subsystems.drive.Drive;
 
 import java.io.IOException;
 import org.ironmaple.utils.FieldMirroringUtils;
@@ -35,6 +35,32 @@ public interface Auto {
         };
     }
 
+    default Command setAutoStartPose(String pathName, Boolean mirrored, Drive drive) {
+        // 1. Declare a final variable that will be used in the lambda
+        final PathPlannerPath finalPath;
+
+        try {
+            PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
+            
+            if (mirrored) {
+                loadedPath = loadedPath.mirrorPath();
+            }
+
+            // Handle Alliance flipping
+            if (DriverStation.getAlliance().isPresent() && FieldConstants.getAlliance() == Alliance.Red) {
+                loadedPath = loadedPath.flipPath();
+            }
+            
+            finalPath = loadedPath; // This is the only assignment to finalPath
+        } catch (Exception e) {
+            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+            return Commands.none(); // Better than returning an empty anonymous Command
+        }
+
+        // Now finalPath is effectively final and safe for the lambda
+        return Commands.runOnce(() -> drive.resetOdometry(finalPath.getStartingHolonomicPose().get()));
+    }
+
     static PathPlannerPath getPath(String name, boolean mirror) throws IOException, ParseException {
         PathPlannerPath path = PathPlannerPath.fromPathFile(name);
         return mirror ? path.mirrorPath() : path;
@@ -47,13 +73,28 @@ public interface Auto {
                 pose.getRotation().unaryMinus());
     }
 
-    default Command followPath(String pathName)
-            throws IOException, ParseException {
-        PathPlannerPath rawPath = PathPlannerPath.fromPathFile(pathName);
-        PathPlannerPath path = FieldConstants.getAlliance() == Alliance.Red ? rawPath.mirrorPath() : rawPath;
+    // default Command followPath(String pathName)
+    //         throws IOException, ParseException {
+    //     PathPlannerPath rawPath = PathPlannerPath.fromPathFile(pathName);
+    //     PathPlannerPath path = FieldConstants.getAlliance() == Alliance.Red ? rawPath.mirrorPath() : rawPath;
 
-        return AutoBuilder.followPath(path)
-                .deadlineFor(RobotState.getInstance().withNavigationMode(NavigationMode.VISION_FUSED_ODOMETRY))
-                .asProxy();
+    //     return AutoBuilder.followPath(path);
+    //             // .deadlineFor(RobotState.getInstance().withNavigationMode(NavigationMode.VISION_FUSED_ODOMETRY))
+    //             // .asProxy();
+    // }
+
+    default Command followPath(String pathName
+    // , Boolean mirrored
+    ){
+        PathPlannerPath path;
+        try{
+            path = 
+            // mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : 
+            PathPlannerPath.fromPathFile(pathName);
+        }catch (Exception e) {
+           DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+           return Commands.none();
+        }
+        return AutoBuilder.followPath(path);
     }
 }

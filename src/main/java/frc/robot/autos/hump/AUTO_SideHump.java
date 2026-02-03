@@ -20,16 +20,20 @@ import frc.robot.constants.RobotMode;
 public class AUTO_SideHump implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
-        return Commands.sequence(
-            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+        Command cmds;
+        cmds = Commands.sequence(
+            setAutoStartPose("gotomiddleSH1", false, robot.drive)
             ,followPath("gotomiddleSH1")
             ,followPath("grabmiddleSH1")
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
-            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
-                new ShootFuelSim(robot.driveSimulation)
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.SIM ? 
+                new ShootFuelSim(robot.driveSimulation) :
+                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null)
             ,followPath("climbSH1")
         );
+
+        cmds.setName("test");
+        return cmds;
     }
 
     @Override

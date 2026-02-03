@@ -21,7 +21,7 @@ public class AUTO_MiddleHumpFull implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            setAutoStartPose("gotomiddleMH1", false, robot.drive)
             ,followPath("gotomiddleMH1")
             ,followPath("grabmiddleSH1")
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())

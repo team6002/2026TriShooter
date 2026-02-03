@@ -21,9 +21,11 @@ public class IntakeIOSpark implements IntakeIO {
 
     private final SparkMax intakeExtenderMotor;
     private final AbsoluteEncoder intakeExtenderEncoder;
+    @SuppressWarnings("unused")
     private final SparkClosedLoopController intakeExtenderController;
 
     private double intakeExtenderReference;
+    @SuppressWarnings("unused")
     private ControlType intakeExtenderType;
     private boolean lowCurrentMode = false;
 

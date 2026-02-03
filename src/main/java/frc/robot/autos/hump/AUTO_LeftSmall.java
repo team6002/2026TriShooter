@@ -21,7 +21,7 @@ public class AUTO_LeftSmall implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            setAutoStartPose("gotodepotL1", false, robot.drive)
             ,followPath("gotodepotL1")
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 

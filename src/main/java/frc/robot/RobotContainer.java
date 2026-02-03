@@ -23,8 +23,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+// import edu.wpi.first.wpilibj2.command.InstantCommand;
+// import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.autos.hump.AUTO_LeftBig;
 import frc.robot.autos.hump.AUTO_LeftSmall;
@@ -37,21 +37,21 @@ import frc.robot.autos.hump.AUTO_SideHump;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
-import frc.robot.subsystems.climb.*;
+// import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.conveyor.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.*;
-import frc.robot.subsystems.hood.*;
+// import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
-import frc.robot.subsystems.vision.apriltags.*;
+// import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
 
-import java.util.List;
+// import java.util.List;
 import java.util.function.IntSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -88,8 +88,8 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
-        final List<PhotonCameraProperties> camerasProperties =
-                VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
+        // final List<PhotonCameraProperties> camerasProperties =
+        //         VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
 
         switch (Robot.CURRENT_ROBOT_MODE) {
             case REAL:
