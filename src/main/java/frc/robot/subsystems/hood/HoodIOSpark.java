@@ -79,6 +79,11 @@ public class HoodIOSpark implements HoodIO {
     }
 
     @Override
+    public boolean atReference(){
+        return Math.abs(getReference() - getPosition()) < HoodConstants.kTolerance;
+    }
+
+    @Override
     public void PID() {
         hoodController.setSetpoint(hoodReference, hoodType);
     }

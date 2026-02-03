@@ -26,6 +26,9 @@ public class ClimbConstants {
     public static final boolean kInverted = true;
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
+
+    public static final double kHome = 0;
+    public static final double kClimb = Math.toRadians(180);
     
     public static final double kGearRatio = 216.5;
 }

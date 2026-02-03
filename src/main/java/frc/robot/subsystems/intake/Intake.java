@@ -91,6 +91,10 @@ public class Intake extends SubsystemBase {
         io.setExtenderReference(velocity);
     }
 
+    public boolean getExtenderInPosition(){
+        return io.getExtenderInPosition();
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

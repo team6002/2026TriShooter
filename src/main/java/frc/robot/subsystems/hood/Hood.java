@@ -1,5 +1,7 @@
 package frc.robot.subsystems.hood;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -51,15 +53,23 @@ public class Hood extends SubsystemBase {
         io.setReference(angRad);
     }
 
+    public Command setTargetAng(double angRad){
+        return Commands.runOnce(()-> setReference(angRad), this);
+    }
+
     public double getPosition() {
         return io.getPosition();
     }
 
+    public boolean atReference(){
+        return io.atReference();
+    }
+
     @Override
     public void periodic() {
-        io.updateInputs(inputs);
-        // io.PID();
         io.periodic();
+        // io.PID();
+        io.updateInputs(inputs);
         Logger.processInputs(this.getName(), inputs);
     }
 }

@@ -88,6 +88,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
     private SwerveSetpoint setpoint;
+    public static Pose2d staticRobotPose;
 
     public Drive(
             GyroIO gyroIO,
@@ -185,6 +186,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             // Apply update
             poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
         }
+
+        staticRobotPose = getPose();
 
         // Update gyro alert
         gyroDisconnectedAlert.set(!gyroInputs.connected && Robot.CURRENT_ROBOT_MODE != RobotMode.SIM);

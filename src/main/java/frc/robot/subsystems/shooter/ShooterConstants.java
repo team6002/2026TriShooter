@@ -33,7 +33,7 @@ public class ShooterConstants {
     public static final double kMaxOutput = 1;
 
     public static final double kMaxVelocity = Math.toRadians(27500);
-    public static final double kMaxAcceleration = Math.toRadians(55000);
+    public static final double kMaxAcceleration = Math.toRadians(10000);
 
     public static final double kHolding = 2;
 

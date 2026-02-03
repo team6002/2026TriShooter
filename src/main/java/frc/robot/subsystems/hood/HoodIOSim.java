@@ -66,6 +66,11 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
+    public boolean atReference(){
+        return Math.abs(getReference() - getPosition()) < HoodConstants.kTolerance;
+    }
+
+    @Override
     public void periodic() {
         hoodSim.update(0.02);
     }

@@ -29,6 +29,7 @@ public class HoodConstants {
 
     public static final double kMinAngleRad = 0;
     public static final double kMaxAngleRad = Math.toRadians(90);
+    public static final double kTolerance = Math.toRadians(1);
     
     public static final double kGearRatio = 1;
 }
