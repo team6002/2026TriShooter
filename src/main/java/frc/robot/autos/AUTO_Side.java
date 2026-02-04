@@ -16,10 +16,10 @@ public class AUTO_Side implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            followPath("gotomiddleS1")
-            ,followPath("grabfuelS1")
-            ,followPath("gotolineS1")
-            ,followPath("climbshootR1")
+            followPath("gotomiddleS1", false)
+            ,followPath("grabfuelS1", false)
+            ,followPath("gotolineS1", false)
+            ,followPath("climbshootR1", false)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)

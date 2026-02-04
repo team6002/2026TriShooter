@@ -20,7 +20,7 @@ public class AUTO_MiddleRightSafe implements Auto {
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotoHPMRS", false, robot.drive)
-            ,followPath("gotoHPMRS")
+            ,followPath("gotoHPMRS", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 

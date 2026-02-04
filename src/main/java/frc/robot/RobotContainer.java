@@ -26,14 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 // import edu.wpi.first.wpilibj2.command.InstantCommand;
 // import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
-import frc.robot.autos.hump.AUTO_LeftBig;
-import frc.robot.autos.hump.AUTO_LeftSmall;
-import frc.robot.autos.hump.AUTO_MiddleHumpFull;
-import frc.robot.autos.hump.AUTO_MiddleLeftSafe;
-import frc.robot.autos.hump.AUTO_MiddleRightSafe;
-import frc.robot.autos.hump.AUTO_RightBig;
-import frc.robot.autos.hump.AUTO_RightSmall;
-import frc.robot.autos.hump.AUTO_SideHump;
+import frc.robot.autos.hump.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
@@ -200,14 +193,14 @@ public class RobotContainer {
         // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
         
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
-        autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleHumpFull());        
-        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleHumpFull());  
+        autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
+        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
         autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
         autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
-        autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_SideHump());
+        autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
         autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig());
         autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
-        autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_SideHump());        
+        autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
         autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
         autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
         // Set up SysId routines

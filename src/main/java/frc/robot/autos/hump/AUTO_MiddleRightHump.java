@@ -15,17 +15,17 @@ import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 
-public class AUTO_SideHump implements Auto {
+public class AUTO_MiddleRightHump implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleSH1", false, robot.drive)
-            ,followPath("gotomiddleSH1")
-            ,followPath("grabmiddleSH1")
+            setAutoStartPose("gotomiddleMH1", false, robot.drive)
+            ,followPath("gotomiddleMH1", false)
+            ,followPath("grabmiddleSH1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
-            ,Robot.CURRENT_ROBOT_MODE == RobotMode.SIM ? 
-                new ShootFuelSim(robot.driveSimulation) :
-                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null)
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+                new ShootFuelSim(robot.driveSimulation)
             ,new AutoAlignToClimb(robot.drive)
         );
     }

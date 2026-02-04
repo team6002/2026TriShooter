@@ -20,10 +20,10 @@ public class AUTO_LeftBig implements Auto {
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotomiddleL1", false, robot.drive)
-            ,followPath("gotomiddleL1")
-            ,followPath("grabmiddleL1")
-            ,followPath("gotostartL1")
-            ,followPath("gotodepotL1")
+            ,followPath("gotomiddleL1", false)
+            ,followPath("grabmiddleL1", false)
+            ,followPath("gotostartL1", false)
+            ,followPath("gotodepotL1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 

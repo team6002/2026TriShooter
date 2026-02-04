@@ -18,14 +18,14 @@ public class AUTO_Middle implements Auto{
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
             // Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
-            followPath("pickupHPM1")
-            ,followPath("shootfirstcycle")
+            followPath("pickupHPM1", false)
+            ,followPath("shootfirstcycle", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)
-            ,followPath("pickupmiddleM1")
-            ,followPath("shootclimbM1")
+            ,followPath("pickupmiddleM1", false)
+            ,followPath("shootclimbM1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 

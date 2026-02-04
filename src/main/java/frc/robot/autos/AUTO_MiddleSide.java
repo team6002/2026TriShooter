@@ -17,8 +17,8 @@ public class AUTO_MiddleSide implements Auto {
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
             // Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
-            followPath("swipehalfM2")
-            ,followPath("shootfuelM2")
+            followPath("swipehalfM2", false)
+            ,followPath("shootfuelM2", false)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)

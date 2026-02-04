@@ -19,15 +19,15 @@ public class AUTO_MiddleHump implements Auto {
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotomiddleM3", false, robot.drive)
-            ,followPath("gotomiddleM3")
-            ,followPath("pickmiddleM3")
-            ,followPath("gotolineM3")
-            ,followPath("gotoHPM3")
+            ,followPath("gotomiddleM3", false)
+            ,followPath("pickmiddleM3", false)
+            ,followPath("gotolineM3", false)
+            ,followPath("gotoHPM3", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)
-            ,followPath("climbshootM3")
+            ,followPath("climbshootM3", false)
         );
     }
 }

@@ -20,7 +20,7 @@ public class AUTO_LeftSmall implements Auto {
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotodepotL1", false, robot.drive)
-            ,followPath("gotodepotL1")
+            ,followPath("gotodepotL1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 

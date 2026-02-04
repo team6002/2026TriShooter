@@ -76,13 +76,13 @@ public interface Auto {
     // }
 
     default Command followPath(String pathName
-    // , Boolean mirrored
+    ,boolean mirrored
     ){
         PathPlannerPath path;
         try{
             path = 
             // mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : 
-            PathPlannerPath.fromPathFile(pathName);
+            getPath(pathName, mirrored);
         }catch (Exception e) {
            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
            return Commands.none();
