@@ -413,13 +413,56 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     public Command alignToTarget(Supplier<Translation2d> targetSupplier) {
         return new FunctionalCommand(
+            // onInit
             () -> ChassisHeadingController.getInstance().setHeadingRequest(
                     new ChassisHeadingController.FaceToTargetRequest(targetSupplier, null)
             ),
+
+            // onExecute
             () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+
+            // onEnd
             interrupted -> ChassisHeadingController.getInstance()
                     .setHeadingRequest(new ChassisHeadingController.NullRequest()),
-            () -> ChassisHeadingController.getInstance().atSetPoint(),
+
+            // isFinished — custom tolerance check
+            () -> {
+                Translation2d target = targetSupplier.get();
+                Pose2d robotPose = getPose();
+
+                // Compute desired heading
+                Translation2d delta = target.minus(robotPose.getTranslation());
+                Rotation2d desiredHeading = delta.getAngle();
+
+                // Compute current heading
+                Rotation2d currentHeading = robotPose.getRotation();
+
+                // Compute error
+                double error = Math.abs(currentHeading.minus(desiredHeading).getRadians());
+
+                return error < Math.toRadians(5);
+            },
+
+            this
+        );
+    }
+
+    public Command alignToAngle(Rotation2d angle, double toleranceRadians) {
+        return new FunctionalCommand(
+            () -> ChassisHeadingController.getInstance().setHeadingRequest(
+                    new ChassisHeadingController.FaceToRotationRequest(angle)
+            ),
+
+            () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+
+            interrupted -> ChassisHeadingController.getInstance()
+                    .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+
+            () -> {
+                Rotation2d current = getRotation();
+                double error = Math.abs(current.minus(angle).getRadians());
+                return error < toleranceRadians;
+            },
 
             this
         );

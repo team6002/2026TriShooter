@@ -4,9 +4,6 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
-import com.pathplanner.lib.path.PathPlannerPath;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
@@ -32,16 +29,5 @@ public class AUTO_MiddleHump implements Auto {
                 new ShootFuelSim(robot.driveSimulation)
             ,followPath("climbshootM3")
         );
-    }
-
-    @Override
-    public Pose2d getStartingPoseAtBlueAlliance() {
-        try {
-            PathPlannerPath path = PathPlannerPath.fromPathFile("gotomiddleM3");
-            return path.getStartingHolonomicPose().orElse(new Pose2d());
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-        return new Pose2d();
     }
 }

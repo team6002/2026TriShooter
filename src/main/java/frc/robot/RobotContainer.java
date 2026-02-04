@@ -267,6 +267,10 @@ public class RobotContainer {
             )
         );
 
+        driver.aButton().onTrue(
+            new AutoAlignToClimb(drive)
+        );
+
         driver.autoAlignmentButtonRight().onTrue(drive.alignToTarget(()-> FieldConstants.getHubPose()));
 
         // driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))

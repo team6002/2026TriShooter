@@ -3,7 +3,6 @@ package frc.robot.autos;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,18 +18,11 @@ import org.json.simple.parser.ParseException;
 public interface Auto {
     Command getAutoCommand(RobotContainer robot) throws IOException, ParseException;
 
-    Pose2d getStartingPoseAtBlueAlliance();
-
     static Auto none() {
         return new Auto() {
             @Override
             public Command getAutoCommand(RobotContainer robot) {
                 return Commands.none();
-            }
-
-            @Override
-            public Pose2d getStartingPoseAtBlueAlliance() {
-                return new Pose2d(3, 3, new Rotation2d());
             }
         };
     }
