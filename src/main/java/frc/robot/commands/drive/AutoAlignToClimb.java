@@ -26,9 +26,14 @@ public class AutoAlignToClimb extends SequentialCommandGroup {
             );
         } 
         else {
+            new Rotation2d();
+            new Rotation2d();
             addCommands(
                 new ConditionalCommand(
-                    new GoToPose(new Pose2d(1.5, 2.8, new Rotation2d(Math.PI)), drive, 0.3)
+                    new SequentialCommandGroup(
+                        new GoToPose(new Pose2d(1.3, 2.6, Rotation2d.fromDegrees(180)), drive, 0.3),
+                        new GoToPose(new Pose2d(1.3, 2.8, Rotation2d.fromDegrees(180)), drive, 0.1)
+                    )
                     ,new SequentialCommandGroup(
                         new GoToPose(new Pose2d(1.3, 5.1, new Rotation2d()), drive, 0.3),
                         new GoToPose(new Pose2d(1.3, 4.9, new Rotation2d()), drive, 0.1)

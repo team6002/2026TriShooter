@@ -129,12 +129,14 @@ public class Vision extends SubsystemBase {
                     continue;
                 }
 
+                
+
                 // Calculate standard deviations
                 double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) * Vision_Constants.stdDevFactor / observation.tagCount();
                 double linearStdDev = linearStdDevBaseline * stdDevFactor;
                 Logger.recordOutput("Vision/LinearStdDev", linearStdDev);
                 double angularStdDev = angularStdDevBaseline * stdDevFactor;
-                Logger.recordOutput("Vision/LinearStdDev", angularStdDev);
+                Logger.recordOutput("Vision/AngStdDev", angularStdDev);
                 if (observation.type() == PoseObservationType.MEGATAG_2) {
                     linearStdDev *= linearStdDevMegatag2Factor;
                     angularStdDev *= angularStdDevMegatag2Factor;
@@ -145,10 +147,10 @@ public class Vision extends SubsystemBase {
                 }
 
                 // Send vision observation
-                consumer.accept(
-                        observation.pose().toPose2d(),
-                        observation.timestamp(),
-                        VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+                 consumer.accept(
+                    observation.pose().toPose2d(),
+                    observation.timestamp(),
+                    VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
             }
 
             // Log camera datadata

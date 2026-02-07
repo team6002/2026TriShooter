@@ -65,24 +65,12 @@ public interface Auto {
                 pose.getRotation().unaryMinus());
     }
 
-    // default Command followPath(String pathName)
-    //         throws IOException, ParseException {
-    //     PathPlannerPath rawPath = PathPlannerPath.fromPathFile(pathName);
-    //     PathPlannerPath path = FieldConstants.getAlliance() == Alliance.Red ? rawPath.mirrorPath() : rawPath;
-
-    //     return AutoBuilder.followPath(path);
-    //             // .deadlineFor(RobotState.getInstance().withNavigationMode(NavigationMode.VISION_FUSED_ODOMETRY))
-    //             // .asProxy();
-    // }
-
     default Command followPath(String pathName
     ,boolean mirrored
     ){
         PathPlannerPath path;
         try{
-            path = 
-            // mirrored ? PathPlannerPath.fromPathFile(pathName).mirrorPath() : 
-            getPath(pathName, mirrored);
+            path = getPath(pathName, mirrored);
         }catch (Exception e) {
            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
            return Commands.none();

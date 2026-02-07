@@ -133,12 +133,12 @@ public class RobotContainer {
                 // climb = new Climb(new ClimbIOSim());
 
                 vision = new Vision(
-                    drive,
-                    new VisionIOPhotonVisionSim(
-                        Vision_Constants.camera0Name,
-                        Vision_Constants.robotToCamera0,
-                        driveSimulation::getSimulatedDriveTrainPose),
-                    new VisionIOPhotonVisionSim(
+                    drive
+                    // ,new VisionIOPhotonVisionSim(
+                    //     Vision_Constants.camera0Name,
+                    //     Vision_Constants.robotToCamera0,
+                    //     driveSimulation::getSimulatedDriveTrainPose)
+                    ,new VisionIOPhotonVisionSim(
                         Vision_Constants.camera1Name,
                         Vision_Constants.robotToCamera1,
                         driveSimulation::getSimulatedDriveTrainPose)
@@ -324,7 +324,6 @@ public class RobotContainer {
 
         Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
         Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
-
         // Logger.recordOutput("Vision/GetTarget", new VisionIOPhotonVisionSim(
         //                 Vision_Constants.camera0Name,
         //                 Vision_Constants.robotToCamera0,
