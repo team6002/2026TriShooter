@@ -38,6 +38,8 @@ import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.shooter.*;
+import frc.robot.subsystems.shooter.ShooterIOSpark.ControlStage;
+import frc.robot.subsystems.superstructure.SuperStructure;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
@@ -64,8 +66,9 @@ public class RobotContainer {
     public final Intake intake;
     public final Conveyor conveyor;
     public final Kicker kicker;
-    // public final Hood hood;
-    // public final Climb climb;
+    public final Hood hood;
+    public final Climb climb;
+    public final SuperStructure superStructure;
     // public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
@@ -99,8 +102,8 @@ public class RobotContainer {
                 intake = new Intake(new IntakeIOSpark());
                 conveyor = new Conveyor(new ConveyorIOSpark());
                 kicker = new Kicker(new KickerIOSpark());
-                // hood = new Hood(new HoodIOSpark());
-                // climb = new Climb(new ClimbIOSpark());
+                hood = new Hood(new HoodIOSpark());
+                climb = new Climb(new ClimbIOSpark());
 
                 // this.vision = new Vision(
                 //     drive,
@@ -129,8 +132,8 @@ public class RobotContainer {
                 intake = new Intake(new IntakeIOSim(driveSimulation));
                 conveyor = new Conveyor(new ConveyorIOSim());
                 kicker = new Kicker(new KickerIOSim());
-                // hood = new Hood(new HoodIOSim());
-                // climb = new Climb(new ClimbIOSim());
+                hood = new Hood(new HoodIOSim());
+                climb = new Climb(new ClimbIOSim());
 
                 // vision = new Vision(
                 //     drive,
@@ -161,8 +164,8 @@ public class RobotContainer {
                 intake = new Intake(new IntakeIO() {});
                 conveyor = new Conveyor(new ConveyorIO() {});
                 kicker = new Kicker(new KickerIO() {});
-                // hood = new Hood(new HoodIO() {});
-                // climb = new Climb(new ClimbIO() {});
+                hood = new Hood(new HoodIO() {});
+                climb = new Climb(new ClimbIO() {});
 
                 // vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
@@ -170,6 +173,7 @@ public class RobotContainer {
         }
 
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
+        this.superStructure = new SuperStructure(climb, conveyor, hood, intake, kicker, shooter);
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
@@ -203,7 +207,7 @@ public class RobotContainer {
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
         IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
-        drive.setDefaultCommand(joystickDrive);
+        // drive.setDefaultCommand(joystickDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -232,14 +236,36 @@ public class RobotContainer {
         driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
             .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
 
-        driver.autoAlignmentButtonRight().onTrue(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kConvey)))
-            .onFalse(new InstantCommand(()-> conveyor.setVoltage(ConveyorConstants.kOff)));
+        driver.scoreButton().onTrue(
+            new InstantCommand(()-> {
+                kicker.setVoltage(ConveyorConstants.kConvey);
+                conveyor.setVoltage(KickerConstants.kKick);
+                shooter.startShootingTimer();
+                shooter.setControlStage(ControlStage.HOLD);
+                // shooter.setVoltage(12);
+                // shooter.setFeedforwardSlot(1);
+            }))
+        .onFalse(
+            new InstantCommand(()-> {
+                kicker.setVoltage(ConveyorConstants.kOff);
+                conveyor.setVoltage(KickerConstants.kOff);
+                shooter.stopShootingTimer();
+                // shooter.setFeedforwardSlot(0);
+                // shooter.setReference(0);
+            }
+        ));
 
-        // driver.scoreButton().onTrue(new InstantCommand(()-> shooter.setVoltage(7)))
-        //     .onFalse(new InstantCommand(()-> shooter.setVoltage(ConveyorConstants.kOff)));
+        driver.aButton().onTrue(
+            new InstantCommand(()->shooter.setReference(Math.toRadians(22500)))
+        ).onFalse(
+            new InstantCommand(()-> shooter.setVoltage((0)))
+        );
 
-        driver.aButton().onTrue(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kConvey)))
-            .onFalse(new InstantCommand(()-> kicker.setVoltage(ConveyorConstants.kOff)));
+        // driver.bButton().onTrue(
+        //     new InstantCommand(()-> shooter.setPIDslot(ClosedLoopSlot.kSlot0))
+        // ).onFalse(
+        //     new InstantCommand(()-> shooter.setPIDslot(ClosedLoopSlot.kSlot1))
+        // );
 
         // driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
         // driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));

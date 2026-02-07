@@ -8,15 +8,19 @@ public class ShooterConstants {
     public static final int kLeftShooterCanId = 3;
     public static final int kRightShooterCanId = 17;
 
-    public static final double kP = 0.0;
-    public static final double kI = 0.0;
-    public static final double kD = 0.0;
-    public static final double kFF = 0.0;
+    public static  double[][] kFreePID = {
+        //P, I, D, S, V, A
+        {0, 0, 0, 0.14, 0.0202, 0}, // left
+        {0, 0, 0, 0.16, 0.0195, 0}, // middle
+        {0, 0, 0, 0.13, 0.0202, 0} //right
+    };
 
-    public static final double kV = 0.0;
-    public static final double kS = 0.0;
-    public static final double kG = 0.0;
-    public static final double kA = 0.0;
+    public static  double[][] kLoadPID = {
+        //P, I, D, S, V, A
+        {0.0, 0, 0, 0.14, 0.0202, 0}, // left
+        {0.0, 0, 0, 0.16, 0.0195, 0}, // middle
+        {0.0, 0, 0, 0.13, 0.0202, 0} //right
+    };
 
     public static final double kPSim = 0.0;
     public static final double kISim = 0.0;
@@ -32,12 +36,14 @@ public class ShooterConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kMaxVelocity = Math.toRadians(27500);
-    public static final double kMaxAcceleration = Math.toRadians(10000);
-
     public static final double kHolding = 2;
 
     public static final double kGearRatio = 1;
+
+    public static final double kStartOnTargetVel = Math.toRadians(50);
+    public static final double kStopOnTargetVel = Math.toRadians(25);
+    public static final int kMinOnTargetSamples = 20;
+    public static final double kMaxFeedforwardVoltage = 12;
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {
@@ -70,11 +76,9 @@ public class ShooterConstants {
         extractColumn(3)  // time of flight, seconds
     );
 
-    // ⭐ Updated to include TOF
     public static final record ShootingParams(double angRad, double velocityMPS, double tofSeconds) {}
 
     public static final ShootingParams getShootingParams(double distance) {
-        // Clamp to table bounds
         if (distance <= SHOOTING_TABLE[0][0]) {
             return new ShootingParams(
                 Units.degreesToRadians(SHOOTING_TABLE[0][1]),
@@ -91,7 +95,6 @@ public class ShooterConstants {
             );
         }
 
-        // Linear interpolation
         for (int i = 0; i < SHOOTING_TABLE.length - 1; i++) {
             if (distance >= SHOOTING_TABLE[i][0] && distance <= SHOOTING_TABLE[i + 1][0]) {
                 double d0 = SHOOTING_TABLE[i][0];
@@ -113,7 +116,6 @@ public class ShooterConstants {
             }
         }
 
-        // Fallback (should never hit)
         return new ShootingParams(Units.degreesToRadians(75), 7.0, 1.0);
     }
 }

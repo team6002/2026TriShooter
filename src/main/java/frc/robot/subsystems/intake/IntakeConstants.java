@@ -9,7 +9,7 @@ public class IntakeConstants {
     public static final double kFF = 0.0;
 
     public static final double kV = 0.01;
-    public static final double kS = 0.22693;
+    public static final double kS = 0.2;//0.22693
     public static final double kG = 0.0;
     public static final double kA = 0.0018554;
 

@@ -20,14 +20,14 @@ public class ShooterIOSim implements ShooterIO {
     private final PIDController rightShooterPIDController =
             new PIDController(ShooterConstants.kPSim, ShooterConstants.kISim, ShooterConstants.kDSim);
     private final SimpleMotorFeedforward shooterFeedforward =
-            new SimpleMotorFeedforward(ShooterConstants.kS, ShooterConstants.kV,
-                    ShooterConstants.kA);
+            new SimpleMotorFeedforward(ShooterConstants.kSSim, ShooterConstants.kVSim,
+                    ShooterConstants.kASim);
     private final SimpleMotorFeedforward leftShooterFeedforward =
-            new SimpleMotorFeedforward(ShooterConstants.kS, ShooterConstants.kV,
-                    ShooterConstants.kA);
+            new SimpleMotorFeedforward(ShooterConstants.kSSim, ShooterConstants.kVSim,
+                    ShooterConstants.kASim);
     private final SimpleMotorFeedforward rightShooterFeedforward =
-            new SimpleMotorFeedforward(ShooterConstants.kS, ShooterConstants.kV,
-                    ShooterConstants.kA);
+            new SimpleMotorFeedforward(ShooterConstants.kSSim, ShooterConstants.kVSim,
+                    ShooterConstants.kASim);
     private double reference = 0;
     public static double objectsInHopper = 0;
 

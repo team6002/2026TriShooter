@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.subsystems.shooter.ShooterIOSpark.ControlStage;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -49,6 +50,22 @@ public class Shooter extends SubsystemBase {
 
     public void setReference(double velocity) {
         io.setReference(velocity);
+    }
+
+    public void setFeedforwardSlot(double slot){
+        io.setFeedforwardSlot(slot);
+    }
+
+    public void startShootingTimer(){
+        io.startShootingTimer();
+    }
+
+    public void stopShootingTimer(){
+        io.stopShootingTimer();
+    }
+
+    public void setControlStage(ControlStage controlStage){
+        io.setControlStage(controlStage);
     }
 
     @Override

@@ -266,9 +266,9 @@ public class SuperStructure {
         }
 
         DriverStation.reportError(
-                "Internal Error: destination reached, but cannot traceback trajectory in " + loopNumLimit
-                        + " iterations",
-                true);
+            "Internal Error: destination reached, but cannot traceback trajectory in " + loopNumLimit
+                + " iterations",
+            true);
         return Optional.empty();
     }
 
@@ -293,8 +293,8 @@ public class SuperStructure {
 
     public Command warmUpCommand() {
         return Commands.run(this::testTrajectoryGen)
-                .until(DriverStation::isEnabled)
-                .withTimeout(10)
-                .ignoringDisable(true);
+            .until(DriverStation::isEnabled)
+            .withTimeout(10)
+            .ignoringDisable(true);
     }
 }

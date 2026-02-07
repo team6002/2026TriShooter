@@ -2,6 +2,8 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import frc.robot.subsystems.shooter.ShooterIOSpark.ControlStage;
+
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
@@ -42,8 +44,16 @@ public interface ShooterIO {
     public default void setVoltage(double voltage) {}
 
     public default void setReference(double velocity) {}
+    
+    public default void setFeedforwardSlot(double slot){}
 
     public default void PID() {}
 
     public default void periodic() {}
+
+    public default void startShootingTimer() {}
+
+    public default void stopShootingTimer() {}
+
+    public default void setControlStage(ControlStage controlStage) {}
 }
