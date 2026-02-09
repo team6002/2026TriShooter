@@ -54,11 +54,6 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void setReference(double reference) {
-        this.reference = reference;
-    }
-
-    @Override
     public double getReference(){
         return reference;
     }
@@ -86,7 +81,11 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
+        shooterSim.update(0.02);
+        leftShooterSim.update(.02);
+        rightShooterSim.update(.02);
+
         shooterSim.setInput(shooterPIDController.calculate(
             shooterSim.getAngularVelocityRadPerSec(), reference)
             + shooterFeedforward.calculateWithVelocities(shooterSim.getAngularVelocityRadPerSec(), reference)
@@ -99,12 +98,5 @@ public class ShooterIOSim implements ShooterIO {
             rightShooterSim.getAngularVelocityRadPerSec(), reference)
             + rightShooterFeedforward.calculateWithVelocities(rightShooterSim.getAngularVelocityRadPerSec(), reference)
         );
-    }
-
-    @Override
-    public void periodic() {
-        shooterSim.update(0.02);
-        leftShooterSim.update(.02);
-        rightShooterSim.update(.02);
     }
 }

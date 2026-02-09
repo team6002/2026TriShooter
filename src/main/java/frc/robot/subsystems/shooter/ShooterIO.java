@@ -2,8 +2,6 @@ package frc.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import frc.robot.subsystems.shooter.ShooterIOSpark.ControlStage;
-
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
@@ -11,7 +9,6 @@ public interface ShooterIO {
         public double shooterVoltage;
         public double shooterVelocity;
         public double shooterReference;
-        public double shooterPos;
 
         public double leftShooterCurrent;
         public double leftShooterVoltage;
@@ -25,35 +22,31 @@ public interface ShooterIO {
     /** Updates the set of loggable inputs. */
     public default void updateInputs(ShooterIOInputs inputs) {}
 
-    public default double getCurrent() {
-        return 0;
-    }
+    public default double getCurrent() { return 0; }
 
-    public default double getVoltage() {
-        return 0;
-    }
+    public default double getVoltage() { return 0; }
 
-    public default double getReference() {
-        return 0;
-    }
+    public default double getReference() { return 0; }
 
-    public default double getVelocity() {
-        return 0;
-    }
+    public default double getVelocity() { return 0; }
+
+    public default double getLeftCurrent() { return 0; }
+
+    public default double getLeftVoltage() { return 0; }
+
+    public default double getLeftVelocity() { return 0; }
+
+    public default double getRightCurrent() { return 0; }
+
+    public default double getRightVoltage() { return 0; }
+
+    public default double getRightVelocity() { return 0; }
 
     public default void setVoltage(double voltage) {}
 
-    public default void setReference(double velocity) {}
-    
-    public default void setFeedforwardSlot(double slot){}
+    public default void setLeftVoltage(double voltage) {}
 
-    public default void PID() {}
+    public default void setRightVoltage(double voltage) {}
 
     public default void periodic() {}
-
-    public default void startShootingTimer() {}
-
-    public default void stopShootingTimer() {}
-
-    public default void setControlStage(ControlStage controlStage) {}
 }

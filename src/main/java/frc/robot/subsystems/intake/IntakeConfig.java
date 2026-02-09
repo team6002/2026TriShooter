@@ -25,19 +25,6 @@ public class IntakeConfig {
             .velocityConversionFactor((Math.PI * 2) / (60 * IntakeConstants.kGearRatio))
             .quadratureAverageDepth(2)
             .quadratureMeasurementPeriod(10);
-        intakeConfig
-            .closedLoop
-            .pid(
-                IntakeConstants.kP,
-                IntakeConstants.kI,
-                IntakeConstants.kD)
-            .outputRange(IntakeConstants.kMinOutput, IntakeConstants.kMaxOutput)
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
-        intakeConfig.closedLoop.feedForward.svag(
-            IntakeConstants.kS, 
-            IntakeConstants.kV, 
-            IntakeConstants.kA, 
-            IntakeConstants.kG);
         
         intakeExtenderConfig
             .disableFollowerMode()

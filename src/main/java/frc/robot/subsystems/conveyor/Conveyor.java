@@ -1,5 +1,7 @@
 package frc.robot.subsystems.conveyor;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -50,6 +52,10 @@ public class Conveyor extends SubsystemBase {
 
     public void setReference(double velocity) {
         io.setReference(velocity);
+    }
+
+    public Command runVoltage(double voltage){
+        return Commands.runOnce(()-> setVoltage(voltage), this);
     }
 
     @Override

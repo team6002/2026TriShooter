@@ -152,7 +152,6 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public void PID() {
-        intakeController.setSetpoint(intakeReference, intakeType);
         // intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType);
 
         boolean shouldBeLow =
@@ -176,10 +175,7 @@ public class IntakeIOSpark implements IntakeIO {
                 PersistMode.kNoPersistParameters
             );
         }
-    }
 
-    @Override
-    public void periodic(){
         intakeController.setSetpoint(intakeReference, intakeType);
     }
 }

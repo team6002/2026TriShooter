@@ -7,14 +7,11 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.constants.FieldConstants;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.climb.Climb;
 import frc.robot.subsystems.climb.ClimbConstants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
-import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
@@ -22,9 +19,6 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
-import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
-
 import java.util.*;
 
 public class SuperStructure {
@@ -43,19 +37,12 @@ public class SuperStructure {
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power
         )
-        ,INDEX(   
+        ,READY_TO_SHOOT(
             Degrees.of(ExtenderConstants.kHome), // intake extension
             Degrees.of(ClimbConstants.kHome), //climb angle
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kConvey), // conveyor power
             Volts.of(KickerConstants.kKick) // kicker power
-        )
-        ,READY_TO_SHOOT(
-            Degrees.of(ExtenderConstants.kHome), // intake extension
-            Degrees.of(ClimbConstants.kHome), //climb angle
-            Volts.of(IntakeConstants.kOff), // intake power
-            Volts.of(ConveyorConstants.kOff), // conveyor power
-            Volts.of(KickerConstants.kOff) // kicker power
         )
         ,CLIMB (
             Degrees.of(ExtenderConstants.kHome), // intake extension
@@ -82,11 +69,8 @@ public class SuperStructure {
 
     public static List<PoseLink> LINKS = List.of(
         new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.INTAKE)
-        ,new PoseLink(SuperStructurePose.INTAKE, SuperStructurePose.INDEX)
-        ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.INDEX)
         ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.READY_TO_SHOOT)
         ,new PoseLink(SuperStructurePose.INTAKE, SuperStructurePose.READY_TO_SHOOT)
-        ,new PoseLink(SuperStructurePose.INDEX, SuperStructurePose.READY_TO_SHOOT)
         ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.CLIMB)
     );
 
@@ -121,56 +105,51 @@ public class SuperStructure {
         }
     }
 
-    private final Climb climb;
+    // private final Climb climb;
     private final Conveyor conveyor;
-    private final Hood hood;
+    // private final Hood hood;
     private final Intake intake;
     private final Kicker kicker;
     private final Shooter shooter;
 
     private SuperStructurePose currentPose;
     private SuperStructurePose goal;
-    public final Trigger atReference;
 
     public SuperStructure(Climb climb, Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
-        this.climb = climb;
+        // this.climb = climb;
         this.conveyor = conveyor;
-        this.hood = hood;
+        // this.hood = hood;
         this.intake = intake;
         this.kicker = kicker;
         this.shooter = shooter;
 
         this.goal = this.currentPose = SuperStructurePose.IDLE;
-
-        atReference = new Trigger(()-> intake.getExtenderInPosition() && currentPose == SuperStructurePose.READY_TO_SHOOT);
-        atReference.whileTrue(
-            new RunCommand(
-                ()-> {
-                    double dist = Drive.staticRobotPose.getTranslation().minus(FieldConstants.getHubPose()).getNorm();
-                    ShootingParams params = ShooterConstants.getShootingParams(dist);
-
-                    hood.setReference(params.angRad());
-                    shooter.setReference(params.velocityMPS() / .0508); // convert meters per second to rad / s
-                },
-                shooter, hood)
-        );
-
-        new Trigger(DriverStation::isTeleop).onTrue(moveToPose(SuperStructurePose.IDLE));
-
-        warmUpCommand().schedule();
     }
 
     private Command runPose(SuperStructurePose pose) {
+        if(pose == SuperStructurePose.READY_TO_SHOOT){
+            return Commands.sequence(
+                // intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
+                shooter.setTargetVelolcity(Math.toRadians(16000)),
+                new WaitUntilCommand(()-> shooter.isReady()).withTimeout(2),
+                conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
+                kicker.runVoltage(pose.kickerVoltage.baseUnitMagnitude()),
+                Commands.runOnce(()-> shooter.startShooting()),
+                Commands.runOnce(()-> currentPose = pose)
+            );
+        }
+
         return Commands.runOnce(
             ()-> {
+                shooter.stop();
                 conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
-                climb.setReference(pose.climbAngle.in(Radians));
+                // climb.setReference(pose.climbAngle.in(Radians));
                 intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
-                intake.setExtenderReference(pose.intakeAngle.in(Radians));
+                // intake.setExtenderReference(pose.intakeAngle.in(Radians));
                 kicker.setVoltage(pose.kickerVoltage.baseUnitMagnitude());
                 currentPose = pose;
             },
-            conveyor, climb, intake, kicker
+            conveyor, intake, kicker
         );
     }
 
@@ -287,7 +266,7 @@ public class SuperStructure {
 
     private void testTrajectoryGen() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 10; i++) getTrajectory(SuperStructurePose.IDLE, SuperStructurePose.IDLE);
+        for (int i = 0; i < 10; i++) getTrajectory(SuperStructurePose.IDLE, SuperStructurePose.INTAKE);
         System.out.println("tried 10 plans, took " + (System.currentTimeMillis() - t0) + " ms");
     }
 

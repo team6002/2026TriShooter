@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
+
 import java.util.HashMap;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -115,6 +117,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledInit() {
         robotContainer.resetSimulationField();
+        robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
     }
 
     /** This function is called periodically when disabled. */
@@ -126,6 +129,7 @@ public class Robot extends LoggedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
+        robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
         autonomousCommand = robotContainer.getAutonomousCommand();
         // robotContainer.resetSimulationField();
 
@@ -144,7 +148,9 @@ public class Robot extends LoggedRobot {
 
     /** This function is called once when teleop is enabled. */
     @Override
-    public void teleopInit() {}
+    public void teleopInit() {
+        robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
+    }
 
     /** This function is called periodically during operator control. */
     @Override

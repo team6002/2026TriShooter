@@ -8,23 +8,20 @@ public class ShooterConstants {
     public static final int kLeftShooterCanId = 3;
     public static final int kRightShooterCanId = 17;
 
-    public static  double[][] kFreePID = {
-        //P, I, D, S, V, A
-        {0, 0, 0, 0.14, 0.0202, 0}, // left
-        {0, 0, 0, 0.16, 0.0195, 0}, // middle
-        {0, 0, 0, 0.13, 0.0202, 0} //right
-    };
+    public static final double kLeftShooterS = 0.14;
+    public static final double kMiddleShooterS = 0.16;
+    public static final double kRightShooterS = 0.13;
 
-    public static  double[][] kLoadPID = {
-        //P, I, D, S, V, A
-        {0.0, 0, 0, 0.14, 0.0202, 0}, // left
-        {0.0, 0, 0, 0.16, 0.0195, 0}, // middle
-        {0.0, 0, 0, 0.13, 0.0202, 0} //right
-    };
+    public static final double kLeftShooterV = 0.021; // 0.0205
+    public static final double kMiddleShootV = 0.02; // 0.0198
+    public static final double kRightShooterV = 0.022; // 0.02075
+
+    public static final double kShootingVoltRamp = 2.5; // 2 volts over 10 seconds .0075
 
     public static final double kPSim = 0.0;
     public static final double kISim = 0.0;
     public static final double kDSim = 0.0;
+
     public static final double kFFSim = 0.0;
 
     public static final double kSSim = 0.0;
@@ -34,16 +31,15 @@ public class ShooterConstants {
 
     public static final boolean kInverted = true;
     public static final double kMinOutput = -1;
-    public static final double kMaxOutput = 1;
+    public
+     static final double kMaxOutput = 1;
 
     public static final double kHolding = 2;
 
     public static final double kGearRatio = 1;
 
-    public static final double kStartOnTargetVel = Math.toRadians(50);
-    public static final double kStopOnTargetVel = Math.toRadians(25);
-    public static final int kMinOnTargetSamples = 20;
-    public static final double kMaxFeedforwardVoltage = 12;
+    public static final double kStartOnTargetVel = 15; // radians
+    public static final double kStopOnTargetVel = 15; // radians
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.kicker;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -46,6 +48,10 @@ public class Kicker extends SubsystemBase {
 
     public void setVoltage(double voltage) {
         io.setVoltage(voltage);
+    }
+
+    public Command runVoltage(double voltage) {
+        return Commands.runOnce(()-> setVoltage(voltage), this);
     }
 
     public void setReference(double velocity) {

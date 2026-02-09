@@ -1,7 +1,7 @@
 package frc.robot.subsystems.hood;
 
 public class HoodConstants {
-    public static final int kHoodCanId = 12;
+    public static final int kHoodCanId = 61;
 
     public static final double kP = 0.0;
     public static final double kI = 0.0;

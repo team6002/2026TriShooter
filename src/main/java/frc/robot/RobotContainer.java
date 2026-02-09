@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.autos.hump.AUTO_SideHump;
 import frc.robot.commands.*;
@@ -38,8 +37,8 @@ import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.shooter.ShooterIOSpark.ControlStage;
 import frc.robot.subsystems.superstructure.SuperStructure;
+import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
@@ -219,9 +218,6 @@ public class RobotContainer {
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        if(RobotBase.isSimulation()) driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
-        // if(RobotBase.isReal()) driver.scoreButton().onTrue(new ShootFuel(conveyor, intake, kicker, hood, shooter));
-
         // driver.autoAlignmentButtonLeft().whileTrue(
         //     JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
         //         driveInput
@@ -233,44 +229,11 @@ public class RobotContainer {
         //     )
         // );
 
-        driver.intakeButton().onTrue(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOn)))
-            .onFalse(new InstantCommand(()-> intake.setVoltage(IntakeConstants.kOff)));
+        driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
+            .onFalse(superStructure.moveToPose(SuperStructurePose.IDLE));
 
-        driver.scoreButton().onTrue(
-            new InstantCommand(()-> {
-                kicker.setVoltage(ConveyorConstants.kConvey);
-                conveyor.setVoltage(KickerConstants.kKick);
-                shooter.startShootingTimer();
-                shooter.setControlStage(ControlStage.HOLD);
-                // shooter.setVoltage(12);
-                // shooter.setFeedforwardSlot(1);
-            }))
-        .onFalse(
-            new InstantCommand(()-> {
-                kicker.setVoltage(ConveyorConstants.kOff);
-                conveyor.setVoltage(KickerConstants.kOff);
-                shooter.stopShootingTimer();
-                // shooter.setFeedforwardSlot(0);
-                // shooter.setReference(0);
-            }
-        ));
-
-        driver.aButton().onTrue(
-            new InstantCommand(()->shooter.setReference(Math.toRadians(22500)))
-        ).onFalse(
-            new InstantCommand(()-> shooter.setVoltage((0)))
-        );
-
-        // driver.bButton().onTrue(
-        //     new InstantCommand(()-> shooter.setPIDslot(ClosedLoopSlot.kSlot0))
-        // ).onFalse(
-        //     new InstantCommand(()-> shooter.setPIDslot(ClosedLoopSlot.kSlot1))
-        // );
-
-        // driver.aButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kForward));
-        // driver.bButton().onTrue(shooter.getSysIdRoutine().quasistatic(Direction.kReverse));
-        // driver.xButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kForward));
-        // driver.yButton().onTrue(shooter.getSysIdRoutine().dynamic(Direction.kReverse));
+        driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
+            .onFalse(superStructure.moveToPose(SuperStructurePose.IDLE));
     }
 
     /**
@@ -330,5 +293,8 @@ public class RobotContainer {
             field.getObject("Odometry").setPose(drive.getPose());
 
         AlertsManager.updateLEDAndLog(ledStatusLight);
+
+        Logger.recordOutput("SuperStructure/goal", superStructure.targetPose().toString());
+        Logger.recordOutput("SuperStructure/pose", superStructure.currentPose().toString());
     }
 }
