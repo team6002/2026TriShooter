@@ -1,7 +1,7 @@
 package frc.robot.subsystems.hood;
 
 public class HoodConstants {
-    public static final int kHoodCanId = 61;
+    public static final int kHoodCanId = 2;
 
     public static final double kP = 0.0;
     public static final double kI = 0.0;
@@ -23,13 +23,18 @@ public class HoodConstants {
     public static final double kGSim = 0.0;
     public static final double kASim = 0.0;
 
-    public static final boolean kInverted = true;
+    public static final boolean kInverted = false;
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
     public static final double kMinAngleRad = 0;
     public static final double kMaxAngleRad = Math.toRadians(90);
-    public static final double kTolerance = Math.toRadians(1);
+    public static final double kTolerance = Math.toRadians(15);
+
+    public static final double kMaxVel = Math.toRadians(1080);
+    public static final double kMaxAccel = Math.toRadians(2160);
     
     public static final double kGearRatio = 1;
+
+    public static final double kHardBallAdjust = Math.toRadians(15); // Aim hard balls 15 degrees downward
 }

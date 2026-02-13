@@ -1,18 +1,16 @@
 package frc.robot.subsystems.hood;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.math.util.Units;
-
 public class HoodIOSpark implements HoodIO {
     private final SparkMax hoodMotor;
-    private final RelativeEncoder hoodEncoder;
+    private final AbsoluteEncoder hoodEncoder;
     private final SparkClosedLoopController hoodController;
 
     private double hoodReference;
@@ -26,7 +24,7 @@ public class HoodIOSpark implements HoodIO {
         hoodController = hoodMotor.getClosedLoopController();
 
         // initalize encoder
-        hoodEncoder = hoodMotor.getEncoder();
+        hoodEncoder = hoodMotor.getAbsoluteEncoder();
 
         // apply config
         hoodMotor.configure(
@@ -43,12 +41,17 @@ public class HoodIOSpark implements HoodIO {
         inputs.hoodCurrent = getCurrent();
         inputs.hoodVoltage = getVoltage();
         inputs.hoodVelocity = getVelocity();
-        inputs.hoodPos = Units.radiansToDegrees(getPosition());
+        inputs.hoodPos = getPosition();
     }
 
     @Override
     public double getVelocity() {
         return hoodEncoder.getVelocity();
+    }
+
+    @Override
+    public double getPosition(){
+        return hoodEncoder.getPosition();
     }
 
     @Override
@@ -85,6 +88,6 @@ public class HoodIOSpark implements HoodIO {
 
     @Override
     public void PID() {
-        hoodController.setSetpoint(hoodReference, hoodType);
+        // hoodController.setSetpoint(hoodReference, hoodType);
     }
 }

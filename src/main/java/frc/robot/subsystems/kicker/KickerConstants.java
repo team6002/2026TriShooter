@@ -3,9 +3,9 @@ package frc.robot.subsystems.kicker;
 public class KickerConstants {
     public static final int kKickerCanId = 16;
 
-    public static final double kP = 0.0006;
+    public static final double kP = 0.0;
     public static final double kI = 0.0;
-    public static final double kD = 0.0001;
+    public static final double kD = 0.0;
     public static final double kFF = 0.0;
 
     public static final double kV = 0.0;

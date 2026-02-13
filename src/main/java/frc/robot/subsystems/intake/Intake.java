@@ -93,8 +93,16 @@ public class Intake extends SubsystemBase {
         io.setExtenderVoltage(voltage);
     }
 
-    public void setExtenderReference(double velocity) {
-        io.setExtenderReference(velocity);
+    public void setExtenderReference(double angRad) {
+        io.setExtenderReference(angRad);
+    }
+
+    public Command setExtenderTargetAngle(double angRad){
+        return Commands.runOnce(()-> setExtenderReference(angRad), this);
+    }
+
+    public double getExtenderPosition(){
+        return io.getExtenderPosition();
     }
 
     public boolean getExtenderInPosition(){

@@ -57,9 +57,11 @@ public class JoystickDrive extends Command {
 
     @Override
     public void execute() {
-        final ChassisSpeeds pilotInputSpeeds = input.getJoystickChassisSpeeds(
+        ChassisSpeeds pilotInputSpeeds = input.getJoystickChassisSpeeds(
                 driveSubsystem.getChassisMaxLinearVelocityMetersPerSec() * translationalSensitivity,
                 driveSubsystem.getChassisMaxAngularVelocity() * rotationalSensitivity);
+        
+        pilotInputSpeeds = applyDeadband(pilotInputSpeeds, 0.05);
 
         if (Math.abs(pilotInputSpeeds.omegaRadiansPerSecond) > 0.05) previousRotationalInputTimer.reset();
 
@@ -113,4 +115,12 @@ public class JoystickDrive extends Command {
     }
 
     public static Optional<JoystickDrive> instance = Optional.empty();
+
+    private ChassisSpeeds applyDeadband(ChassisSpeeds speeds, double deadband) {
+        return new ChassisSpeeds(
+                Math.abs(speeds.vxMetersPerSecond) > deadband ? speeds.vxMetersPerSecond : 0,
+                Math.abs(speeds.vyMetersPerSecond) > deadband ? speeds.vyMetersPerSecond : 0,
+                Math.abs(speeds.omegaRadiansPerSecond) > deadband ? speeds.omegaRadiansPerSecond : 0
+        );
+    }
 }

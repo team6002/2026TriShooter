@@ -2,16 +2,17 @@ package frc.robot.subsystems.intake;
 
 public class IntakeConstants {
     public static final int kIntakeCanId = 12;
+    public static final int kIntakeFollowerCanId = 1;
 
-    public static final double kP = 3.1325E-05;
+    public static final double kP = 0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kFF = 0.0;
 
-    public static final double kV = 0.01;
-    public static final double kS = 0.2;//0.22693
+    public static final double kV = 0.0;
+    public static final double kS = 0.0;
     public static final double kG = 0.0;
-    public static final double kA = 0.0018554;
+    public static final double kA = 0;
 
     public static final double kPSim = 0.0;
     public static final double kISim = 0.0;
@@ -36,14 +37,14 @@ public class IntakeConstants {
     public static final class ExtenderConstants{
         public static final int kIntakeExtenderCanId = 7;
 
-        public static final double kP = 0.0;
+        public static final double kP = 3;
         public static final double kI = 0.0;
         public static final double kD = 0.0;
         public static final double kFF = 0.0;
 
         public static final double kV = 0.0;
         public static final double kS = 0.0;
-        public static final double kG = 0.0;
+        public static final double kG = 0.33;
         public static final double kA = 0.0;
 
         public static final double kPSim = 0.0;
@@ -56,17 +57,18 @@ public class IntakeConstants {
         public static final double kGSim = 0.0;
         public static final double kASim = 0.0;
 
-        public static final boolean kInverted = true;
+        public static final boolean kInverted = false;
         public static final double kMinOutput = -1;
         public static final double kMaxOutput = 1;
 
-        public static final double kHome = Math.toRadians(0);
-        public static final double kExtended = Math.toRadians(90);
+        public static final double kHome = Math.toRadians(155);
+        public static final double kStow = Math.toRadians(175);
+        public static final double kExtended = Math.toRadians(265);
 
-        public static final double kMaxVel = Math.toRadians(90);
-        public static final double kMaxAccel = Math.toRadians(90);
+        public static final double kMaxVel = Math.toRadians(16000);
+        public static final double kMaxAccel = Math.toRadians(64000);
 
-        public static final double kPositionTolerance = Math.toRadians(2);
+        public static final double kPositionTolerance = Math.toRadians(5);
 
         public static final double kGearRatio = 81;
     }

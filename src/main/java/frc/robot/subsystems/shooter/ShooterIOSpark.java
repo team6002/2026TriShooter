@@ -37,10 +37,10 @@ public class ShooterIOSpark implements ShooterIO {
                 ShooterConfig.shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         leftShooterMotor.configure(
-                ShooterConfig.leftShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                ShooterConfig.shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         rightShooterMotor.configure(
-            ShooterConfig.rightShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            ShooterConfig.shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //tuning
 

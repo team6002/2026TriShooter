@@ -21,32 +21,41 @@ import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.*;
 
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 public class SuperStructure {
     public enum SuperStructurePose {
         IDLE (
-            Degrees.of(ExtenderConstants.kHome), // intake extension
-            Degrees.of(ClimbConstants.kHome), //climb angle
+            Radians.of(ExtenderConstants.kExtended), // intake extension
+            Radians.of(ClimbConstants.kHome), //climb angle
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power
         )
+        ,STOW(
+           Radians.of(ExtenderConstants.kStow), // intake extension
+            Radians.of(ClimbConstants.kHome), //climb angle
+            Volts.of(IntakeConstants.kOff), // intake power
+            Volts.of(ConveyorConstants.kOff), // conveyor power
+            Volts.of(KickerConstants.kOff) // kicker power 
+        )
         ,INTAKE (
-            Degrees.of(ExtenderConstants.kExtended), // intake extension
-            Degrees.of(ClimbConstants.kHome), //climb angle
+            Radians.of(ExtenderConstants.kExtended), // intake extension
+            Radians.of(ClimbConstants.kHome), //climb angle
             Volts.of(IntakeConstants.kIntake), // intake power
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power
         )
         ,READY_TO_SHOOT(
-            Degrees.of(ExtenderConstants.kHome), // intake extension
-            Degrees.of(ClimbConstants.kHome), //climb angle
+            Radians.of(ExtenderConstants.kStow), // intake extension
+            Radians.of(ClimbConstants.kHome), //climb angle
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kConvey), // conveyor power
             Volts.of(KickerConstants.kKick) // kicker power
         )
         ,CLIMB (
-            Degrees.of(ExtenderConstants.kHome), // intake extension
-            Degrees.of(ClimbConstants.kClimb), //climb angle
+            Radians.of(ExtenderConstants.kStow), // intake extension
+            Radians.of(ClimbConstants.kClimb), //climb angle
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power
@@ -69,9 +78,12 @@ public class SuperStructure {
 
     public static List<PoseLink> LINKS = List.of(
         new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.INTAKE)
+        ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.STOW)
         ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.READY_TO_SHOOT)
+        ,new PoseLink(SuperStructurePose.STOW, SuperStructurePose.READY_TO_SHOOT)
         ,new PoseLink(SuperStructurePose.INTAKE, SuperStructurePose.READY_TO_SHOOT)
         ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.CLIMB)
+        ,new PoseLink(SuperStructurePose.STOW, SuperStructurePose.CLIMB)
     );
 
     public record PoseLink(SuperStructurePose pose1, SuperStructurePose pose2) {
@@ -115,6 +127,8 @@ public class SuperStructure {
     private SuperStructurePose currentPose;
     private SuperStructurePose goal;
 
+    private LoggedNetworkNumber shooterTargetSpeed = new LoggedNetworkNumber("SuperStructure/targetRadPerS", 17500);
+
     public SuperStructure(Climb climb, Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
         // this.climb = climb;
         this.conveyor = conveyor;
@@ -129,13 +143,21 @@ public class SuperStructure {
     private Command runPose(SuperStructurePose pose) {
         if(pose == SuperStructurePose.READY_TO_SHOOT){
             return Commands.sequence(
-                // intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
-                shooter.setTargetVelolcity(Math.toRadians(16000)),
+                intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
+                shooter.setTargetVelolcity(Math.toRadians(shooterTargetSpeed.get())),
                 new WaitUntilCommand(()-> shooter.isReady()).withTimeout(2),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
                 kicker.runVoltage(pose.kickerVoltage.baseUnitMagnitude()),
+                intake.setExtenderTargetAngle(pose.intakeAngle.in(Radians)),
                 Commands.runOnce(()-> shooter.startShooting()),
                 Commands.runOnce(()-> currentPose = pose)
+            ).finallyDo(
+                interrupted -> {
+                    if(interrupted){
+                        shooter.stop();
+                        kicker.setVoltage(KickerConstants.kOff);
+                    }
+                }
             );
         }
 
@@ -145,7 +167,7 @@ public class SuperStructure {
                 conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
                 // climb.setReference(pose.climbAngle.in(Radians));
                 intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
-                // intake.setExtenderReference(pose.intakeAngle.in(Radians));
+                intake.setExtenderReference(pose.intakeAngle.in(Radians));
                 kicker.setVoltage(pose.kickerVoltage.baseUnitMagnitude());
                 currentPose = pose;
             },

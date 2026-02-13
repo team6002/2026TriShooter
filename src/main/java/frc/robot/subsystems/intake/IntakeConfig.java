@@ -4,8 +4,10 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 public class IntakeConfig {
     public static final SparkMaxConfig intakeConfig = new SparkMaxConfig();
@@ -15,7 +17,7 @@ public class IntakeConfig {
     static {
         intakeConfig
             .disableFollowerMode()
-            .idleMode(IdleMode.kBrake)
+            .idleMode(IdleMode.kCoast)
             .inverted(IntakeConstants.kInverted)
             .smartCurrentLimit(40)
             .voltageCompensation(12.0);
@@ -30,27 +32,25 @@ public class IntakeConfig {
             .disableFollowerMode()
             .idleMode(IdleMode.kBrake)
             .inverted(ExtenderConstants.kInverted)
-            .smartCurrentLimit(10)
+            .smartCurrentLimit(40)
             .voltageCompensation(12.0);
         intakeExtenderConfig.absoluteEncoder
             .positionConversionFactor(Math.PI * 2)
             .velocityConversionFactor((Math.PI * 2) / 60)
-            .averageDepth(2);
-        intakeExtenderConfig.closedLoop.maxMotion
-            .cruiseVelocity(ExtenderConstants.kMaxVel)
-            .maxAcceleration(ExtenderConstants.kMaxAccel); 
+            .averageDepth(2)
+            .inverted(true);
         intakeExtenderConfig.closedLoop
             .pid(
                 ExtenderConstants.kP,
                 ExtenderConstants.kI,
-                ExtenderConstants.kD)
+                ExtenderConstants.kD,
+                ClosedLoopSlot.kSlot0)
             .outputRange(ExtenderConstants.kMinOutput, ExtenderConstants.kMaxOutput)
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-        intakeExtenderConfig.closedLoop.feedForward
-            .svag(
-                ExtenderConstants.kS,
-                ExtenderConstants.kV,
-                ExtenderConstants.kA,
-                ExtenderConstants.kG);
+        intakeExtenderConfig.closedLoop.maxMotion
+            .allowedProfileError(ExtenderConstants.kPositionTolerance, ClosedLoopSlot.kSlot0)
+            .cruiseVelocity(ExtenderConstants.kMaxVel, ClosedLoopSlot.kSlot0)
+            .maxAcceleration(ExtenderConstants.kMaxAccel, ClosedLoopSlot.kSlot0)
+            .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal, ClosedLoopSlot.kSlot0); 
     }
 }

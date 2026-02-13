@@ -6,9 +6,12 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
 public class IntakeIOSpark implements IntakeIO {
@@ -25,8 +28,6 @@ public class IntakeIOSpark implements IntakeIO {
 
     private double intakeExtenderReference;
     private ControlType intakeExtenderType;
-    private boolean lowCurrentMode = false;
-
 
     public IntakeIOSpark() {
         // initialize motor
@@ -46,11 +47,14 @@ public class IntakeIOSpark implements IntakeIO {
         intakeMotor.configure(
                 IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        intakeExtenderMotor.configure(
+            IntakeConfig.intakeExtenderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         // reset target speed in init
         intakeReference = 0;
         intakeType = ControlType.kVelocity;
 
-        intakeExtenderReference = 0;
+        intakeExtenderReference = ExtenderConstants.kStow;
         intakeExtenderType = ControlType.kMAXMotionPositionControl;
     }
 
@@ -62,12 +66,12 @@ public class IntakeIOSpark implements IntakeIO {
         inputs.intakeVelocity = getVelocity();
         inputs.intakePosition = getPosition();
 
-        inputs.extenderReference = getExtenderReference();
+        inputs.extenderReference = Units.radiansToDegrees(getExtenderReference());
         inputs.extenderCurrent = getExtenderCurrent();
         inputs.extenderVoltage = getExtenderVoltage();
         inputs.extenderVelocity = getExtenderVelocity();
-        inputs.extenderPosition = getExtenderPosition();
-        inputs.extenderInPosition = (getReference() - getPosition()) < Math.toRadians(5);
+        inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
+        inputs.extenderInPosition = getExtenderInPosition();
     }
 
     @Override
@@ -108,8 +112,8 @@ public class IntakeIOSpark implements IntakeIO {
     }
 
     @Override
-    public void setExtenderReference(double velocity) {
-        intakeExtenderReference = velocity;
+    public void setExtenderReference(double angRad) {
+        intakeExtenderReference = angRad;
         intakeExtenderType = ControlType.kMAXMotionPositionControl;
     }
 
@@ -152,30 +156,11 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public void PID() {
-        // intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType);
-
-        boolean shouldBeLow =
-            intakeReference == ExtenderConstants.kExtended &&
-            getExtenderInPosition();
-
-        if (shouldBeLow && !lowCurrentMode) {
-            lowCurrentMode = true;
-            intakeExtenderMotor.configure(
-                IntakeConfig.intakeExtenderConfig.smartCurrentLimit(10),
-                ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters
-            );
-        }
-
-        else if (!shouldBeLow && lowCurrentMode) {
-            lowCurrentMode = false;
-            intakeExtenderMotor.configure(
-                IntakeConfig.intakeExtenderConfig.smartCurrentLimit(40),
-                ResetMode.kNoResetSafeParameters,
-                PersistMode.kNoPersistParameters
-            );
-        }
-
         intakeController.setSetpoint(intakeReference, intakeType);
+
+        //horizontal is 270, offset to 0
+
+        double ff = - ExtenderConstants.kG * (Math.cos(getExtenderPosition() - Math.toRadians(270)));
+        intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
     }
 }

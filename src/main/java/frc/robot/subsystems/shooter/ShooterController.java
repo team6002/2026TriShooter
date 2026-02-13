@@ -61,7 +61,7 @@ public class ShooterController {
                 break;
             case HOLD:
                 if(currentRpm - targetRpm > ShooterConstants.kStopOnTargetVel){
-                    shootingTimeStarted = Timer.getFPGATimestamp();
+                    // shootingTimeStarted = Timer.getFPGATimestamp();
                 }
                 break;
             default:

@@ -150,6 +150,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void teleopInit() {
         robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
+        robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderPosition());
     }
 
     /** This function is called periodically during operator control. */

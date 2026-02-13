@@ -16,7 +16,7 @@ public class ShooterConstants {
     public static final double kMiddleShootV = 0.02; // 0.0198
     public static final double kRightShooterV = 0.022; // 0.02075
 
-    public static final double kShootingVoltRamp = 2.5; // 2 volts over 10 seconds .0075
+    public static final double kShootingVoltRamp = 2.5; // add voltage into the shooter system while shooting 2.5
 
     public static final double kPSim = 0.0;
     public static final double kISim = 0.0;
@@ -38,8 +38,10 @@ public class ShooterConstants {
 
     public static final double kGearRatio = 1;
 
-    public static final double kStartOnTargetVel = 15; // radians
-    public static final double kStopOnTargetVel = 15; // radians
+    public static final double kStartOnTargetVel = 25; // radians
+    public static final double kStopOnTargetVel = 50; // radians
+
+    public static final double kHardBallAdjust = Math.toRadians(1000); // adjust velocity for harder balls
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {
