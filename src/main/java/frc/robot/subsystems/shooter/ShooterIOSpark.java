@@ -3,67 +3,80 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.util.Units;
 
 public class ShooterIOSpark implements ShooterIO {
-    private final SparkMax middleShooterMotor, leftShooterMotor, rightShooterMotor;
+    private final SparkMax leftShooterMotor, middleShooterMotor, rightShooterMotor;
 
-    private final RelativeEncoder middleShooterEncoder, leftShooterEncoder, rightShooterEncoder;
+    private final RelativeEncoder leftShooterEncoder, middleShooterEncoder, rightShooterEncoder;
 
-    private double leftShooterReference, middleShooterReference, rightShooterReference;
+    private final SparkClosedLoopController leftShooterController, middleShooterController, rightShooterController;
+
+    private double shooterReference;
+    private ControlType shooterType;
+    private boolean shooting;
 
     //tuning
     // private final LoggedNetworkNumber leftS, leftV, middleS, middleV, rightS, rightV, reference;
 
     public ShooterIOSpark() {
         // initialize motor
-        middleShooterMotor = new SparkMax(ShooterConstants.kShooterCanId, MotorType.kBrushless);
         leftShooterMotor = new SparkMax(ShooterConstants.kLeftShooterCanId, MotorType.kBrushless);
+        middleShooterMotor = new SparkMax(ShooterConstants.kMiddleShooterCanId, MotorType.kBrushless);
         rightShooterMotor = new SparkMax(ShooterConstants.kRightShooterCanId, MotorType.kBrushless);
 
         // initalize encoder
-        middleShooterEncoder = middleShooterMotor.getEncoder();
         leftShooterEncoder = leftShooterMotor.getEncoder();
+        middleShooterEncoder = middleShooterMotor.getEncoder();
         rightShooterEncoder = rightShooterMotor.getEncoder();
 
-        // apply config
-        middleShooterMotor.configure(
-                ShooterConfig.shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        //initialize ClosedLoop controller
+        leftShooterController = leftShooterMotor.getClosedLoopController();
+        middleShooterController = middleShooterMotor.getClosedLoopController();
+        rightShooterController = rightShooterMotor.getClosedLoopController();
 
+        // apply config
         leftShooterMotor.configure(
-                ShooterConfig.shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                ShooterConfig.leftShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        middleShooterMotor.configure(
+                ShooterConfig.middleShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         rightShooterMotor.configure(
-            ShooterConfig.shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            ShooterConfig.rightShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         //tuning
 
-        // leftS = new LoggedNetworkNumber("Shooter/leftS", 0.0);
-        // leftV = new LoggedNetworkNumber("Shooter/leftV", 0.0);
-        // middleS = new LoggedNetworkNumber("Shooter/middleS", 0.0);
-        // middleV = new LoggedNetworkNumber("Shooter/middleV", 0.0);
-        // rightS = new LoggedNetworkNumber("Shooter/rightS", 0.0);
-        // rightV = new LoggedNetworkNumber("Shooter/rightV", 0.0);
-        // reference = new LoggedNetworkNumber("Shooter/reference", 0.0);
+        // leftS = new LoggedNetworkNumber("Tuning/Shooter/leftS", ShooterConstants.kLeftShooterS);
+        // leftV = new LoggedNetworkNumber("Tuning/Shooter/leftV", ShooterConstants.kLeftShooterV);
+        // middleS = new LoggedNetworkNumber("Tuning/Shooter/middleS", ShooterConstants.kMiddleShooterS);
+        // middleV = new LoggedNetworkNumber("Tuning/Shooter/middleV", ShooterConstants.kMiddleShooterV);
+        // rightS = new LoggedNetworkNumber("Tuning/Shooter/rightS", ShooterConstants.kRightShooterS);
+        // rightV = new LoggedNetworkNumber("Tuning/Shooter/rightV", ShooterConstants.kRightShooterV);
+        // reference = new LoggedNetworkNumber("Tuning/Shooter/reference", 0.0);
+
+        shooterType = ControlType.kVelocity;
+        shooting = false;
     }
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.shooterReference = Units.radiansToDegrees(getReference());
 
-        inputs.shooterCurrent = getCurrent();
-        inputs.shooterVoltage = getVoltage();
-        inputs.shooterVelocity = Units.radiansToDegrees(getVelocity());
-
         inputs.leftShooterCurrent = getLeftCurrent();
         inputs.leftShooterVoltage = getLeftVoltage();
         inputs.leftShooterVelocity = Units.radiansToDegrees(getLeftVelocity());
+
+        inputs.shooterCurrent = getMiddleCurrent();
+        inputs.shooterVoltage = getMiddleVoltage();
+        inputs.shooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
 
         inputs.rightShooterCurrent = getRightCurrent();
         inputs.rightShooterVoltage = getRightVoltage();
@@ -71,18 +84,8 @@ public class ShooterIOSpark implements ShooterIO {
     }
 
     @Override
-    public double getVelocity() {
-        return middleShooterEncoder.getVelocity();
-    }
-
-    @Override
-    public double getCurrent() {
-        return middleShooterMotor.getOutputCurrent();
-    }
-
-    @Override
-    public double getVoltage() {
-        return middleShooterMotor.getBusVoltage() * middleShooterMotor.getAppliedOutput();
+    public double getReference(){
+        return shooterReference;
     }
 
     @Override
@@ -101,6 +104,21 @@ public class ShooterIOSpark implements ShooterIO {
     }
 
     @Override
+    public double getMiddleVelocity() {
+        return middleShooterEncoder.getVelocity();
+    }
+
+    @Override
+    public double getMiddleCurrent() {
+        return middleShooterMotor.getOutputCurrent();
+    }
+
+    @Override
+    public double getMiddleVoltage() {
+        return middleShooterMotor.getBusVoltage() * middleShooterMotor.getAppliedOutput();
+    }
+
+    @Override
     public double getRightVelocity(){
         return rightShooterEncoder.getVelocity();
     }
@@ -116,30 +134,87 @@ public class ShooterIOSpark implements ShooterIO {
     }
 
     @Override
+    public void setReference(double velocity){
+        shooterReference = velocity;
+        shooterType = ControlType.kVelocity;
+    }
+
+    @Override
     public void setVoltage(double voltage) {
-        middleShooterReference = voltage;
+        shooterReference = voltage;
+        shooterType = ControlType.kVoltage;
     }
 
     @Override
-    public void setLeftVoltage(double voltage) {
-        leftShooterReference = voltage;
+    public boolean isReady(){
+        boolean leftReady = Math.abs(getLeftVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
+        boolean middleReady = Math.abs(getMiddleVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
+        boolean rightReady = Math.abs(getRightVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
+
+        return leftReady && middleReady && rightReady;
     }
 
     @Override
-    public void setRightVoltage(double voltage) {
-        rightShooterReference = voltage;
+    public void startShooting(){
+        shooting = true;
+    }
+
+    @Override
+    public void stopShooting(){
+        shooting = false;
     }
 
     @Override
     public void periodic(){
-        leftShooterMotor.setVoltage(leftShooterReference);
-        middleShooterMotor.setVoltage(middleShooterReference);
-        rightShooterMotor.setVoltage(rightShooterReference);
+        double leftFF = 0, middleFF = 0, rightFF = 0;
 
         //tuning
 
-        // leftShooterMotor.setVoltage(leftS.get() + (leftV.get() * Units.degreesToRadians(reference.get())));
-        // middleShooterMotor.setVoltage(middleS.get() + (middleV.get() * Units.degreesToRadians(reference.get())));
-        // rightShooterMotor.setVoltage(rightS.get() + (rightV.get() * Units.degreesToRadians(reference.get())));
+        // double referenceRad = Units.degreesToRadians(reference.get());
+        // shooterReference = referenceRad;
+
+        // if(shooterType == ControlType.kVelocity && referenceRad != 0){
+        //     leftFF = 
+        //         leftS.get()
+        //         + (leftV.get() * referenceRad);
+
+        //     middleFF = 
+        //         middleS.get()
+        //         + (middleV.get() * referenceRad);
+
+        //     rightFF =
+        //         rightS.get()
+        //         + (rightV.get() * referenceRad);
+        // }
+
+        // leftShooterController.setSetpoint(referenceRad, shooterType, ClosedLoopSlot.kSlot0, leftFF);
+        // middleShooterController.setSetpoint(referenceRad, shooterType, ClosedLoopSlot.kSlot0, middleFF);
+        // rightShooterController.setSetpoint(referenceRad, shooterType, ClosedLoopSlot.kSlot0, rightFF);
+
+        // real
+
+        if(shooterType == ControlType.kVelocity && getReference() != 0){
+            leftFF = 
+                ShooterConstants.kLeftShooterS
+                + (ShooterConstants.kLeftShooterV * getReference());
+
+            middleFF = 
+                ShooterConstants.kMiddleShooterS
+                + (ShooterConstants.kMiddleShooterV * getReference());
+
+            rightFF =
+                ShooterConstants.kRightShooterS
+                + (ShooterConstants.kRightShooterV * getReference());
+        }
+
+        if(shooting){
+            leftFF += 1;
+            middleFF += 1;
+            rightFF += 1;
+        }
+
+        leftShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, leftFF);
+        middleShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, middleFF);
+        rightShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, rightFF);
     }
 }

@@ -22,13 +22,13 @@ public interface ShooterIO {
     /** Updates the set of loggable inputs. */
     public default void updateInputs(ShooterIOInputs inputs) {}
 
-    public default double getCurrent() { return 0; }
+    public default double getMiddleCurrent() { return 0; }
 
-    public default double getVoltage() { return 0; }
+    public default double getMiddleVoltage() { return 0; }
 
     public default double getReference() { return 0; }
 
-    public default double getVelocity() { return 0; }
+    public default double getMiddleVelocity() { return 0; }
 
     public default double getLeftCurrent() { return 0; }
 
@@ -44,9 +44,15 @@ public interface ShooterIO {
 
     public default void setVoltage(double voltage) {}
 
-    public default void setLeftVoltage(double voltage) {}
+    public default void setReference(double velocity) {}
 
-    public default void setRightVoltage(double voltage) {}
+    public default boolean isReady(){
+        return false;
+    }
+
+    public default void startShooting() {}
+
+    public default void stopShooting() {}
 
     public default void periodic() {}
 }

@@ -27,14 +27,12 @@ public class HoodConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kMinAngleRad = 0;
-    public static final double kMaxAngleRad = Math.toRadians(90);
-    public static final double kTolerance = Math.toRadians(15);
+    public static final double kMinAngle = 0;
+    public static final double kMaxAngle = 0.9;
+    public static final double kTolerance = 0.05;
 
-    public static final double kMaxVel = Math.toRadians(1080);
-    public static final double kMaxAccel = Math.toRadians(2160);
+    public static final double kMaxVel = 1;
+    public static final double kMaxAccel = 3;
     
     public static final double kGearRatio = 1;
-
-    public static final double kHardBallAdjust = Math.toRadians(15); // Aim hard balls 15 degrees downward
 }

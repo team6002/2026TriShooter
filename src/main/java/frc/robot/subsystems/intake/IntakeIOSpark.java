@@ -16,6 +16,7 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
 public class IntakeIOSpark implements IntakeIO {
     private final SparkMax intakeMotor;
+    private final SparkMax intakeFollowerMotor;
     private final RelativeEncoder intakeEncoder;
     private final SparkClosedLoopController intakeController;
 
@@ -32,6 +33,7 @@ public class IntakeIOSpark implements IntakeIO {
     public IntakeIOSpark() {
         // initialize motor
         intakeMotor = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
+        intakeFollowerMotor = new SparkMax(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
         intakeExtenderMotor = new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
 
@@ -46,6 +48,9 @@ public class IntakeIOSpark implements IntakeIO {
         // apply config
         intakeMotor.configure(
                 IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        intakeFollowerMotor.configure(
+            IntakeConfig.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         intakeExtenderMotor.configure(
             IntakeConfig.intakeExtenderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

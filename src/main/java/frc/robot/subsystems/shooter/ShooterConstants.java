@@ -4,19 +4,27 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.utils.MapleShooterOptimization;
 
 public class ShooterConstants {
-    public static final int kShooterCanId = 4;
     public static final int kLeftShooterCanId = 3;
+    public static final int kMiddleShooterCanId = 4;
     public static final int kRightShooterCanId = 17;
 
-    public static final double kLeftShooterS = 0.14;
-    public static final double kMiddleShooterS = 0.16;
+    public static final double kLeftShooterS = 0.13;
+    public static final double kMiddleShooterS = 0.12;
     public static final double kRightShooterS = 0.13;
 
-    public static final double kLeftShooterV = 0.021; // 0.0205
-    public static final double kMiddleShootV = 0.02; // 0.0198
-    public static final double kRightShooterV = 0.022; // 0.02075
+    public static final double kLeftShooterV = 0.0194;
+    public static final double kMiddleShooterV = 0.019;
+    public static final double kRightShooterV = 0.0202;
 
-    public static final double kShootingVoltRamp = 2.5; // add voltage into the shooter system while shooting 2.5
+    public static final double kLeftShooterP = 0.015;
+    public static final double kMiddleShooterP = 0.015;
+    public static final double kRightShooterP = 0.015;
+
+    public static final double kLeftShooterD = 0.00075;
+    public static final double kMiddleShooterD = 0.00075;
+    public static final double kRightShooterD = 0.00075;
+
+    public static final double kI = 0.0;
 
     public static final double kPSim = 0.0;
     public static final double kISim = 0.0;
@@ -38,10 +46,8 @@ public class ShooterConstants {
 
     public static final double kGearRatio = 1;
 
-    public static final double kStartOnTargetVel = 25; // radians
-    public static final double kStopOnTargetVel = 50; // radians
-
-    public static final double kHardBallAdjust = Math.toRadians(1000); // adjust velocity for harder balls
+    public static final double kStartOnTargetVel = 15; // radians
+    public static final double kStopOnTargetVel = 30; // radians
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {

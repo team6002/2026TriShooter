@@ -11,6 +11,7 @@ import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 public class IntakeConfig {
     public static final SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    public static final SparkMaxConfig intakeFollowerConfig = new SparkMaxConfig();
 
     public static final SparkMaxConfig intakeExtenderConfig = new SparkMaxConfig();
 
@@ -27,6 +28,9 @@ public class IntakeConfig {
             .velocityConversionFactor((Math.PI * 2) / (60 * IntakeConstants.kGearRatio))
             .quadratureAverageDepth(2)
             .quadratureMeasurementPeriod(10);
+
+        intakeFollowerConfig
+            .follow(IntakeConstants.kIntakeCanId, true);
         
         intakeExtenderConfig
             .disableFollowerMode()

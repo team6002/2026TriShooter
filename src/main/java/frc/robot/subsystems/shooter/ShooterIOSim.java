@@ -47,10 +47,10 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.shooterCurrent = getCurrent();
-        inputs.shooterVoltage = getVoltage();
+        inputs.shooterCurrent = getMiddleCurrent();
+        inputs.shooterVoltage = getMiddleVoltage();
         inputs.shooterReference = getReference();
-        inputs.shooterVelocity = Units.radiansToDegrees(getVelocity());
+        inputs.shooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
     }
 
     @Override
@@ -66,17 +66,17 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public double getVoltage() {
+    public double getMiddleVoltage() {
         return shooterSim.getInputVoltage();
     }
 
     @Override
-    public double getCurrent() {
+    public double getMiddleCurrent() {
         return shooterSim.getCurrentDrawAmps();
     }
 
     @Override
-    public double getVelocity(){
+    public double getMiddleVelocity(){
         return shooterSim.getAngularVelocityRadPerSec();
     }
 

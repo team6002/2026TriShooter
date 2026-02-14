@@ -21,8 +21,6 @@ import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.*;
 
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
 public class SuperStructure {
     public enum SuperStructurePose {
         IDLE (
@@ -127,8 +125,6 @@ public class SuperStructure {
     private SuperStructurePose currentPose;
     private SuperStructurePose goal;
 
-    private LoggedNetworkNumber shooterTargetSpeed = new LoggedNetworkNumber("SuperStructure/targetRadPerS", 17500);
-
     public SuperStructure(Climb climb, Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
         // this.climb = climb;
         this.conveyor = conveyor;
@@ -144,17 +140,19 @@ public class SuperStructure {
         if(pose == SuperStructurePose.READY_TO_SHOOT){
             return Commands.sequence(
                 intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
-                shooter.setTargetVelolcity(Math.toRadians(shooterTargetSpeed.get())),
-                new WaitUntilCommand(()-> shooter.isReady()).withTimeout(2),
+                shooter.setTargetVelolcity(Math.toRadians(24000)),
+                new WaitUntilCommand(()-> shooter.isReady()),
+                Commands.runOnce(()-> shooter.startShooting()),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
                 kicker.runVoltage(pose.kickerVoltage.baseUnitMagnitude()),
                 intake.setExtenderTargetAngle(pose.intakeAngle.in(Radians)),
-                Commands.runOnce(()-> shooter.startShooting()),
                 Commands.runOnce(()-> currentPose = pose)
-            ).finallyDo(
+            )
+            .finallyDo(
                 interrupted -> {
                     if(interrupted){
-                        shooter.stop();
+                        shooter.setReference(0);
+                        shooter.stopShooting();
                         kicker.setVoltage(KickerConstants.kOff);
                     }
                 }
@@ -163,7 +161,7 @@ public class SuperStructure {
 
         return Commands.runOnce(
             ()-> {
-                shooter.stop();
+                shooter.stopShooting();
                 conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
                 // climb.setReference(pose.climbAngle.in(Radians));
                 intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
@@ -177,7 +175,7 @@ public class SuperStructure {
 
     public Command moveToPose(SuperStructurePose pose) {
         return Commands.defer(() -> generateMoveToPoseCommand(pose), Set.of())
-                .beforeStarting(() -> goal = pose);
+            .beforeStarting(() -> goal = pose);
     }
 
     private Command generateMoveToPoseCommand(SuperStructurePose pose) {

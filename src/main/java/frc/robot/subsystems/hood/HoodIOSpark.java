@@ -6,6 +6,9 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+
+import edu.wpi.first.math.MathUtil;
+
 import com.revrobotics.spark.SparkMax;
 
 public class HoodIOSpark implements HoodIO {
@@ -77,7 +80,7 @@ public class HoodIOSpark implements HoodIO {
 
     @Override
     public void setReference(double angRad) {
-        hoodReference = angRad;
+        hoodReference = MathUtil.clamp(angRad, HoodConstants.kMinAngle, HoodConstants.kMaxAngle);
         hoodType = ControlType.kPosition;
     }
 
