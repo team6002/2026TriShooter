@@ -35,23 +35,8 @@ public class Vision_Constants {
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
     public static final Transform3d robotToCamera0 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(10.75), Units.inchesToMeters(8.875)),
-            new Rotation3d(0, Math.toRadians(-5), Math.toRadians(-30)));
-
-
-    // public static final Transform3d robotToCamera1 = new Transform3d(
-    //         new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(10.75), Units.inchesToMeters(8.875)),
-    //         new Rotation3d(0, Math.toRadians(5), Math.toRadians(-30)));
-
-    // public static final Transform3d robotToCamera2 = new Transform3d(
-    //         new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-10.75), Units.inchesToMeters(8.875)),
-    //         new Rotation3d(0, Math.toRadians(5), Math.toRadians(30)));
-
-    // public static final Transform3d robotToCamera0 =
-    // new Transform3d(
-    //     new Translation3d(Units.inchesToMeters(10), Units.inchesToMeters(12), Units.inchesToMeters(20)),
-    //     new Rotation3d(0, Math.toRadians(-30), Math.toRadians(0))
-    // );
+            new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(8), Units.inchesToMeters(10)),
+            new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
     
     public static final Transform3d robotToCamera1 =
     new Transform3d(
@@ -64,8 +49,8 @@ public class Vision_Constants {
         new Rotation3d(0, Math.toRadians(0), Math.toRadians(-90)));  // right camera looks right
     
     public static final Transform3d robotToCamera3 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-10.75), Units.inchesToMeters(8.875)),
-            new Rotation3d(0, Math.toRadians(5), Math.toRadians(30)));
+            new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-8), Units.inchesToMeters(10)),
+            new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
 
 
     // Basic filtering thresholds

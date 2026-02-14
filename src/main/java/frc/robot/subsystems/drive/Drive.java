@@ -251,7 +251,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     /** Returns the module states (turn angles and drive velocities) for all of the modules. */
     @AutoLogOutput(key = "SwerveStates/Measured")
-    private SwerveModuleState[] getModuleStates() {
+    public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
             states[i] = modules[i].getState();
@@ -466,5 +466,22 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
             this
         );
+    }
+
+    public void applySimPose(Pose2d simPose) {
+      odometryLock.lock();
+      try {
+          // Update internal gyro angle to match the sim
+          rawGyroRotation = simPose.getRotation();
+
+          // Reset the pose estimator to the sim pose
+          poseEstimator.resetPosition(
+              rawGyroRotation,
+              getModulePositions(),   // your real module positions
+              simPose
+          );
+      } finally {
+          odometryLock.unlock();
+      }
     }
 }

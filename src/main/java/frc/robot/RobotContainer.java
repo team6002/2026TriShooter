@@ -76,6 +76,8 @@ public class RobotContainer {
     // Controller
     public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
 
+    public Pose2d resetPose;
+
     // Dashboard inputs
     private final LoggedDashboardChooser<Auto> autoChooser;
 
@@ -302,10 +304,12 @@ public class RobotContainer {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
         if (FieldConstants.getAlliance() == Alliance.Blue) {
-            drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
+            resetPose = new Pose2d(3.5, 4, new Rotation2d());
         } else {
-            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
+            resetPose = new Pose2d(13, 4, new Rotation2d());
         }
+
+        drive.resetOdometry(resetPose);
 
         SimulatedArena.getInstance().resetFieldForAuto();
         IntakeIOSim.setFuelInHopper(8);

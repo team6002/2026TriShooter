@@ -5,11 +5,14 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.SwervePhysicsSim;
+
 import java.util.HashMap;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -23,6 +26,9 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import org.littletonrobotics.urcl.URCL;
 
 public class Robot extends LoggedRobot {
+    // Physics simulation engine (only used in sim)
+    private SwervePhysicsSim sim = new SwervePhysicsSim();
+    Pose2d simPose = sim.getPose2d();
 
     public enum RobotName {
         COMP_BOT,
@@ -116,6 +122,8 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledInit() {
         robotContainer.resetSimulationField();
+
+        sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(), robotContainer.resetPose.getRotation().getRadians());
     }
 
     /** This function is called periodically when disabled. */
@@ -181,5 +189,19 @@ public class Robot extends LoggedRobot {
     @Override
     public void simulationPeriodic() {
         robotContainer.updateSimulation();
+
+        double dt = 0.02;
+
+        // Step physics using the module states commanded by your Drive subsystem
+        sim.step(dt, robotContainer.drive.getModuleStates());
+        sim.syncToRealPose(robotContainer.drive.getPose());
+    
+        // simPose = sim.getPose2d();
+
+        // // Push the pose into your Drive subsystem's odometry
+        // robotContainer.drive.applySimPose(simPose);
+
+        Logger.recordOutput("Robot/Pose", robotContainer.drive.getPose());
+        Logger.recordOutput("Robot/Pose3d", sim.getPose3d());
     }
 }
