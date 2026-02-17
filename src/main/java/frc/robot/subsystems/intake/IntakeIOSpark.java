@@ -167,6 +167,6 @@ public class IntakeIOSpark implements IntakeIO {
         //horizontal is 270, offset to 0
 
         double ff = - ExtenderConstants.kG * (Math.cos(getExtenderPosition() - Math.toRadians(270)));
-        // intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
+        intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
     }
 }

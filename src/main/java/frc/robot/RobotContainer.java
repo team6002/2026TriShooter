@@ -36,7 +36,6 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.superstructure.SuperStructure;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 import frc.robot.subsystems.vision.*;
-// import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
@@ -63,10 +62,7 @@ public class RobotContainer {
     public final Kicker kicker;
     public final Hood hood;
     public final SuperStructure superStructure;
-    // public final Vision vision;
-    // public final Hood hood;
-    // public final Climb climb;
-    // public final Vision vision;
+    public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
     // public final AprilTagVision aprilTagVision;
@@ -83,9 +79,6 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
-        // final List<PhotonCameraProperties> camerasProperties =
-        //         VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
-
         switch (Robot.CURRENT_ROBOT_MODE) {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
@@ -103,12 +96,10 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIOSpark());
                 hood = new Hood(new HoodIOSpark());
 
-                // this.vision = new Vision(
-                //     drive,
-                //     new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
-                // );
-
-                // aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
+                this.vision = new Vision(
+                    drive,
+                    new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                );
 
                 break;
             case SIM:
@@ -132,32 +123,26 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIOSim());
                 hood = new Hood(new HoodIOSim());
 
-                // vision = new Vision(
-                //     drive
-                //     // ,new VisionIOPhotonVisionSim(
-                //     //     Vision_Constants.camera0Name,
-                //     //     Vision_Constants.robotToCamera0,
-                //     //     driveSimulation::getSimulatedDriveTrainPose)
-                //     ,new VisionIOPhotonVisionSim(
-                //         Vision_Constants.camera1Name,
-                //         Vision_Constants.robotToCamera1,
-                //         driveSimulation::getSimulatedDriveTrainPose)
-                //     ,new VisionIOPhotonVisionSim(
-                //         Vision_Constants.camera2Name,
-                //         Vision_Constants.robotToCamera2,
-                //         driveSimulation::getSimulatedDriveTrainPose)
-                //     // ,new VisionIOPhotonVisionSim(
-                //     //     Vision_Constants.camera3Name,
-                //     //     Vision_Constants.robotToCamera3,
-                //     //     driveSimulation::getSimulatedDriveTrainPose)
-                // );
+                vision = new Vision(
+                    drive
+                    // ,new VisionIOPhotonVisionSim(
+                    //     Vision_Constants.camera0Name,
+                    //     Vision_Constants.robotToCamera0,
+                    //     driveSimulation::getSimulatedDriveTrainPose)
+                    ,new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera1Name,
+                        Vision_Constants.robotToCamera1,
+                        driveSimulation::getSimulatedDriveTrainPose)
+                    ,new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera2Name,
+                        Vision_Constants.robotToCamera2,
+                        driveSimulation::getSimulatedDriveTrainPose)
+                    // ,new VisionIOPhotonVisionSim(
+                    //     Vision_Constants.camera3Name,
+                    //     Vision_Constants.robotToCamera3,
+                    //     driveSimulation::getSimulatedDriveTrainPose)
+                );
 
-                // aprilTagVision = new AprilTagVision(
-                //     new ApriltagVisionIOSim(
-                //         camerasProperties,
-                //         VisionConstants.fieldLayout,
-                //         driveSimulation::getSimulatedDriveTrainPose),
-                //     camerasProperties);
                 break;
             default:
                 // Replayed robot, disable IO implementations
@@ -175,8 +160,7 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIO() {});
                 hood = new Hood(new HoodIO() {});
 
-                // vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-                // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
+                vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 break;
         }
 

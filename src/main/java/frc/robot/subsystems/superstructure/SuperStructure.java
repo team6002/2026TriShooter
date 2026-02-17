@@ -20,8 +20,6 @@ import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.*;
 
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
 public class SuperStructure {
     public enum SuperStructurePose {
         EXTENDED(
@@ -121,8 +119,6 @@ public class SuperStructure {
     private SuperStructurePose currentPose;
     private SuperStructurePose goal;
 
-    private final LoggedNetworkNumber hoodReference, shooterReference;
-
     public SuperStructure(Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
         // this.climb = climb;
         this.conveyor = conveyor;
@@ -130,9 +126,6 @@ public class SuperStructure {
         this.intake = intake;
         this.kicker = kicker;
         this.shooter = shooter;
-
-        hoodReference = new LoggedNetworkNumber("tuning/superstructure/hoodRef");
-        shooterReference = new LoggedNetworkNumber("tuning/superstructure/shooterRef");
 
         this.goal = this.currentPose = SuperStructurePose.EXTENDED;
     }
