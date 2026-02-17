@@ -45,7 +45,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Left Hump Auto (Depot)",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": 90.0

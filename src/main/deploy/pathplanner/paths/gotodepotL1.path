@@ -20,7 +20,7 @@
         "y": 6.0
       },
       "prevControl": {
-        "x": 0.3837091127148639,
+        "x": 0.38370911271486385,
         "y": 5.885698913586633
       },
       "nextControl": null,
@@ -45,7 +45,7 @@
     "rotation": -0.0
   },
   "reversed": false,
-  "folder": "Left Hump Auto (Depot)",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

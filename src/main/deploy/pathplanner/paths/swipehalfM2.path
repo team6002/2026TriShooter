@@ -77,7 +77,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Middle Side Hump Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0
