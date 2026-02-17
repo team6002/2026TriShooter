@@ -58,7 +58,7 @@ public class SwervePhysicsSim {
         DMass mass = createMass();
         mass.setBoxTotal(ROBOT_MASS, ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT);
         chassisBody.setMass(mass);
-        chassisBody.setPosition(3.5, 4, 0.02);
+        chassisBody.setPosition(3.5, 4, ROBOT_HEIGHT / 2.0 + 0.02);
 
         chassisGeom = createBox(space, ROBOT_LENGTH, ROBOT_WIDTH, ROBOT_HEIGHT);
         chassisGeom.setBody(chassisBody);
@@ -87,12 +87,13 @@ public class SwervePhysicsSim {
         
         // Bump
         // Left Back
-        RampBuilder.createRampX(
+        RampBuilder.createRamp(
             world,
             space,
             4,   // baseX
             5.5,
-            0,   
+            0,  
+            "x",  
             -15.0,    // slope angle
             0.564,   // length (X)
             1.854,   // width (Y)
@@ -100,12 +101,13 @@ public class SwervePhysicsSim {
         );
 
         // Left Front
-        RampBuilder.createRampX(
+        RampBuilder.createRamp(
             world,
             space,
-            4.6,   // baseX
+            4.5,   // baseX
             5.5,
             0, 
+            "x", 
             15.0,    // slope angle
             0.564,   // length (X)
             1.854,   // width (Y)
@@ -113,12 +115,13 @@ public class SwervePhysicsSim {
         );
 
         // Right Back
-        RampBuilder.createRampX(
+        RampBuilder.createRamp(
             world,
             space,
             4,   // baseX
             2.5,
             0, 
+            "x", 
             -15.0,    // slope angle
             0.564,   // length (X)
             1.854,   // width (Y)
@@ -126,26 +129,36 @@ public class SwervePhysicsSim {
         );
 
         // Right Front
-        RampBuilder.createRampX(
+        RampBuilder.createRamp(
             world,
             space,
             4.5,   // baseX
             2.5,
             0,
+            "x", 
             15.0,    // slope angle
             0.564,   // length (X)
             1.854,   // width (Y)
             0.16    // height (Z)
         );
+
+        // // Funny Ramp
+        // RampBuilder.createRampX(
+        //     world,
+        //     space,
+        //     8,
+
+        // );
     }
 
     public class RampBuilder {
-        public static DBody createRampX(
+        public static DBody createRamp(
                 DWorld world,
                 DSpace space,
                 double baseX,        // lowest point X
                 double baseY,
                 double baseZ,        // lowest point Z
+                String axis,
                 double angleDeg,
                 double length,
                 double width,
@@ -176,7 +189,15 @@ public class SwervePhysicsSim {
             double halfH = height / 2.0;
 
             double centerX = baseX + halfL * Math.cos(angle) + halfH * Math.sin(angle);
+            double centerY = baseY + halfL * Math.cos(angle) + halfH * Math.sin(angle);
             double centerZ = baseZ + halfL * Math.sin(angle) - halfH * Math.cos(angle);
+
+            switch (axis) {
+                case "x":
+                    centerY = baseY;
+                case "y":
+                    centerX = baseX;
+            }
 
             // 6. Add epsilon to avoid ground-plane collision
             centerZ += EPS;
@@ -186,7 +207,7 @@ public class SwervePhysicsSim {
             if (centerX < EPS) centerX = EPS;
 
             // 8. Apply corrected position
-            body.setPosition(centerX, baseY, centerZ);
+            body.setPosition(centerX, centerY, centerZ);
 
             // 9. Freeze the ramp
             body.setLinearVel(0, 0, 0);

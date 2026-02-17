@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4,
-        "y": 5.6
+        "x": 1.4,
+        "y": 6.3
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.023776536845272,
-        "y": 5.498645607316438
+        "x": 1.6807591531358121,
+        "y": 6.383826503655105
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.6,
+        "x": 0.7,
         "y": 6.0
       },
       "prevControl": {
-        "x": 0.2967429413208543,
-        "y": 6.049849779896241
+        "x": 0.3837091127148639,
+        "y": 5.885698913586633
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -0.0
   },
   "reversed": false,
   "folder": "Left Hump Auto (Depot)",
   "idealStartingState": {
-    "velocity": 4.0,
-    "rotation": 45.0
+    "velocity": 0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

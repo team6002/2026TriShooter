@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.autos.Auto;
@@ -14,6 +15,7 @@ import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
+import frc.robot.subsystems.intake.IntakeIOSim;
 
 public class AUTO_LeftBig implements Auto {
     @Override
@@ -21,13 +23,18 @@ public class AUTO_LeftBig implements Auto {
         return Commands.sequence(
             setAutoStartPose("gotomiddleL1", false, robot.drive)
             ,followPath("gotomiddleL1", false)
-            ,followPath("grabmiddleL1", false)
             ,followPath("gotostartL1", false)
-            ,followPath("gotodepotL1", false)
+            ,followPath("gotoshootL1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
-                new ShootFuelSim(robot.driveSimulation)
+            new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+            new ShootFuelSim(robot.driveSimulation)
+            ,followPath("gotodepotL1", false)
+            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
+            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+            new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+            new ShootFuelSim(robot.driveSimulation)
             ,new AutoAlignToClimb(robot.drive)
         );
     }

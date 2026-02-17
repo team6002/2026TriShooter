@@ -187,12 +187,12 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
-        // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle(drive, driveSimulation, false));
-        // autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, true));
-        // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide(drive, driveSimulation, false));
-        // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side(drive, driveSimulation, false));
-        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side(drive, driveSimulation, true));
-        // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right(drive, driveSimulation));
+        // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
+        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide());
+        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide());
+        // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side());
+        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side());
+        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right());
         
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
         autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
