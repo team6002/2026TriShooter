@@ -27,6 +27,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -419,7 +420,17 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             ),
 
             // onExecute
-            () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+            () -> {
+                ChassisSpeeds measured = getMeasuredChassisSpeedsFieldRelative();
+                Pose2d pose = getPose();
+
+                OptionalDouble omegaOpt =
+                    ChassisHeadingController.getInstance().calculate(measured, pose);
+
+                double omega = omegaOpt.orElse(0.0);
+
+                runRobotCentricChassisSpeeds(new ChassisSpeeds(0, 0, omega));
+            },
 
             // onEnd
             interrupted -> ChassisHeadingController.getInstance()
@@ -430,15 +441,13 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                 Translation2d target = targetSupplier.get();
                 Pose2d robotPose = getPose();
 
-                // Compute desired heading
                 Translation2d delta = target.minus(robotPose.getTranslation());
                 Rotation2d desiredHeading = delta.getAngle();
-
-                // Compute current heading
                 Rotation2d currentHeading = robotPose.getRotation();
 
-                // Compute error
-                double error = Math.abs(currentHeading.minus(desiredHeading).getRadians());
+                double error = Math.abs(
+                    MathUtil.angleModulus(currentHeading.minus(desiredHeading).getRadians())
+                );
 
                 return error < Math.toRadians(5);
             },

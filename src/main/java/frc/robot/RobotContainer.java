@@ -188,23 +188,23 @@ public class RobotContainer {
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
         // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
-        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSide());
-        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSide());
+        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftSide());
+        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightSide());
         // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side());
         // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side());
         autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right());
         
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
-        autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
-        autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
-        autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
-        autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
-        autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
-        autoChooser.addOption("Auto Left Big (depot + middle) #H", new AUTO_LeftBig());
-        autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
-        autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
-        autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
-        autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
+        // autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
+        // autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
+        // autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
+        // autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
+        // autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
+        autoChooser.addOption("Auto Left Big (depot + middle) #T", new AUTO_LeftBig());
+        // autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
+        // autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
+        // autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
+        // autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
         // Set up SysId routines
         // autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         // autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));

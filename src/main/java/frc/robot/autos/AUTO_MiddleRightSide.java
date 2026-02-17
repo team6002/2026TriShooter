@@ -10,18 +10,22 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.drive.AutoAlignToClimb;
+import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 
-public class AUTO_MiddleSide implements Auto {
+public class AUTO_MiddleRightSide implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            // Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
-            followPath("swipehalfM2", false)
+            setAutoStartPose("swipehalfM2", false, robot.drive)
+            ,followPath("swipehalfM2", false)
             ,followPath("shootfuelM2", false)
+            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)
+            ,new AutoAlignToClimb(robot.drive)
         );
     }
 }

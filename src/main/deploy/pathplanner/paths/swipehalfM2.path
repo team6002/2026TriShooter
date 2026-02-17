@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.042781740370898,
-        "y": 0.6256633380884444
+        "x": 3.366248216833095,
+        "y": 0.5609700427960058
       },
       "prevControl": {
-        "x": 3.042781740370898,
-        "y": 0.9750071326676175
+        "x": 3.366248216833095,
+        "y": 0.9103138373751789
       },
       "nextControl": {
-        "x": 3.042781740370898,
-        "y": 0.37208306345282605
+        "x": 3.366248216833095,
+        "y": 0.30738976816038743
       },
       "isLocked": false,
       "linkedName": null
@@ -60,16 +60,7 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1.6119402985074593,
-      "rotationDegrees": 0.0
-    },
-    {
-      "waypointRelativePos": 2.0021321961620333,
-      "rotationDegrees": -90.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -89,7 +80,7 @@
   "folder": "Middle Side Hump Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
