@@ -92,7 +92,7 @@ public class HoodIOSpark implements HoodIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         hoodController.setSetpoint(hoodReference, hoodType, ClosedLoopSlot.kSlot0);
     }
 }

@@ -61,17 +61,14 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
-    public void PID() {
-        hoodSim.setInput(hoodPIDController.calculate(hoodSim.getAngularVelocityRadPerSec(), reference)); 
-    }
-
-    @Override
     public boolean atReference(){
         return Math.abs(getReference() - getPosition()) < HoodConstants.kTolerance;
     }
 
     @Override
     public void periodic() {
+        hoodSim.setInput(hoodPIDController.calculate(hoodSim.getAngularVelocityRadPerSec(), reference));
+
         hoodSim.update(0.02);
     }
 }

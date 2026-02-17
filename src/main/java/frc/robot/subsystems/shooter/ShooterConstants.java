@@ -16,9 +16,9 @@ public class ShooterConstants {
     public static final double kMiddleShooterV = 0.019;
     public static final double kRightShooterV = 0.0202;
 
-    public static final double kLeftShooterP = 0.015;
-    public static final double kMiddleShooterP = 0.015;
-    public static final double kRightShooterP = 0.015;
+    public static final double kLeftShooterP = 0.0165; // .015
+    public static final double kMiddleShooterP = 0.0165;
+    public static final double kRightShooterP = 0.0165;
 
     public static final double kLeftShooterD = 0.00075;
     public static final double kMiddleShooterD = 0.00075;

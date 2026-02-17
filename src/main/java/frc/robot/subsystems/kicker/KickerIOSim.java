@@ -58,15 +58,12 @@ public class KickerIOSim implements KickerIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         kickerSim.setInput(
             kickerPIDController.calculate(kickerSim.getAngularVelocityRadPerSec(), reference)
             + kickerFeedforward.calculateWithVelocities(getVelocity(), reference)
         );
-    }
 
-    @Override
-    public void periodic() {
         kickerSim.update(0.02);
     }
 }

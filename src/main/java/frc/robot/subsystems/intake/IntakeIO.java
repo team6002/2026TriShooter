@@ -74,7 +74,5 @@ public interface IntakeIO {
 
     public default void setExtenderReference(double velocity) {}
 
-    public default void PID() {}
-
     public default void periodic() {}
 }

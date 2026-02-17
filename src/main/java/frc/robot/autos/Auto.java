@@ -65,9 +65,7 @@ public interface Auto {
                 pose.getRotation().unaryMinus());
     }
 
-    default Command followPath(String pathName
-    ,boolean mirrored
-    ){
+    default Command followPath(String pathName ,boolean mirrored){
         PathPlannerPath path;
         try{
             path = getPath(pathName, mirrored);

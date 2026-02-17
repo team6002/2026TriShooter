@@ -76,7 +76,7 @@ public class KickerIOSpark implements KickerIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         kickerController.setSetpoint(kickerReference, kickerType);
     }
 }

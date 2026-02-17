@@ -68,7 +68,6 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         io.periodic();
-        io.PID();
         io.updateInputs(inputs);
         Logger.processInputs(this.getName(), inputs);
     }

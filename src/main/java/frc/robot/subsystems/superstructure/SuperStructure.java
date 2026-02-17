@@ -20,6 +20,8 @@ import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import java.util.*;
 
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 public class SuperStructure {
     public enum SuperStructurePose {
         EXTENDED(
@@ -119,6 +121,8 @@ public class SuperStructure {
     private SuperStructurePose currentPose;
     private SuperStructurePose goal;
 
+    private final LoggedNetworkNumber hoodReference, shooterReference;
+
     public SuperStructure(Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
         // this.climb = climb;
         this.conveyor = conveyor;
@@ -127,6 +131,9 @@ public class SuperStructure {
         this.kicker = kicker;
         this.shooter = shooter;
 
+        hoodReference = new LoggedNetworkNumber("tuning/superstructure/hoodRef");
+        shooterReference = new LoggedNetworkNumber("tuning/superstructure/shooterRef");
+
         this.goal = this.currentPose = SuperStructurePose.EXTENDED;
     }
 
@@ -134,8 +141,8 @@ public class SuperStructure {
         if(pose == SuperStructurePose.READY_TO_SHOOT){
             return Commands.sequence(
                 intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
-                hood.setTargetPos(.75),
-                shooter.setTargetVelolcity(Math.toRadians(22000)),
+                hood.setTargetPos(.2),
+                shooter.setTargetVelolcity(Math.toRadians(20000)),
                 new WaitUntilCommand(()-> shooter.isReady()),
                 Commands.runOnce(()-> shooter.startShooting()),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),

@@ -26,11 +26,9 @@ public class IntakeIOSpark implements IntakeIO {
 
     private final SparkMax intakeExtenderMotor;
     private final AbsoluteEncoder intakeExtenderEncoder;
-    @SuppressWarnings("unused")
     private final SparkClosedLoopController intakeExtenderController;
 
     private double intakeExtenderReference;
-    @SuppressWarnings("unused")
     private ControlType intakeExtenderType;
 
     public IntakeIOSpark() {
@@ -163,12 +161,12 @@ public class IntakeIOSpark implements IntakeIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         intakeController.setSetpoint(intakeReference, intakeType);
 
         //horizontal is 270, offset to 0
 
         double ff = - ExtenderConstants.kG * (Math.cos(getExtenderPosition() - Math.toRadians(270)));
-        intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
+        // intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
     }
 }

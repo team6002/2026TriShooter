@@ -57,15 +57,12 @@ public class ConveyorIOSim implements ConveyorIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         conveyorSim.setInput(
             conveyorPIDController.calculate(conveyorSim.getAngularVelocityRadPerSec(), reference)
             + conveyorFeedforward.calculate(getVelocity(), reference)
         );
-    }
 
-    @Override
-    public void periodic() {
         conveyorSim.update(0.02);
     }
 }

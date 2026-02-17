@@ -76,7 +76,7 @@ public class ConveyorIOSpark implements ConveyorIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         conveyorController.setSetpoint(conveyorReference, conveyorType);
     }
 }

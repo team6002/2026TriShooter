@@ -4,35 +4,36 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.PersistMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 public class ClimbIOSpark implements ClimbIO {
-    private final SparkMax shooterMotor;
-    private final RelativeEncoder shooterEncoder;
-    private final SparkClosedLoopController shooterController;
+    private final SparkMax climbMotor;
+    private final RelativeEncoder climbEncoder;
+    private final SparkClosedLoopController climbController;
 
-    private double shooterReference;
-    private ControlType shooterType;
+    private double climbReference;
+    private ControlType climbType;
 
     public ClimbIOSpark() {
         // initialize motor
-        shooterMotor = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
+        climbMotor = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
 
         // initialize PID controller
-        shooterController = shooterMotor.getClosedLoopController();
+        climbController = climbMotor.getClosedLoopController();
 
         // initalize encoder
-        shooterEncoder = shooterMotor.getEncoder();
+        climbEncoder = climbMotor.getEncoder();
 
         // apply config
-        shooterMotor.configure(
+        climbMotor.configure(
                 ClimbConfig.climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
-        shooterReference = 0;
-        shooterType = ControlType.kPosition;
+        climbReference = 0;
+        climbType = ControlType.kPosition;
     }
 
     @Override
@@ -45,38 +46,38 @@ public class ClimbIOSpark implements ClimbIO {
 
     @Override
     public double getVelocity() {
-        return shooterEncoder.getVelocity();
+        return climbEncoder.getVelocity();
     }
 
     @Override
     public double getCurrent() {
-        return shooterMotor.getOutputCurrent();
+        return climbMotor.getOutputCurrent();
     }
 
     @Override
     public double getVoltage() {
-        return shooterMotor.getBusVoltage() * shooterMotor.getAppliedOutput();
+        return climbMotor.getBusVoltage() * climbMotor.getAppliedOutput();
     }
 
     @Override
     public double getReference() {
-        return shooterReference;
+        return climbReference;
     }
 
     @Override
     public void setVoltage(double voltage) {
-        shooterReference = voltage;
-        shooterType = ControlType.kVoltage;
+        climbReference = voltage;
+        climbType = ControlType.kVoltage;
     }
 
     @Override
     public void setReference(double velocity) {
-        shooterReference = velocity;
-        shooterType = ControlType.kVelocity;
+        climbReference = velocity;
+        climbType = ControlType.kVelocity;
     }
 
     @Override
-    public void PID() {
-        shooterController.setSetpoint(shooterReference, shooterType);
+    public void periodic() {
+        climbController.setSetpoint(climbReference, climbType, ClosedLoopSlot.kSlot0);
     }
 }

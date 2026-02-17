@@ -34,7 +34,5 @@ public interface ConveyorIO {
 
     public default void setReference(double velocity) {}
 
-    public default void PID() {}
-
     public default void periodic() {}
 }

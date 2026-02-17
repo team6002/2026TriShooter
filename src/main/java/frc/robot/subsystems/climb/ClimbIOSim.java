@@ -64,15 +64,12 @@ public class ClimbIOSim implements ClimbIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         climbSim.setInput(
             climbPIDController.calculate(getVelocity(), reference) 
             + climbFeedforward.calculateWithVelocities(getVelocity(), reference)
         ); 
-    }
 
-    @Override
-    public void periodic() {
         climbSim.update(0.02);
     }
 }

@@ -209,11 +209,12 @@ public class ShooterIOSpark implements ShooterIO {
         }
 
         if(shooting){
-            leftFF += 0.75;
-            middleFF += 0.75;
-            rightFF += 0.75;
+            leftFF += 1.0;
+            middleFF += 1.0;
+            rightFF += 1.0;
         }
 
+        // Bypass velocity control at 0 RPM to prevent chatter and allow a smooth coast-down
         if(shooterReference > 0){
             leftShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, leftFF);
             middleShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, middleFF);

@@ -139,7 +139,7 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     @Override
-    public void PID() {
+    public void periodic() {
         intakeSim.setInput(
             intakePIDController.calculate(intakeSim.getAngularVelocityRadPerSec(), reference)
             + intakeFeedforward.calculateWithVelocities(getVelocity(), reference)
@@ -149,10 +149,7 @@ public class IntakeIOSim implements IntakeIO {
             intakeExtenderPIDController.calculate(intakeExtenderSim.getAngularVelocityRadPerSec(), reference)
             + intakeExtenderFeedforward.calculateWithVelocities(getVelocity(), reference)
         );
-    }
 
-    @Override
-    public void periodic() {
         intakeSim.update(0.02);
         intakeExtenderSim.update(0.02);
 

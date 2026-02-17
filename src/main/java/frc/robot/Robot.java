@@ -186,7 +186,7 @@ public class Robot extends LoggedRobot {
     /** This function is called once when the robot is first started up. */
     @Override
     public void simulationInit() {
-        sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(), robotContainer.resetPose.getRotation().getRadians());
+        // sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(), robotContainer.resetPose.getRotation().getRadians());
         
         robotContainer.resetSimulationField();
     }

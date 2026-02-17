@@ -44,7 +44,5 @@ public interface HoodIO {
         return false;
     }
 
-    public default void PID() {}
-
     public default void periodic() {}
 }
