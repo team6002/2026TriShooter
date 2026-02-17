@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
@@ -21,7 +22,7 @@ public class AUTO_MiddleRightSide implements Auto {
             setAutoStartPose("swipehalfM2", false, robot.drive)
             ,followPath("swipehalfM2", false)
             ,followPath("shootfuelM2", false)
-            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
+            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose().plus(new Translation2d(0, -0.5)))
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
                 new ShootFuelSim(robot.driveSimulation)
