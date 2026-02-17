@@ -34,6 +34,8 @@ import java.util.List;
 
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonUtils;
+import org.photonvision.targeting.PhotonTrackedTarget;
 
 public class Vision extends SubsystemBase {
     private final VisionConsumer consumer;
@@ -127,10 +129,14 @@ public class Vision extends SubsystemBase {
                     continue;
                 }
 
+                
+
                 // Calculate standard deviations
-                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
+                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) * Vision_Constants.stdDevFactor / observation.tagCount();
                 double linearStdDev = linearStdDevBaseline * stdDevFactor;
+                Logger.recordOutput("Vision/LinearStdDev", linearStdDev);
                 double angularStdDev = angularStdDevBaseline * stdDevFactor;
+                Logger.recordOutput("Vision/AngStdDev", angularStdDev);
                 if (observation.type() == PoseObservationType.MEGATAG_2) {
                     linearStdDev *= linearStdDevMegatag2Factor;
                     angularStdDev *= angularStdDevMegatag2Factor;
@@ -141,10 +147,10 @@ public class Vision extends SubsystemBase {
                 }
 
                 // Send vision observation
-                consumer.accept(
-                        observation.pose().toPose2d(),
-                        observation.timestamp(),
-                        VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+                 consumer.accept(
+                    observation.pose().toPose2d(),
+                    observation.timestamp(),
+                    VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
             }
 
             // Log camera datadata
@@ -176,13 +182,14 @@ public class Vision extends SubsystemBase {
                 "Vision/Summary/RobotPosesRejected",
                 allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
     }
+    
 
     @FunctionalInterface
     public interface VisionConsumer {
         void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
     }
 
-    public Pose2d lastResult(SwerveDriveSimulation driveSimulation, int cameraIndex) {
+    public Pose3d lastResult(SwerveDriveSimulation driveSimulation, int cameraIndex) {
         List<Pose3d> theTagPoses=new ArrayList<>();
         int tagIndexOfClosestTag=0;
         double tagDistanceFromRobot=1000;
@@ -202,9 +209,35 @@ public class Vision extends SubsystemBase {
         }
 
         if (!theTagPoses.isEmpty()) {
-            return theTagPoses.get(tagIndexOfClosestTag).toPose2d();
+            return theTagPoses.get(tagIndexOfClosestTag);
         } else {
             return null;
+        }
+    }
+
+    public int lastResultId(SwerveDriveSimulation driveSimulation, int cameraIndex) {
+        List<Pose3d> theTagPoses=new ArrayList<>();
+        int tagIndexOfClosestTag=0;
+        double tagDistanceFromRobot=1000;
+        double closestTagDistanceFromRobot=tagDistanceFromRobot;
+        Pose3d currentTag;
+        Pose2d currentRobotPose=driveSimulation.getSimulatedDriveTrainPose();
+        
+        for (int i=0; i<inputs[cameraIndex].tagIds.length; i++){
+            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            theTagPoses.add(currentTag);
+            tagDistanceFromRobot = currentRobotPose.getTranslation().getDistance(currentTag.getTranslation().toTranslation2d());
+            
+            if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
+                closestTagDistanceFromRobot=tagDistanceFromRobot;
+                tagIndexOfClosestTag = i;
+            }
+        }
+
+        if (!theTagPoses.isEmpty()) {
+            return tagIndexOfClosestTag;
+        } else {
+            return 0;
         }
     }
 
@@ -236,5 +269,21 @@ public class Vision extends SubsystemBase {
         } else {
             return null;
         }
+    }
+
+    public Pose3d getRobotPoseEstimator(SwerveDriveSimulation sim, int index) {
+        // Pose3d target = lastResult(sim, index);
+        Pose3d robotPose = new Pose3d();
+        int targetId = lastResultId(sim, index);
+
+        if (aprilTagLayout.getTagPose(targetId).isPresent()) {
+            PhotonTrackedTarget target = new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera0Name,
+                        Vision_Constants.robotToCamera0,
+                        sim::getSimulatedDriveTrainPose).camera.getLatestResult().getBestTarget();
+            robotPose = PhotonUtils.estimateFieldToRobotAprilTag(target.bestCameraToTarget, aprilTagLayout.getTagPose(targetId).get(), Vision_Constants.robotToCamera0);
+        }
+
+        return robotPose;
     }
 }

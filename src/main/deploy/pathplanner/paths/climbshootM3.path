@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 0.7619574974913458,
-        "y": 1.6819529117396768
+        "y": 1.681952911739677
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Middle Hump Auto",
+  "folder": "Middle Hump Auto (half field)",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 40.0

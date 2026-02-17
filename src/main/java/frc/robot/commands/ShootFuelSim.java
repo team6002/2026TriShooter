@@ -49,7 +49,7 @@ public class ShootFuelSim extends Command {
 
     @Override
     public void execute(){
-        if (timer >= 5 && IntakeIOSim.numObjectsInHopper() > 0) {
+        if (timer >= 2 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
             
             int maxShots = Math.min(3, IntakeIOSim.numObjectsInHopper());

@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.*;
-import frc.robot.autos.hump.AUTO_SideHump;
+import frc.robot.autos.hump.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.conveyor.*;
@@ -36,12 +36,12 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.superstructure.SuperStructure;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 import frc.robot.subsystems.vision.*;
-import frc.robot.subsystems.vision.apriltags.*;
+// import frc.robot.subsystems.vision.apriltags.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
 
-import java.util.List;
+// import java.util.List;
 import java.util.function.IntSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;
@@ -64,6 +64,9 @@ public class RobotContainer {
     public final Hood hood;
     public final SuperStructure superStructure;
     // public final Vision vision;
+    // public final Hood hood;
+    // public final Climb climb;
+    public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
     // public final AprilTagVision aprilTagVision;
@@ -73,13 +76,15 @@ public class RobotContainer {
     // Controller
     public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
 
+    public Pose2d resetPose;
+
     // Dashboard inputs
     private final LoggedDashboardChooser<Auto> autoChooser;
 
     /** The container for the robot. Contains subsystems, IO devices, and commands. */
     public RobotContainer() {
-        final List<PhotonCameraProperties> camerasProperties =
-                VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
+        // final List<PhotonCameraProperties> camerasProperties =
+        //         VisionConstants.photonVisionCameras; // load configs stored directly in VisionConstants.java
 
         switch (Robot.CURRENT_ROBOT_MODE) {
             case REAL:
@@ -98,10 +103,10 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIOSpark());
                 hood = new Hood(new HoodIOSpark());
 
-                // this.vision = new Vision(
-                //     drive,
-                //     new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
-                // );
+                this.vision = new Vision(
+                    drive,
+                    new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                );
 
                 // aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
 
@@ -127,13 +132,25 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIOSim());
                 hood = new Hood(new HoodIOSim());
 
-                // vision = new Vision(
-                //     drive,
-                //     new VisionIOPhotonVisionSim(
-                //         Vision_Constants.camera0Name,
-                //         Vision_Constants.robotToCamera0,
-                //         driveSimulation::getSimulatedDriveTrainPose)
-                // );
+                vision = new Vision(
+                    drive
+                    // ,new VisionIOPhotonVisionSim(
+                    //     Vision_Constants.camera0Name,
+                    //     Vision_Constants.robotToCamera0,
+                    //     driveSimulation::getSimulatedDriveTrainPose)
+                    ,new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera1Name,
+                        Vision_Constants.robotToCamera1,
+                        driveSimulation::getSimulatedDriveTrainPose)
+                    ,new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera2Name,
+                        Vision_Constants.robotToCamera2,
+                        driveSimulation::getSimulatedDriveTrainPose)
+                    // ,new VisionIOPhotonVisionSim(
+                    //     Vision_Constants.camera3Name,
+                    //     Vision_Constants.robotToCamera3,
+                    //     driveSimulation::getSimulatedDriveTrainPose)
+                );
 
                 // aprilTagVision = new AprilTagVision(
                 //     new ApriltagVisionIOSim(
@@ -158,7 +175,7 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIO() {});
                 hood = new Hood(new HoodIO() {});
 
-                // vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+                vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
                 break;
         }
@@ -168,12 +185,24 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
-        autoChooser.addDefaultOption("Auto Middle", new AUTO_Middle());
-        autoChooser.addOption("Auto Middle Left", new AUTO_MiddleSide());
-        autoChooser.addOption("Auto Left Side", new AUTO_Side());
-        autoChooser.addOption("Auto Left Side Hump", new AUTO_SideHump());
-        autoChooser.addOption("Auto Left", new AUTO_Left());
-        autoChooser.addOption("Auto Right", new AUTO_Right());
+        // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
+        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftSide());
+        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightSide());
+        // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side());
+        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side());
+        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right());
+        
+        // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
+        // autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
+        // autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
+        // autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
+        // autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
+        // autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
+        autoChooser.addOption("Auto Left Big (depot + middle) #T", new AUTO_LeftBig());
+        // autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
+        // autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
+        // autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
+        // autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
         // Set up SysId routines
         // autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         // autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -250,12 +279,15 @@ public class RobotContainer {
         if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
         if (FieldConstants.getAlliance() == Alliance.Blue) {
-            drive.resetOdometry(new Pose2d(3.5, 4, new Rotation2d()));
+            resetPose = new Pose2d(3.5, 4, new Rotation2d());
         } else {
-            drive.resetOdometry(new Pose2d(13, 4, new Rotation2d()));
+            resetPose = new Pose2d(13, 4, new Rotation2d());
         }
 
+        drive.resetOdometry(resetPose);
+
         SimulatedArena.getInstance().resetFieldForAuto();
+        IntakeIOSim.setFuelInHopper(8);
     }
 
     public void updateSimulation() {
@@ -264,9 +296,17 @@ public class RobotContainer {
         SimulatedArena.getInstance().simulationPeriodic();
 
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+        // Logger.recordOutput("FieldSimulation/PoseEstimator", vision.getRobotPoseEstimator(driveSimulation, 0));
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
+
+        Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
+        Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
+        // Logger.recordOutput("Vision/GetTarget", new VisionIOPhotonVisionSim(
+        //                 Vision_Constants.camera0Name,
+        //                 Vision_Constants.robotToCamera0,
+        //                 driveSimulation::getSimulatedDriveTrainPose).);
     }
 
     public static boolean motorBrakeEnabled = false;

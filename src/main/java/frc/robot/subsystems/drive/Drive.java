@@ -27,6 +27,7 @@ import com.pathplanner.lib.util.swerve.SwerveSetpoint;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -254,7 +255,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     /** Returns the module states (turn angles and drive velocities) for all of the modules. */
     @AutoLogOutput(key = "SwerveStates/Measured")
-    private SwerveModuleState[] getModuleStates() {
+    public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
         for (int i = 0; i < 4; i++) {
             states[i] = modules[i].getState();
@@ -416,15 +417,83 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     public Command alignToTarget(Supplier<Translation2d> targetSupplier) {
         return new FunctionalCommand(
+            // onInit
             () -> ChassisHeadingController.getInstance().setHeadingRequest(
                     new ChassisHeadingController.FaceToTargetRequest(targetSupplier, null)
             ),
-            () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+
+            // onExecute
+            () -> {
+                ChassisSpeeds measured = getMeasuredChassisSpeedsFieldRelative();
+                Pose2d pose = getPose();
+
+                OptionalDouble omegaOpt =
+                    ChassisHeadingController.getInstance().calculate(measured, pose);
+
+                double omega = omegaOpt.orElse(0.0);
+
+                runRobotCentricChassisSpeeds(new ChassisSpeeds(0, 0, omega));
+            },
+
+            // onEnd
             interrupted -> ChassisHeadingController.getInstance()
                     .setHeadingRequest(new ChassisHeadingController.NullRequest()),
-            () -> ChassisHeadingController.getInstance().atSetPoint(),
+
+            // isFinished — custom tolerance check
+            () -> {
+                Translation2d target = targetSupplier.get();
+                Pose2d robotPose = getPose();
+
+                Translation2d delta = target.minus(robotPose.getTranslation());
+                Rotation2d desiredHeading = delta.getAngle();
+                Rotation2d currentHeading = robotPose.getRotation();
+
+                double error = Math.abs(
+                    MathUtil.angleModulus(currentHeading.minus(desiredHeading).getRadians())
+                );
+
+                return error < Math.toRadians(5);
+            },
 
             this
         );
+    }
+
+    public Command alignToAngle(Rotation2d angle, double toleranceRadians) {
+        return new FunctionalCommand(
+            () -> ChassisHeadingController.getInstance().setHeadingRequest(
+                    new ChassisHeadingController.FaceToRotationRequest(angle)
+            ),
+
+            () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+
+            interrupted -> ChassisHeadingController.getInstance()
+                    .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+
+            () -> {
+                Rotation2d current = getRotation();
+                double error = Math.abs(current.minus(angle).getRadians());
+                return error < toleranceRadians;
+            },
+
+            this
+        );
+    }
+
+    public void applySimPose(Pose2d simPose) {
+      odometryLock.lock();
+      try {
+          // Update internal gyro angle to match the sim
+          rawGyroRotation = simPose.getRotation();
+
+          // Reset the pose estimator to the sim pose
+          poseEstimator.resetPosition(
+              rawGyroRotation,
+              getModulePositions(),   // your real module positions
+              simPose
+          );
+      } finally {
+          odometryLock.unlock();
+      }
     }
 }
