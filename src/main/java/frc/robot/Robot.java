@@ -124,8 +124,6 @@ public class Robot extends LoggedRobot {
     public void disabledInit() {
         robotContainer.resetSimulationField();
         robotContainer.superStructure.moveToPose(SuperStructurePose.HOME);
-
-        sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(), robotContainer.resetPose.getRotation().getRadians());
     }
 
     /** This function is called periodically when disabled. */
@@ -188,6 +186,8 @@ public class Robot extends LoggedRobot {
     /** This function is called once when the robot is first started up. */
     @Override
     public void simulationInit() {
+        sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(), robotContainer.resetPose.getRotation().getRadians());
+        
         robotContainer.resetSimulationField();
     }
 
