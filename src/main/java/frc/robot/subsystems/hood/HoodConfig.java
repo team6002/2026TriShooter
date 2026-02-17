@@ -19,7 +19,7 @@ public class HoodConfig {
         hoodConfig.absoluteEncoder
             .positionConversionFactor(1)
             .velocityConversionFactor(1)
-            .averageDepth(2)
+            .averageDepth(16)
             .inverted(true);
         hoodConfig.closedLoop
             .pid(

@@ -162,6 +162,7 @@ public class ShooterIOSpark implements ShooterIO {
     @Override
     public void stopShooting(){
         shooting = false;
+        setReference(0.0);
     }
 
     @Override
@@ -193,7 +194,7 @@ public class ShooterIOSpark implements ShooterIO {
 
         // real
 
-        if(shooterType == ControlType.kVelocity && getReference() != 0){
+        if(shooterType == ControlType.kVelocity){
             leftFF = 
                 ShooterConstants.kLeftShooterS
                 + (ShooterConstants.kLeftShooterV * getReference());
@@ -208,13 +209,19 @@ public class ShooterIOSpark implements ShooterIO {
         }
 
         if(shooting){
-            leftFF += 1;
-            middleFF += 1;
-            rightFF += 1;
+            leftFF += 0.75;
+            middleFF += 0.75;
+            rightFF += 0.75;
         }
 
-        leftShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, leftFF);
-        middleShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, middleFF);
-        rightShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, rightFF);
+        if(shooterReference > 0){
+            leftShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, leftFF);
+            middleShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, middleFF);
+            rightShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, rightFF);
+        }else{
+            leftShooterController.setSetpoint(0, ControlType.kVoltage);
+            middleShooterController.setSetpoint(0, ControlType.kVoltage);
+            rightShooterController.setSetpoint(0, ControlType.kVoltage);
+        }
     }
 }

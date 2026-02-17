@@ -26,7 +26,6 @@ import frc.robot.autos.*;
 import frc.robot.autos.hump.AUTO_SideHump;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
-import frc.robot.subsystems.climb.*;
 import frc.robot.subsystems.conveyor.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.*;
@@ -63,7 +62,6 @@ public class RobotContainer {
     public final Conveyor conveyor;
     public final Kicker kicker;
     public final Hood hood;
-    public final Climb climb;
     public final SuperStructure superStructure;
     // public final Vision vision;
     public final LEDStatusLight ledStatusLight;
@@ -99,7 +97,6 @@ public class RobotContainer {
                 conveyor = new Conveyor(new ConveyorIOSpark());
                 kicker = new Kicker(new KickerIOSpark());
                 hood = new Hood(new HoodIOSpark());
-                climb = new Climb(new ClimbIOSpark());
 
                 // this.vision = new Vision(
                 //     drive,
@@ -129,7 +126,6 @@ public class RobotContainer {
                 conveyor = new Conveyor(new ConveyorIOSim());
                 kicker = new Kicker(new KickerIOSim());
                 hood = new Hood(new HoodIOSim());
-                climb = new Climb(new ClimbIOSim());
 
                 // vision = new Vision(
                 //     drive,
@@ -161,7 +157,6 @@ public class RobotContainer {
                 conveyor = new Conveyor(new ConveyorIO() {});
                 kicker = new Kicker(new KickerIO() {});
                 hood = new Hood(new HoodIO() {});
-                climb = new Climb(new ClimbIO() {});
 
                 // vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
@@ -169,7 +164,7 @@ public class RobotContainer {
         }
 
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
-        this.superStructure = new SuperStructure(climb, conveyor, hood, intake, kicker, shooter);
+        this.superStructure = new SuperStructure(conveyor, hood, intake, kicker, shooter);
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
@@ -203,7 +198,7 @@ public class RobotContainer {
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
         IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
-        // drive.setDefaultCommand(joystickDrive);
+        drive.setDefaultCommand(joystickDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
@@ -227,10 +222,14 @@ public class RobotContainer {
         // );
 
         driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.IDLE));
+            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
         driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.IDLE));
+            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+
+        driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
+
+        driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
     }
 
     /**

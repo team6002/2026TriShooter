@@ -38,7 +38,7 @@ public interface HoodIO {
 
     public default void setVoltage(double voltage) {}
 
-    public default void setReference(double angRad) {}
+    public default void setReference(double pos) {}
 
     public default boolean atReference(){
         return false;

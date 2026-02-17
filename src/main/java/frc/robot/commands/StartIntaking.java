@@ -22,7 +22,7 @@ public class StartIntaking extends Command{
 
     @Override
     public void initialize() {
-        intake.setReference(IntakeConstants.kIntake);
+        intake.setReference(IntakeConstants.kOn);
         conveyor.setReference(ConveyorConstants.kOff);
         kicker.setReference(KickerConstants.kOff);
     }

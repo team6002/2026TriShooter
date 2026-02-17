@@ -117,7 +117,7 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledInit() {
         robotContainer.resetSimulationField();
-        robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
+        robotContainer.superStructure.moveToPose(SuperStructurePose.EXTENDED);
     }
 
     /** This function is called periodically when disabled. */
@@ -129,7 +129,7 @@ public class Robot extends LoggedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
-        robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
+        robotContainer.superStructure.moveToPose(SuperStructurePose.EXTENDED);
         autonomousCommand = robotContainer.getAutonomousCommand();
         // robotContainer.resetSimulationField();
 
@@ -149,7 +149,7 @@ public class Robot extends LoggedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        robotContainer.superStructure.moveToPose(SuperStructurePose.IDLE);
+        robotContainer.superStructure.moveToPose(SuperStructurePose.EXTENDED);
         robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderPosition());
     }
 

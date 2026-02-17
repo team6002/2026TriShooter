@@ -2,8 +2,10 @@ package frc.robot.subsystems.hood;
 
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -34,7 +36,7 @@ public class HoodIOSpark implements HoodIO {
                 HoodConfig.hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
-        hoodReference = 0;
+        hoodReference = HoodConstants.kMinAngle;
         hoodType = ControlType.kPosition;
     }
 
@@ -79,8 +81,8 @@ public class HoodIOSpark implements HoodIO {
     }
 
     @Override
-    public void setReference(double angRad) {
-        hoodReference = MathUtil.clamp(angRad, HoodConstants.kMinAngle, HoodConstants.kMaxAngle);
+    public void setReference(double reference) {
+        hoodReference = MathUtil.clamp(reference, HoodConstants.kMinAngle, HoodConstants.kMaxAngle);
         hoodType = ControlType.kPosition;
     }
 
@@ -91,6 +93,6 @@ public class HoodIOSpark implements HoodIO {
 
     @Override
     public void PID() {
-        // hoodController.setSetpoint(hoodReference, hoodType);
+        hoodController.setSetpoint(hoodReference, hoodType, ClosedLoopSlot.kSlot0);
     }
 }

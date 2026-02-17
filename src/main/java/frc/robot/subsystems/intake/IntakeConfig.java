@@ -6,12 +6,13 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.MAXMotionConfig.MAXMotionPositionMode;
 
 public class IntakeConfig {
-    public static final SparkMaxConfig intakeConfig = new SparkMaxConfig();
-    public static final SparkMaxConfig intakeFollowerConfig = new SparkMaxConfig();
+    public static final SparkFlexConfig intakeConfig = new SparkFlexConfig();
+    public static final SparkFlexConfig intakeFollowerConfig = new SparkFlexConfig();
 
     public static final SparkMaxConfig intakeExtenderConfig = new SparkMaxConfig();
 
@@ -30,12 +31,14 @@ public class IntakeConfig {
             .quadratureMeasurementPeriod(10);
 
         intakeFollowerConfig
+            .smartCurrentLimit(40)
+            .voltageCompensation(12)
+            .idleMode(IdleMode.kCoast)
             .follow(IntakeConstants.kIntakeCanId, true);
         
         intakeExtenderConfig
             .disableFollowerMode()
             .idleMode(IdleMode.kBrake)
-            .inverted(ExtenderConstants.kInverted)
             .smartCurrentLimit(40)
             .voltageCompensation(12.0);
         intakeExtenderConfig.absoluteEncoder

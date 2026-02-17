@@ -3,7 +3,7 @@ package frc.robot.subsystems.hood;
 public class HoodConstants {
     public static final int kHoodCanId = 2;
 
-    public static final double kP = 0.0;
+    public static final double kP = 5;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kFF = 0.0;
@@ -27,8 +27,8 @@ public class HoodConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kMinAngle = 0;
-    public static final double kMaxAngle = 0.9;
+    public static final double kMinAngle = 0.025;
+    public static final double kMaxAngle = 0.95;
     public static final double kTolerance = 0.05;
 
     public static final double kMaxVel = 1;

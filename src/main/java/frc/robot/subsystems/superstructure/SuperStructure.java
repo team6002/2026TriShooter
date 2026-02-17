@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.climb.Climb;
-import frc.robot.subsystems.climb.ClimbConstants;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
 import frc.robot.subsystems.hood.Hood;
+import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
@@ -23,51 +22,44 @@ import java.util.*;
 
 public class SuperStructure {
     public enum SuperStructurePose {
-        IDLE (
+        EXTENDED(
             Radians.of(ExtenderConstants.kExtended), // intake extension
-            Radians.of(ClimbConstants.kHome), //climb angle
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power
         )
-        ,STOW(
-           Radians.of(ExtenderConstants.kStow), // intake extension
-            Radians.of(ClimbConstants.kHome), //climb angle
+        ,HOME(
+           Radians.of(ExtenderConstants.kHome), // intake extension
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power 
         )
-        ,INTAKE (
+        ,STOW(
+           Radians.of(ExtenderConstants.kStow), // intake extension
+            Volts.of(IntakeConstants.kOff), // intake power
+            Volts.of(ConveyorConstants.kOff), // conveyor power
+            Volts.of(KickerConstants.kOff) // kicker power 
+        )
+        ,INTAKE(
             Radians.of(ExtenderConstants.kExtended), // intake extension
-            Radians.of(ClimbConstants.kHome), //climb angle
-            Volts.of(IntakeConstants.kIntake), // intake power
+            Volts.of(IntakeConstants.kOn), // intake power
             Volts.of(ConveyorConstants.kOff), // conveyor power
             Volts.of(KickerConstants.kOff) // kicker power
         )
         ,READY_TO_SHOOT(
             Radians.of(ExtenderConstants.kStow), // intake extension
-            Radians.of(ClimbConstants.kHome), //climb angle
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kConvey), // conveyor power
             Volts.of(KickerConstants.kKick) // kicker power
-        )
-        ,CLIMB (
-            Radians.of(ExtenderConstants.kStow), // intake extension
-            Radians.of(ClimbConstants.kClimb), //climb angle
-            Volts.of(IntakeConstants.kOff), // intake power
-            Volts.of(ConveyorConstants.kOff), // conveyor power
-            Volts.of(KickerConstants.kOff) // kicker power
         );
 
         public final Angle intakeAngle;
-        public final Angle climbAngle;
         public final Voltage intakeVoltage;
         public final Voltage conveyorVoltage;
         public final Voltage kickerVoltage;
 
-        SuperStructurePose(Angle intakeAngle, Angle climbAngle, Voltage intakeVoltage, Voltage conveyorVoltage, Voltage kickerVoltage) {
+        SuperStructurePose(Angle intakeAngle, Voltage intakeVoltage, Voltage conveyorVoltage, Voltage kickerVoltage) {
             this.intakeAngle = intakeAngle;
-            this.climbAngle = climbAngle;
             this.intakeVoltage = intakeVoltage;
             this.conveyorVoltage = conveyorVoltage;
             this.kickerVoltage = kickerVoltage;
@@ -75,13 +67,15 @@ public class SuperStructure {
     }
 
     public static List<PoseLink> LINKS = List.of(
-        new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.INTAKE)
-        ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.STOW)
-        ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.READY_TO_SHOOT)
-        ,new PoseLink(SuperStructurePose.STOW, SuperStructurePose.READY_TO_SHOOT)
-        ,new PoseLink(SuperStructurePose.INTAKE, SuperStructurePose.READY_TO_SHOOT)
-        ,new PoseLink(SuperStructurePose.IDLE, SuperStructurePose.CLIMB)
-        ,new PoseLink(SuperStructurePose.STOW, SuperStructurePose.CLIMB)
+        new PoseLink(SuperStructurePose.EXTENDED, SuperStructurePose.INTAKE)
+        ,new PoseLink(SuperStructurePose.EXTENDED, SuperStructurePose.HOME)
+        ,new PoseLink(SuperStructurePose.EXTENDED, SuperStructurePose.READY_TO_SHOOT)
+        ,new PoseLink(SuperStructurePose.HOME, SuperStructurePose.READY_TO_SHOOT)
+        ,new PoseLink(SuperStructurePose.HOME, SuperStructurePose.INTAKE)
+        ,new PoseLink(SuperStructurePose.HOME, SuperStructurePose.STOW)
+        ,new PoseLink(SuperStructurePose.INTAKE, SuperStructurePose.STOW)
+        ,new PoseLink(SuperStructurePose.EXTENDED, SuperStructurePose.STOW)
+        ,new PoseLink(SuperStructurePose.READY_TO_SHOOT, SuperStructurePose.STOW)
     );
 
     public record PoseLink(SuperStructurePose pose1, SuperStructurePose pose2) {
@@ -117,7 +111,7 @@ public class SuperStructure {
 
     // private final Climb climb;
     private final Conveyor conveyor;
-    // private final Hood hood;
+    private final Hood hood;
     private final Intake intake;
     private final Kicker kicker;
     private final Shooter shooter;
@@ -125,22 +119,23 @@ public class SuperStructure {
     private SuperStructurePose currentPose;
     private SuperStructurePose goal;
 
-    public SuperStructure(Climb climb, Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
+    public SuperStructure(Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
         // this.climb = climb;
         this.conveyor = conveyor;
-        // this.hood = hood;
+        this.hood = hood;
         this.intake = intake;
         this.kicker = kicker;
         this.shooter = shooter;
 
-        this.goal = this.currentPose = SuperStructurePose.IDLE;
+        this.goal = this.currentPose = SuperStructurePose.EXTENDED;
     }
 
     private Command runPose(SuperStructurePose pose) {
         if(pose == SuperStructurePose.READY_TO_SHOOT){
             return Commands.sequence(
                 intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
-                shooter.setTargetVelolcity(Math.toRadians(24000)),
+                hood.setTargetPos(.75),
+                shooter.setTargetVelolcity(Math.toRadians(22000)),
                 new WaitUntilCommand(()-> shooter.isReady()),
                 Commands.runOnce(()-> shooter.startShooting()),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
@@ -154,6 +149,7 @@ public class SuperStructure {
                         shooter.setReference(0);
                         shooter.stopShooting();
                         kicker.setVoltage(KickerConstants.kOff);
+                        hood.setTargetPos(HoodConstants.kMinAngle);
                     }
                 }
             );
@@ -164,6 +160,7 @@ public class SuperStructure {
                 shooter.stopShooting();
                 conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
                 // climb.setReference(pose.climbAngle.in(Radians));
+                hood.setTargetPos(HoodConstants.kMinAngle);
                 intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
                 intake.setExtenderReference(pose.intakeAngle.in(Radians));
                 kicker.setVoltage(pose.kickerVoltage.baseUnitMagnitude());
@@ -286,7 +283,7 @@ public class SuperStructure {
 
     private void testTrajectoryGen() {
         long t0 = System.currentTimeMillis();
-        for (int i = 0; i < 10; i++) getTrajectory(SuperStructurePose.IDLE, SuperStructurePose.INTAKE);
+        for (int i = 0; i < 10; i++) getTrajectory(SuperStructurePose.EXTENDED, SuperStructurePose.INTAKE);
         System.out.println("tried 10 plans, took " + (System.currentTimeMillis() - t0) + " ms");
     }
 

@@ -33,15 +33,15 @@ public class ShooterIOSim implements ShooterIO {
 
     public ShooterIOSim() {
         shooterSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, ShooterConstants.kGearRatio),
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.00176, ShooterConstants.kGearRatio),
                 DCMotor.getNEO(1));
 
         leftShooterSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, ShooterConstants.kGearRatio),
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.00176, ShooterConstants.kGearRatio),
                 DCMotor.getNEO(1));
 
         rightShooterSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, ShooterConstants.kGearRatio),
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), 0.00176, ShooterConstants.kGearRatio),
                 DCMotor.getNEO(1));
     }
 

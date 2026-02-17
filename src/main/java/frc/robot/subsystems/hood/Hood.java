@@ -49,12 +49,12 @@ public class Hood extends SubsystemBase {
         io.setVoltage(voltage);
     }
 
-    public void setReference(double angRad) {
-        io.setReference(angRad);
+    public void setReference(double pos) {
+        io.setReference(pos);
     }
 
-    public Command setTargetAng(double angRad){
-        return Commands.runOnce(()-> setReference(angRad), this);
+    public Command setTargetPos(double pos){
+        return Commands.runOnce(()-> setReference(pos), this);
     }
 
     public double getPosition() {
@@ -68,7 +68,7 @@ public class Hood extends SubsystemBase {
     @Override
     public void periodic() {
         io.periodic();
-        // io.PID();
+        io.PID();
         io.updateInputs(inputs);
         Logger.processInputs(this.getName(), inputs);
     }

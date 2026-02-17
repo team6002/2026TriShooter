@@ -8,6 +8,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -15,8 +16,8 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
 public class IntakeIOSpark implements IntakeIO {
-    private final SparkMax intakeMotor;
-    private final SparkMax intakeFollowerMotor;
+    private final SparkFlex intakeMotor;
+    private final SparkFlex intakeFollowerMotor;
     private final RelativeEncoder intakeEncoder;
     private final SparkClosedLoopController intakeController;
 
@@ -32,8 +33,8 @@ public class IntakeIOSpark implements IntakeIO {
 
     public IntakeIOSpark() {
         // initialize motor
-        intakeMotor = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
-        intakeFollowerMotor = new SparkMax(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
+        intakeMotor = new SparkFlex(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
+        intakeFollowerMotor = new SparkFlex(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
         intakeExtenderMotor = new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
 
