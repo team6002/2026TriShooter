@@ -39,8 +39,6 @@ import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
-
-// import java.util.List;
 import java.util.function.IntSupplier;
 
 import org.ironmaple.simulation.SimulatedArena;

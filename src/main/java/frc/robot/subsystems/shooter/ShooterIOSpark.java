@@ -54,13 +54,13 @@ public class ShooterIOSpark implements ShooterIO {
 
         //tuning
 
-        // leftS = new LoggedNetworkNumber("Tuning/Shooter/leftS", ShooterConstants.kLeftShooterS);
-        // leftV = new LoggedNetworkNumber("Tuning/Shooter/leftV", ShooterConstants.kLeftShooterV);
-        // middleS = new LoggedNetworkNumber("Tuning/Shooter/middleS", ShooterConstants.kMiddleShooterS);
-        // middleV = new LoggedNetworkNumber("Tuning/Shooter/middleV", ShooterConstants.kMiddleShooterV);
-        // rightS = new LoggedNetworkNumber("Tuning/Shooter/rightS", ShooterConstants.kRightShooterS);
-        // rightV = new LoggedNetworkNumber("Tuning/Shooter/rightV", ShooterConstants.kRightShooterV);
-        // reference = new LoggedNetworkNumber("Tuning/Shooter/reference", 0.0);
+        // leftS = new LoggedNetworkNumber("/Tuning/Shooter/leftS", ShooterConstants.kLeftShooterS);
+        // leftV = new LoggedNetworkNumber("/Tuning/Shooter/leftV", ShooterConstants.kLeftShooterV);
+        // middleS = new LoggedNetworkNumber("/Tuning/Shooter/middleS", ShooterConstants.kMiddleShooterS);
+        // middleV = new LoggedNetworkNumber("/Tuning/Shooter/middleV", ShooterConstants.kMiddleShooterV);
+        // rightS = new LoggedNetworkNumber("/Tuning/Shooter/rightS", ShooterConstants.kRightShooterS);
+        // rightV = new LoggedNetworkNumber("/Tuning/Shooter/rightV", ShooterConstants.kRightShooterV);
+        // reference = new LoggedNetworkNumber("/Tuning/Shooter/reference", 0.0);
 
         shooterType = ControlType.kVelocity;
         shooting = false;

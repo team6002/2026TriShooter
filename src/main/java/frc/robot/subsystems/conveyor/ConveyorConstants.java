@@ -31,10 +31,4 @@ public class ConveyorConstants {
     public static final double kOff = 0;
 
     public static final double kGearRatio = 3;
-
-    // sim constants
-    public static final double kSimP = 0.0;
-    public static final double kSimI = 0.0;
-    public static final double kSimD = 0.0;
-    public static final double kSimFF = 0.0;
 }

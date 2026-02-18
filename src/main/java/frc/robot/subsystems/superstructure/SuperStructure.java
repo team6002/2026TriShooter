@@ -134,8 +134,8 @@ public class SuperStructure {
         if(pose == SuperStructurePose.READY_TO_SHOOT){
             return Commands.sequence(
                 intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
-                hood.setTargetPos(.2),
-                shooter.setTargetVelolcity(Math.toRadians(20000)),
+                hood.setTargetPos(.35),
+                shooter.setTargetVelolcity(Math.toRadians(21000)),
                 new WaitUntilCommand(()-> shooter.isReady()),
                 Commands.runOnce(()-> shooter.startShooting()),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),

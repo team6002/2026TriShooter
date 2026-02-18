@@ -23,12 +23,11 @@ public class IntakeConfig {
             .inverted(IntakeConstants.kInverted)
             .smartCurrentLimit(40)
             .voltageCompensation(12.0);
-        intakeConfig
-            .encoder
+        intakeConfig.encoder
             .positionConversionFactor((Math.PI * 2) / IntakeConstants.kGearRatio)
             .velocityConversionFactor((Math.PI * 2) / (60 * IntakeConstants.kGearRatio))
-            .quadratureAverageDepth(2)
-            .quadratureMeasurementPeriod(10);
+            .uvwAverageDepth(4)
+            .uvwMeasurementPeriod(16);
 
         intakeFollowerConfig
             .smartCurrentLimit(40)

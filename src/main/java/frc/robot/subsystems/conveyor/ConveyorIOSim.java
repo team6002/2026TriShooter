@@ -11,7 +11,7 @@ public class ConveyorIOSim implements ConveyorIO {
 
     private final DCMotorSim conveyorSim;
     private final PIDController conveyorPIDController =
-            new PIDController(ConveyorConstants.kSimP, ConveyorConstants.kSimI, ConveyorConstants.kSimD);
+            new PIDController(ConveyorConstants.kPSim, ConveyorConstants.kISim, ConveyorConstants.kDSim);
     private final SimpleMotorFeedforward conveyorFeedforward =
             new SimpleMotorFeedforward(ConveyorConstants.kSSim, ConveyorConstants.kVSim, ConveyorConstants.kASim);
     private double reference = 0;

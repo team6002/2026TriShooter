@@ -2,10 +2,18 @@ package frc.robot.subsystems.kicker;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
+
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.math.util.Units;
+
 import com.revrobotics.spark.SparkMax;
 
 public class KickerIOSpark implements KickerIO {
@@ -15,6 +23,10 @@ public class KickerIOSpark implements KickerIO {
 
     private double kickerReference;
     private ControlType kickerType;
+
+    //tuning
+    private final LoggedNetworkNumber reference, kS, kV, kP;
+    private double lastP = Double.NaN;
 
     public KickerIOSpark() {
         // initialize motor
@@ -33,6 +45,12 @@ public class KickerIOSpark implements KickerIO {
         // reset target speed in init
         kickerReference = 0;
         kickerType = ControlType.kVoltage;
+
+        //tuning
+        reference = new LoggedNetworkNumber("/Tuning/Kicker/reference", KickerConstants.kKicking);
+        kS = new LoggedNetworkNumber("/Tuning/Kicker/kS", KickerConstants.kS);
+        kV = new LoggedNetworkNumber("/Tuning/Kicker/kV", KickerConstants.kV);
+        kP = new LoggedNetworkNumber("/Tuning/Kicker/kP", KickerConstants.kP);
     }
 
     @Override
@@ -77,6 +95,26 @@ public class KickerIOSpark implements KickerIO {
 
     @Override
     public void periodic() {
-        kickerController.setSetpoint(kickerReference, kickerType);
+        //tuning
+        setReference(Units.degreesToRadians(reference.get()));
+        double kickerFF = kS.get() + (kV.get() * getReference());
+
+        double p = kP.get();
+        if(lastP != p){
+            SparkMaxConfig newConfig = new SparkMaxConfig();
+            newConfig.apply(KickerConfig.kickerConfig);
+            newConfig.closedLoop.pid(p, 0, 0, ClosedLoopSlot.kSlot0);
+
+            kickerMotor.configure(newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+            lastP = p;
+        }
+
+        // Bypass velocity control at 0 RPM to prevent chatter and allow a smooth coast-down
+        if(kickerReference > 0){
+            kickerController.setSetpoint(kickerReference, kickerType, ClosedLoopSlot.kSlot0, kickerFF);
+        }else{
+            kickerController.setSetpoint(0, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
+        }
     }
 }
