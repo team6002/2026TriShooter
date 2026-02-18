@@ -22,14 +22,9 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.autos.*;
-import frc.robot.autos.trench.AUTO_LeftHF;
-import frc.robot.autos.trench.AUTO_LeftFF;
-import frc.robot.autos.trench.AUTO_MiddleLeftHF;
-import frc.robot.autos.trench.AUTO_MiddleRightHF;
-import frc.robot.autos.trench.AUTO_RightHF;
-import frc.robot.autos.trench.AUTO_RightFF;
-// import frc.robot.autos.hump.*;
+import frc.robot.autos.trench.*;
+import frc.robot.autos.Auto;
+import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.conveyor.*;
@@ -114,6 +109,8 @@ public class RobotContainer {
                     new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
                 );
 
+                configureButtonBindings();
+
                 // aprilTagVision = new AprilTagVision(new AprilTagVisionIOReal(camerasProperties), camerasProperties);
 
                 break;
@@ -164,6 +161,8 @@ public class RobotContainer {
                 //         VisionConstants.fieldLayout,
                 //         driveSimulation::getSimulatedDriveTrainPose),
                 //     camerasProperties);
+                configureButtonBindingsSim();
+
                 break;
             default:
                 // Replayed robot, disable IO implementations
@@ -183,6 +182,7 @@ public class RobotContainer {
 
                 vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
                 // aprilTagVision = new AprilTagVision((inputs) -> {}, camerasProperties);
+                configureButtonBindings();
                 break;
         }
 
@@ -193,17 +193,17 @@ public class RobotContainer {
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
         autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftHF());
         autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightHF());
+        autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
+        autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());  
         autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftFF());
+        autoChooser.addOption("Auto Left (half middle + depot) #T", new AUTO_LeftHF());
         autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightFF());
-        autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_LeftHF());
-        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF());
+        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF());    
         
         // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
         // autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
         // autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
-        // autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
-        // autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
         // autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
         // autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
         // autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
@@ -218,7 +218,6 @@ public class RobotContainer {
         // autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         // Configure the button bindings
-        configureButtonBindings();
 
         SmartDashboard.putData("Field", field);
     }
@@ -245,17 +244,6 @@ public class RobotContainer {
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        // driver.autoAlignmentButtonLeft().whileTrue(
-        //     JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-        //         driveInput
-        //         ,drive
-        //         ,()-> FieldConstants.getHubPose()
-        //         ,ShooterConstants.kShooterOptimization
-        //         ,1
-        //         ,false
-        //     )
-        // );
-
         driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
             .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
@@ -265,6 +253,41 @@ public class RobotContainer {
         driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
 
         driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
+    }
+
+    public void configureButtonBindingsSim() {
+        /* joystick drive command */
+        final MapleJoystickDriveInput driveInput = driver.getDriveInput();
+        IntSupplier pov = () -> -1;
+        final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
+        drive.setDefaultCommand(joystickDrive);
+
+        // Reset gyro / odometry
+        final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
+            ? () -> drive.resetOdometry(
+                driveSimulation
+                    .getSimulatedDriveTrainPose())
+                // reset odometry to actual robot pose during simulation
+            : () -> drive.resetOdometry(
+                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+        driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+
+        driver.autoAlignmentButtonLeft().whileTrue(
+            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                driveInput
+                ,drive
+                ,()-> FieldConstants.getHubPose()
+                ,ShooterConstants.kShooterOptimization
+                ,1
+                ,false
+            )
+        );
+
+        driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+
+        driver.aButton().onTrue(new AutoAlignToClimb(drive));
+
+        driver.bButton().onTrue(new AutoAlignToMiddle(drive));
     }
 
     /**

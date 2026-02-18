@@ -70,7 +70,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Side Hump Auto",
+  "folder": "Side Hump Auto (unused)",
   "idealStartingState": {
     "velocity": 0.0,
     "rotation": -90.0

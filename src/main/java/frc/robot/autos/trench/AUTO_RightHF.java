@@ -8,11 +8,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.autos.Auto;
 import frc.robot.commands.ShootFuelSim;
-import frc.robot.commands.drive.AutoAlignToClimb;
+import frc.robot.commands.drive.AutoAlignToMiddle;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -33,8 +34,9 @@ public class AUTO_RightHF implements Auto {
                 new ShootFuelSim(robot.driveSimulation)
                 ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             )
-            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,followPath("gotoHPR1", false)
+            ,new WaitCommand(3)
+            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
@@ -42,7 +44,7 @@ public class AUTO_RightHF implements Auto {
                 new ShootFuelSim(robot.driveSimulation)
                 ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             )
-            ,new AutoAlignToClimb(robot.drive)
+            ,new AutoAlignToMiddle(robot.drive)
         );
     }
 }

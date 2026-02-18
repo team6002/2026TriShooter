@@ -11,7 +11,7 @@ import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.autos.Auto;
 import frc.robot.commands.ShootFuelSim;
-import frc.robot.commands.drive.AutoAlignToClimb;
+import frc.robot.commands.drive.AutoAlignToMiddle;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
@@ -30,7 +30,7 @@ public class AUTO_MiddleRightHF implements Auto {
                 new ShootFuelSim(robot.driveSimulation)
                 ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             )
-            ,new AutoAlignToClimb(robot.drive)
+            ,new AutoAlignToMiddle(robot.drive)
         );
     }
 }

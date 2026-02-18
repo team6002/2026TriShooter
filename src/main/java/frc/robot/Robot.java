@@ -139,7 +139,6 @@ public class Robot extends LoggedRobot {
     public void autonomousInit() {
         robotContainer.superStructure.moveToPose(SuperStructurePose.HOME);
         autonomousCommand = robotContainer.getAutonomousCommand();
-        // robotContainer.resetSimulationField();
 
         // schedule the autonomous command (example)
         if (autonomousCommand != null) CommandScheduler.getInstance().schedule(autonomousCommand);
