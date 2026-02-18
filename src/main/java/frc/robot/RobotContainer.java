@@ -23,7 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.*;
-import frc.robot.autos.hump.*;
+// import frc.robot.autos.hump.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.conveyor.*;
@@ -170,8 +170,9 @@ public class RobotContainer {
         // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
         autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftSide());
         autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightSide());
-        // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_Side());
-        // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_Side());
+        autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftSide());
+        autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightSide());
+        autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_Left());
         autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right());
         
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
@@ -180,7 +181,6 @@ public class RobotContainer {
         // autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
         // autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
         // autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
-        autoChooser.addOption("Auto Left Big (depot + middle) #T", new AUTO_LeftBig());
         // autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
         // autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
         // autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     

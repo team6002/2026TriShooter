@@ -4,16 +4,16 @@ import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
+import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_MiddleRightSide implements Auto {
     @Override
@@ -22,10 +22,13 @@ public class AUTO_MiddleRightSide implements Auto {
             setAutoStartPose("swipehalfM2", false, robot.drive)
             ,followPath("swipehalfM2", false)
             ,followPath("shootfuelM2", false)
-            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose().plus(new Translation2d(0, -0.5)))
-            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
+            ,new ParallelDeadlineGroup(
+                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT) :
                 new ShootFuelSim(robot.driveSimulation)
+                ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
+            )
             ,new AutoAlignToClimb(robot.drive)
         );
     }

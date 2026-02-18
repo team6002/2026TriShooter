@@ -6,14 +6,16 @@ import org.json.simple.parser.ParseException;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.autos.Auto;
-import frc.robot.commands.ShootFuel;
+ 
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
+import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_RightSmall implements Auto {
     @Override
@@ -22,9 +24,12 @@ public class AUTO_RightSmall implements Auto {
             setAutoStartPose("gotomiddleHPM3", false, robot.drive)
             ,followPath("gotoHPM3", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
-            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                new ShootFuel(robot.drive, robot.conveyor, robot.intake, null, null, null) : 
+            ,new ParallelDeadlineGroup(
+                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT) :
                 new ShootFuelSim(robot.driveSimulation)
+                ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
+            )
             ,new AutoAlignToClimb(robot.drive)
         );
     }
