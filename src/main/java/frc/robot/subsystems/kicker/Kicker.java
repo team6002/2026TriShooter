@@ -58,6 +58,14 @@ public class Kicker extends SubsystemBase {
         io.setReference(velocity);
     }
 
+    public Command setTargetVel(double vel){
+        return Commands.runOnce(()-> setReference(vel), this);
+    }
+
+    public boolean atVelocity(){
+        return io.atVelocity();
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

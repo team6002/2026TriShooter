@@ -25,7 +25,7 @@ public class KickerIOSpark implements KickerIO {
     private ControlType kickerType;
 
     //tuning
-    private final LoggedNetworkNumber reference, kS, kV, kP;
+    private final LoggedNetworkNumber kS, kV, kP;
     private double lastP = Double.NaN;
 
     public KickerIOSpark() {
@@ -40,14 +40,13 @@ public class KickerIOSpark implements KickerIO {
 
         // apply config
         kickerMotor.configure(
-                KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         kickerReference = 0;
         kickerType = ControlType.kVoltage;
 
         //tuning
-        reference = new LoggedNetworkNumber("/Tuning/Kicker/reference", KickerConstants.kKicking);
         kS = new LoggedNetworkNumber("/Tuning/Kicker/kS", KickerConstants.kS);
         kV = new LoggedNetworkNumber("/Tuning/Kicker/kV", KickerConstants.kV);
         kP = new LoggedNetworkNumber("/Tuning/Kicker/kP", KickerConstants.kP);
@@ -55,10 +54,11 @@ public class KickerIOSpark implements KickerIO {
 
     @Override
     public void updateInputs(KickerIOInputs inputs) {
-        inputs.kickerReference = getReference();
+        inputs.kickerReference = Units.radiansToDegrees(getReference());
         inputs.kickerCurrent = getCurrent();
         inputs.kickerVoltage = getVoltage();
-        inputs.kickerVelocity = getVelocity();
+        inputs.kickerVelocity = Units.radiansToDegrees(getVelocity());
+        inputs.atVelocity = atVelocity();
     }
 
     @Override
@@ -94,9 +94,14 @@ public class KickerIOSpark implements KickerIO {
     }
 
     @Override
+    public boolean atVelocity(){
+        return Math.abs(getReference() - getVelocity()) <= KickerConstants.kTolerance;
+    }
+
+    @Override
     public void periodic() {
         //tuning
-        setReference(Units.degreesToRadians(reference.get()));
+        // setReference(reference.get());
         double kickerFF = kS.get() + (kV.get() * getReference());
 
         double p = kP.get();

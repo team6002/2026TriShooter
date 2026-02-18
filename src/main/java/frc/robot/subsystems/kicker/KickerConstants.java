@@ -3,13 +3,13 @@ package frc.robot.subsystems.kicker;
 public class KickerConstants {
     public static final int kKickerCanId = 16;
 
-    public static final double kP = 0.0;
+    public static final double kP = 0.002;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kFF = 0.0;
 
-    public static final double kV = 0.0;
-    public static final double kS = 0.0;
+    public static final double kV = 0.0393;
+    public static final double kS = 0.16;
     public static final double kG = 0.0;
     public static final double kA = 0.0;
 
@@ -27,8 +27,9 @@ public class KickerConstants {
     public static final double kMinOutput = -1;
     public static final double kMaxOutput = 1;
 
-    public static final double kKick = 10;
-    public static final double kKicking = Math.toRadians(27000);
+    public static final double kTolerance = Math.PI * 2;
+
+    public static final double kKicking = Math.toRadians(10000);
     public static final double kOff = 0;
 
     public static final double kGearRatio = 2;

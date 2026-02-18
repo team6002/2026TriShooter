@@ -9,6 +9,7 @@ public interface KickerIO {
         public double kickerVoltage;
         public double kickerVelocity;
         public double kickerReference;
+        public boolean atVelocity;
     }
 
     /** Updates the set of loggable inputs. */
@@ -33,6 +34,8 @@ public interface KickerIO {
     public default void setVoltage(double voltage) {}
 
     public default void setReference(double velocity) {}
+
+    public default boolean atVelocity(){ return false; }
 
     public default void periodic() {}
 }

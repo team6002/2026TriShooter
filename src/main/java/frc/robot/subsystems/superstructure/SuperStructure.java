@@ -50,19 +50,19 @@ public class SuperStructure {
             Radians.of(ExtenderConstants.kStow), // intake extension
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kConvey), // conveyor power
-            Volts.of(KickerConstants.kKick) // kicker power
+            Volts.of(KickerConstants.kKicking) // kicker power
         );
 
         public final Angle intakeAngle;
         public final Voltage intakeVoltage;
         public final Voltage conveyorVoltage;
-        public final Voltage kickerVoltage;
+        public final Voltage kickerReference;
 
-        SuperStructurePose(Angle intakeAngle, Voltage intakeVoltage, Voltage conveyorVoltage, Voltage kickerVoltage) {
+        SuperStructurePose(Angle intakeAngle, Voltage intakeVoltage, Voltage conveyorVoltage, Voltage kickerReference) {
             this.intakeAngle = intakeAngle;
             this.intakeVoltage = intakeVoltage;
             this.conveyorVoltage = conveyorVoltage;
-            this.kickerVoltage = kickerVoltage;
+            this.kickerReference = kickerReference;
         }
     }
 
@@ -137,9 +137,10 @@ public class SuperStructure {
                 hood.setTargetPos(.35),
                 shooter.setTargetVelolcity(Math.toRadians(21000)),
                 new WaitUntilCommand(()-> shooter.isReady()),
+                kicker.setTargetVel(pose.kickerReference.baseUnitMagnitude()),
+                new WaitUntilCommand(()-> kicker.atVelocity()),
                 Commands.runOnce(()-> shooter.startShooting()),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
-                kicker.runVoltage(pose.kickerVoltage.baseUnitMagnitude()),
                 intake.setExtenderTargetAngle(pose.intakeAngle.in(Radians)),
                 Commands.runOnce(()-> currentPose = pose)
             )
@@ -148,7 +149,7 @@ public class SuperStructure {
                     if(interrupted){
                         shooter.setReference(0);
                         shooter.stopShooting();
-                        kicker.setVoltage(KickerConstants.kOff);
+                        kicker.setReference(KickerConstants.kOff);
                         hood.setTargetPos(HoodConstants.kMinAngle);
                     }
                 }
@@ -159,11 +160,10 @@ public class SuperStructure {
             ()-> {
                 shooter.stopShooting();
                 conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
-                // climb.setReference(pose.climbAngle.in(Radians));
                 hood.setTargetPos(HoodConstants.kMinAngle);
                 intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
                 intake.setExtenderReference(pose.intakeAngle.in(Radians));
-                kicker.setVoltage(pose.kickerVoltage.baseUnitMagnitude());
+                kicker.setVoltage(pose.kickerReference.baseUnitMagnitude());
                 currentPose = pose;
             },
             conveyor, intake, kicker

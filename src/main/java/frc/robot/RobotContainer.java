@@ -209,7 +209,7 @@ public class RobotContainer {
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
         IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
-        drive.setDefaultCommand(joystickDrive);
+        // drive.setDefaultCommand(joystickDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
