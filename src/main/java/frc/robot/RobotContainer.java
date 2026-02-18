@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.trench.*;
-import frc.robot.autos.Auto;
 import frc.robot.autos.unused.hump.AUTO_120;
 import frc.robot.commands.ShootFuelSim;
 // import frc.robot.autos.hump.*;
@@ -243,7 +242,7 @@ public class RobotContainer {
         final MapleJoystickDriveInput driveInput = driver.getDriveInput();
         IntSupplier pov = () -> -1;
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
-        // drive.setDefaultCommand(joystickDrive);
+        drive.setDefaultCommand(joystickDrive);
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
