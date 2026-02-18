@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.75,
+        "y": 4.45
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.2970666710705885,
+        "y": 6.14037019600587
+      },
+      "isLocked": false,
+      "linkedName": "SwipeHalfMiddle"
+    },
+    {
+      "anchor": {
+        "x": 2.47,
+        "y": 6.155
+      },
+      "prevControl": {
+        "x": 2.5571557427476583,
+        "y": 5.158805301908255
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Shoot120"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.0,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -45.0
+  },
+  "reversed": false,
+  "folder": "LucasAuto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 90.0
+  },
+  "useDefaultConstraints": true
+}

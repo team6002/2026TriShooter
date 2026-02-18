@@ -3,12 +3,22 @@
   "robotLength": 0.85,
   "holonomicMode": true,
   "pathFolders": [
+<<<<<<< HEAD
     "()",
     "Left Auto",
     "Middle Auto (unused)",
     "Middle Hump Auto (half field unused)",
     "Middle Hump Safe (unused)",
     "Middle Side HF Auto",
+=======
+    "Left Hump Auto (Depot)",
+    "Middle Auto",
+    "Middle Hump Auto (half field)",
+    "Middle Hump Auto 2",
+    "Middle Hump Safe",
+    "Middle Side Hump Auto",
+    "LucasAuto",
+>>>>>>> 3d3633c8156f7ae6a66e566b90f7ce9079d38168
     "Right Auto",
     "Side FF Auto",
     "Side Hump Auto (unused)"

@@ -16,6 +16,10 @@ public class KickerIOSpark implements KickerIO {
     private double kickerReference;
     private ControlType kickerType;
 
+    //tuning
+    private final LoggedNetworkNumber kS, kV, kP;
+    private double lastP = Double.NaN;
+
     public KickerIOSpark() {
         // initialize motor
         kickerMotor = new SparkMax(KickerConstants.kKickerCanId, MotorType.kBrushless);
@@ -28,19 +32,25 @@ public class KickerIOSpark implements KickerIO {
 
         // apply config
         kickerMotor.configure(
-                KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         kickerReference = 0;
         kickerType = ControlType.kVoltage;
+
+        //tuning
+        kS = new LoggedNetworkNumber("/Tuning/Kicker/kS", KickerConstants.kS);
+        kV = new LoggedNetworkNumber("/Tuning/Kicker/kV", KickerConstants.kV);
+        kP = new LoggedNetworkNumber("/Tuning/Kicker/kP", KickerConstants.kP);
     }
 
     @Override
     public void updateInputs(KickerIOInputs inputs) {
-        inputs.kickerReference = getReference();
+        inputs.kickerReference = Units.radiansToDegrees(getReference());
         inputs.kickerCurrent = getCurrent();
         inputs.kickerVoltage = getVoltage();
-        inputs.kickerVelocity = getVelocity();
+        inputs.kickerVelocity = Units.radiansToDegrees(getVelocity());
+        inputs.atVelocity = atVelocity();
     }
 
     @Override
@@ -76,7 +86,32 @@ public class KickerIOSpark implements KickerIO {
     }
 
     @Override
-    public void PID() {
-        kickerController.setSetpoint(kickerReference, kickerType);
+    public boolean atVelocity(){
+        return Math.abs(getReference() - getVelocity()) <= KickerConstants.kTolerance;
+    }
+
+    @Override
+    public void periodic() {
+        //tuning
+        // setReference(reference.get());
+        double kickerFF = kS.get() + (kV.get() * getReference());
+
+        double p = kP.get();
+        if(lastP != p){
+            SparkMaxConfig newConfig = new SparkMaxConfig();
+            newConfig.apply(KickerConfig.kickerConfig);
+            newConfig.closedLoop.pid(p, 0, 0, ClosedLoopSlot.kSlot0);
+
+            kickerMotor.configure(newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+
+            lastP = p;
+        }
+
+        // Bypass velocity control at 0 RPM to prevent chatter and allow a smooth coast-down
+        if(kickerReference > 0){
+            kickerController.setSetpoint(kickerReference, kickerType, ClosedLoopSlot.kSlot0, kickerFF);
+        }else{
+            kickerController.setSetpoint(0, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
+        }
     }
 }
