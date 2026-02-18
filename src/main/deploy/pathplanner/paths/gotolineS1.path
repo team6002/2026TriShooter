@@ -8,32 +8,27 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.351569186878241,
-        "y": 0.6256633380909306
+        "x": 2.576662650602409,
+        "y": -1.0463855421686736
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5,
-        "y": 0.6
+        "x": 1.7133734939759035,
+        "y": 2.3084216867469887
       },
       "prevControl": {
-        "x": 4.039058487869545,
-        "y": 0.5221540656149182
+        "x": 2.252431981845448,
+        "y": 2.230575752361907
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.25,
-      "rotationDegrees": 0.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -46,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 4.0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 90.0
   },
   "reversed": false,
   "folder": "Side Auto",
