@@ -18,14 +18,14 @@ import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_Left implements Auto {
+public class AUTO_RightHF implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleL1", false, robot.drive)
-            ,followPath("gotomiddleL1", false)
-            ,followPath("gotostartL1", false)
-            ,followPath("gotoshootL1", false)
+            setAutoStartPose("getmiddleR1", false, robot.drive)
+            ,followPath("getmiddleR1", false)
+            ,followPath("gotolineR1", false)
+            ,followPath("gotoshootR1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
@@ -33,8 +33,8 @@ public class AUTO_Left implements Auto {
                 new ShootFuelSim(robot.driveSimulation)
                 ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             )
-            ,followPath("gotodepotL1", false)
             ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
+            ,followPath("gotoHPR1", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 

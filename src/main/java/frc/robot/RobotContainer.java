@@ -23,12 +23,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.autos.*;
-import frc.robot.autos.trench.AUTO_Left;
-import frc.robot.autos.trench.AUTO_LeftSide;
-import frc.robot.autos.trench.AUTO_MiddleLeftSide;
-import frc.robot.autos.trench.AUTO_MiddleRightSide;
-import frc.robot.autos.trench.AUTO_Right;
-import frc.robot.autos.trench.AUTO_RightSide;
+import frc.robot.autos.trench.AUTO_LeftHF;
+import frc.robot.autos.trench.AUTO_LeftFF;
+import frc.robot.autos.trench.AUTO_MiddleLeftHF;
+import frc.robot.autos.trench.AUTO_MiddleRightHF;
+import frc.robot.autos.trench.AUTO_RightHF;
+import frc.robot.autos.trench.AUTO_RightFF;
 // import frc.robot.autos.hump.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
@@ -191,12 +191,12 @@ public class RobotContainer {
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
-        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftSide());
-        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightSide());
-        autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftSide());
-        autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightSide());
-        autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_Left());
-        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right());
+        autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftHF());
+        autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightHF());
+        autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftFF());
+        autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightFF());
+        autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_LeftHF());
+        autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF());
         
         // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
         // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        

@@ -16,14 +16,14 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_RightSide implements Auto {
+public class AUTO_LeftFF implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleS1", true, robot.drive)
-            ,followPath("gotomiddleS1", true)
-            ,followPath("grabfuelS1", true)
-            ,followPath("gotolineS1", true)
+            setAutoStartPose("gotomiddleS1", false, robot.drive)
+            ,followPath("gotomiddleS1", false)
+            ,followPath("grabfuelS1", false)
+            ,followPath("gotolineS1", false)
             ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 

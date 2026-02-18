@@ -6,7 +6,6 @@ import org.json.simple.parser.ParseException;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -15,27 +14,16 @@ import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
-import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_Right implements Auto {
+public class AUTO_MiddleRightHF implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("getmiddleR1", false, robot.drive)
-            ,followPath("getmiddleR1", false)
-            ,followPath("gotolineR1", false)
-            ,followPath("gotoshootR1", false)
-            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
-            ,new ParallelDeadlineGroup(
-                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT) :
-                new ShootFuelSim(robot.driveSimulation)
-                ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
-            )
-            ,new InstantCommand(()->IntakeIOSim.putFuelInHopperSim(24))
-            ,followPath("gotoHPR1", false)
-            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
+            setAutoStartPose("swipehalfM2", false, robot.drive)
+            ,followPath("swipehalfM2", false)
+            ,followPath("shootfuelM2", false)
+            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT) :
