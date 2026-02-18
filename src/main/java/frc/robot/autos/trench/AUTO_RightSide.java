@@ -1,4 +1,4 @@
-package frc.robot.autos;
+package frc.robot.autos.trench;
 
 import java.io.IOException;
 
@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.autos.Auto;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;

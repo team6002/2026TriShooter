@@ -1,4 +1,4 @@
-package frc.robot.autos.hump;
+package frc.robot.autos.unused;
 
 import java.io.IOException;
 
@@ -10,21 +10,18 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.autos.Auto;
- 
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_MiddleHump implements Auto {
+public class AUTO_Middle implements Auto{
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleM3", false, robot.drive)
-            ,followPath("gotomiddleM3", false)
-            ,followPath("pickmiddleM3", false)
-            ,followPath("gotolineM3", false)
-            ,followPath("gotoHPM3", false)
+            // Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
+            followPath("pickupHPM1", false)
+            ,followPath("shootfirstcycle", false)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
@@ -32,7 +29,15 @@ public class AUTO_MiddleHump implements Auto {
                 new ShootFuelSim(robot.driveSimulation)
                 ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
             )
-            ,followPath("climbshootM3", false)
+            ,followPath("pickupmiddleM1", false)
+            ,followPath("shootclimbM1", false)
+            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
+            ,new ParallelDeadlineGroup(
+                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT) :
+                new ShootFuelSim(robot.driveSimulation)
+                ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
+            )
         );
     }
 }

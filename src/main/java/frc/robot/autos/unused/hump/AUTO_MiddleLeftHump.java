@@ -1,4 +1,4 @@
-package frc.robot.autos;
+package frc.robot.autos.unused.hump;
 
 import java.io.IOException;
 
@@ -9,20 +9,22 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
+import frc.robot.autos.Auto;
+ 
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.commands.drive.AutoAlignToClimb;
 import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_MiddleRightSide implements Auto {
+public class AUTO_MiddleLeftHump implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("swipehalfM2", false, robot.drive)
-            ,followPath("swipehalfM2", false)
-            ,followPath("shootfuelM2", false)
-            ,robot.drive.alignToTarget(()->FieldConstants.getHubPose())
+            setAutoStartPose("gotomiddleMH1", true, robot.drive)
+            ,followPath("gotomiddleMH1", true)
+            ,followPath("grabmiddleSH1", true)
+            ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT) :

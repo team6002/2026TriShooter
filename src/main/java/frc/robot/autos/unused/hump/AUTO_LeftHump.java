@@ -1,4 +1,4 @@
-package frc.robot.autos.hump;
+package frc.robot.autos.unused.hump;
 
 import java.io.IOException;
 
@@ -17,15 +17,13 @@ import frc.robot.constants.FieldConstants;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_RightBig implements Auto {
+public class AUTO_LeftHump implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleR2", false, robot.drive)
-            ,followPath("gotomiddleR2", false)
-            ,followPath("pickmiddleM3", false)
-            ,followPath("gotolineM3", false)
-            ,followPath("gotoHPM3", false)
+            setAutoStartPose("gotomiddleSH1", true, robot.drive)
+            ,followPath("gotomiddleSH1", true)
+            ,followPath("grabmiddleSH1", true)
             ,robot.drive.alignToTarget(()-> FieldConstants.getHubPose())
             ,new ParallelDeadlineGroup(
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
