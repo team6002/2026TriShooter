@@ -9,6 +9,7 @@ public interface ConveyorIO {
         public double conveyorVoltage;
         public double conveyorVelocity;
         public double conveyorReference;
+        public double conveyorTemp;
     }
 
     /** Updates the set of loggable inputs. */

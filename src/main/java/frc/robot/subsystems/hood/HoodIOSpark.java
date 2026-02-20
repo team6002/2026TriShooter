@@ -3,6 +3,9 @@ package frc.robot.subsystems.hood;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.ClosedLoopSlot;
@@ -47,6 +50,7 @@ public class HoodIOSpark implements HoodIO {
         inputs.hoodVoltage = getVoltage();
         inputs.hoodVelocity = getVelocity();
         inputs.hoodPos = getPosition();
+        inputs.hoodTemp = Fahrenheit.convertFrom(hoodMotor.getMotorTemperature(), Celsius);
     }
 
     @Override

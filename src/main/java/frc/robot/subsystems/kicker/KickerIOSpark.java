@@ -3,6 +3,9 @@ package frc.robot.subsystems.kicker;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
+
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import com.revrobotics.PersistMode;
@@ -59,6 +62,7 @@ public class KickerIOSpark implements KickerIO {
         inputs.kickerVoltage = getVoltage();
         inputs.kickerVelocity = Units.radiansToDegrees(getVelocity());
         inputs.atVelocity = atVelocity();
+        inputs.kickerTemp = Fahrenheit.convertFrom(kickerMotor.getMotorTemperature(), Celsius);
     }
 
     @Override

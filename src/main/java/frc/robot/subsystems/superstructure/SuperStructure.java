@@ -66,7 +66,7 @@ public class SuperStructure {
         ),READY_TO_SHOOT_120(
             Radians.of(ExtenderConstants.kStow), // intake extension
             .2, // hood angle
-            RadiansPerSecond.of(18000), // shooterVelocity
+            DegreesPerSecond.of(18000), // shooterVelocity
             Volts.of(IntakeConstants.kOff), // intake power
             Volts.of(ConveyorConstants.kConvey), // conveyor power
             Volts.of(KickerConstants.kKick) // kicker power
@@ -174,7 +174,7 @@ public class SuperStructure {
                         shooter.setReference(0);
                         shooter.stopShooting();
                         kicker.setReference(KickerConstants.kOff);
-                        hood.setTargetPos(HoodConstants.kMinAngle);
+                        hood.setReference(HoodConstants.kMinAngle);
                     }
                 }
             );
@@ -184,7 +184,7 @@ public class SuperStructure {
             ()-> {
                 shooter.stopShooting();
                 conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
-                hood.setTargetPos(HoodConstants.kMinAngle);
+                hood.setReference(HoodConstants.kMinAngle);
                 intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
                 intake.setExtenderReference(pose.intakeAngle.in(Radians));
                 kicker.setVoltage(pose.kickerReference.baseUnitMagnitude());

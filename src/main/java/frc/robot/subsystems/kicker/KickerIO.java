@@ -10,6 +10,7 @@ public interface KickerIO {
         public double kickerVelocity;
         public double kickerReference;
         public boolean atVelocity;
+        public double kickerTemp;
     }
 
     /** Updates the set of loggable inputs. */

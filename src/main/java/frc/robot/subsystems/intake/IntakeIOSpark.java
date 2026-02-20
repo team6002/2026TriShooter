@@ -3,6 +3,9 @@ package frc.robot.subsystems.intake;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -71,6 +74,9 @@ public class IntakeIOSpark implements IntakeIO {
         inputs.intakeVoltage = getVoltage();
         inputs.intakeVelocity = getVelocity();
         inputs.intakePosition = getPosition();
+        inputs.intakeTemp = Fahrenheit.convertFrom(intakeMotor.getMotorTemperature(), Celsius);
+
+        inputs.intakeFollowerTemp = Fahrenheit.convertFrom(intakeFollowerMotor.getMotorTemperature(), Celsius);
 
         inputs.extenderReference = Units.radiansToDegrees(getExtenderReference());
         inputs.extenderCurrent = getExtenderCurrent();
@@ -78,6 +84,7 @@ public class IntakeIOSpark implements IntakeIO {
         inputs.extenderVelocity = getExtenderVelocity();
         inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
         inputs.extenderInPosition = getExtenderInPosition();
+        inputs.extenderTemp = Fahrenheit.convertFrom(intakeExtenderMotor.getMotorTemperature(), Celsius);
     }
 
     @Override

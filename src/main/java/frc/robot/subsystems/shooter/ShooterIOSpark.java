@@ -3,14 +3,18 @@ package frc.robot.subsystems.shooter;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.math.util.Units;
+
+import com.revrobotics.spark.SparkBase.ControlType;
 
 public class ShooterIOSpark implements ShooterIO {
     private final SparkMax leftShooterMotor, middleShooterMotor, rightShooterMotor;
@@ -73,14 +77,17 @@ public class ShooterIOSpark implements ShooterIO {
         inputs.leftShooterCurrent = getLeftCurrent();
         inputs.leftShooterVoltage = getLeftVoltage();
         inputs.leftShooterVelocity = Units.radiansToDegrees(getLeftVelocity());
+        inputs.leftShooterTemp = Fahrenheit.convertFrom(leftShooterMotor.getMotorTemperature(), Celsius);
 
         inputs.shooterCurrent = getMiddleCurrent();
         inputs.shooterVoltage = getMiddleVoltage();
         inputs.shooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
+        inputs.leftShooterTemp = Fahrenheit.convertFrom(middleShooterMotor.getMotorTemperature(), Celsius);
 
         inputs.rightShooterCurrent = getRightCurrent();
         inputs.rightShooterVoltage = getRightVoltage();
         inputs.rightShooterVelocity = Units.radiansToDegrees(getRightVelocity());
+        inputs.leftShooterTemp = Fahrenheit.convertFrom(rightShooterMotor.getMotorTemperature(), Celsius);
     }
 
     @Override

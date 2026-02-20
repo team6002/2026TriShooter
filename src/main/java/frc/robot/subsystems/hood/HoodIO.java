@@ -11,6 +11,7 @@ public interface HoodIO {
         public double hoodReference;
         public double hoodPos;
         public boolean atReference;
+        public double hoodTemp;
     }
 
     /** Updates the set of loggable inputs. */
