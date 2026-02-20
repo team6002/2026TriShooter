@@ -86,6 +86,7 @@ public class SwervePhysicsSim {
         createWall(1, 0.5, 1, 4.5, 1.4);
         
         // Bump
+        // Blue
         // Left Back
         RampBuilder.createRamp(
             world,
@@ -142,13 +143,72 @@ public class SwervePhysicsSim {
             0.16    // height (Z)
         );
 
-        // // Funny Ramp
-        // RampBuilder.createRampX(
-        //     world,
-        //     space,
-        //     8,
+        // Red
+        // Left Back
+        RampBuilder.createRamp(
+            world,
+            space,
+            12,   // baseX
+            5.5,
+            0,  
+            "x",  
+            -15.0,    // slope angle
+            0.564,   // length (X)
+            1.854,   // width (Y)
+            0.16    // height (Z)
+        );
 
-        // );
+        // Left Front
+        RampBuilder.createRamp(
+            world,
+            space,
+            12.5,   // baseX
+            5.5,
+            0, 
+            "x", 
+            15.0,    // slope angle
+            0.564,   // length (X)
+            1.854,   // width (Y)
+            0.16    // height (Z)
+        );
+
+        // Right Back
+        RampBuilder.createRamp(
+            world,
+            space,
+            12,   // baseX
+            2.5,
+            0, 
+            "x", 
+            -15.0,    // slope angle
+            0.564,   // length (X)
+            1.854,   // width (Y)
+            0.16    // height (Z)
+        );
+
+        // Right Front
+        RampBuilder.createRamp(
+            world,
+            space,
+            12.5,   // baseX
+            2.5,
+            0,
+            "x", 
+            15.0,    // slope angle
+            0.564,   // length (X)
+            1.854,   // width (Y)
+            0.16    // height (Z)
+        );
+
+        // for (Pose3d fuelPose : SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel")) {
+        //     SphereResult sphere = createSphere(
+        //         world,
+        //         space,
+        //         2,     // radius
+        //         1.0,     // density
+        //         fuelPose.getX(), fuelPose.getY(), fuelPose.getZ()  // position
+        //     );
+        // }
     }
 
     public class RampBuilder {
@@ -215,6 +275,40 @@ public class SwervePhysicsSim {
             body.setKinematic();
 
             return body;
+        }
+    }
+
+    public static SphereResult createSphere(
+            DWorld world,
+            DSpace space,
+            double radius,
+            double density,
+            double x, double y, double z
+    ) {
+        // Create body
+        DBody body = OdeHelper.createBody(world);
+        body.setPosition(x, y, z);
+
+        // Create geom
+        DGeom geom = OdeHelper.createSphere(space, radius);
+        geom.setBody(body);
+
+        // Mass
+        DMass mass = OdeHelper.createMass();
+        mass.setSphere(density, radius);
+        body.setMass(mass);
+
+        return new SphereResult(body, geom);
+    }
+
+    // Simple return container
+    public static class SphereResult {
+        public final DBody body;
+        public final DGeom geom;
+
+        public SphereResult(DBody body, DGeom geom) {
+            this.body = body;
+            this.geom = geom;
         }
     }
 

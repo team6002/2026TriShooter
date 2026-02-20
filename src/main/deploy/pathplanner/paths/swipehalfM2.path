@@ -77,7 +77,7 @@
     "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Middle Side HF Auto",
+  "folder": "Middle HF",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0

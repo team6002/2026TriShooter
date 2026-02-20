@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Right Auto",
+  "folder": "Right HF",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 40.0

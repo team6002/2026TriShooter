@@ -105,6 +105,10 @@ public final class Statistics {
         return new Estimation(combinedCenter, combinedStandardDeviation);
     }
 
+    public Boolean isInInterval(double value, double lower, double higher) {
+        return (value >= lower) && (value <= higher);
+    }
+
     /**
      *
      *

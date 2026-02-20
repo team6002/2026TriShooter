@@ -15,17 +15,19 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+// import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.autos.AUTO_120;
 import frc.robot.autos.trench.*;
-// import frc.robot.autos.Auto;
-import frc.robot.autos.unused.hump.AUTO_120;
 import frc.robot.commands.ShootFuelSim;
 // import frc.robot.autos.hump.*;
 import frc.robot.commands.drive.*;
@@ -44,6 +46,8 @@ import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.MapleJoystickDriveInput;
+// import frc.robot.utils.CustomMaths.Statistics;
+import frc.robot.utils.CustomMaths.Statistics;
 
 import java.util.function.IntSupplier;
 
@@ -82,6 +86,7 @@ public class RobotContainer {
     public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
 
     public Pose2d resetPose;
+    public static int score = 0;
 
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
@@ -201,7 +206,7 @@ public class RobotContainer {
             autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightHF().getAutoCommand(this));
             autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftFF().getAutoCommand(this));
             autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightFF().getAutoCommand(this));
-            autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_LeftHF().getAutoCommand(this));
+            autoChooser.addOption("Auto Left (half middle + depot) #T", new AUTO_LeftHF().getAutoCommand(this));
             autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF().getAutoCommand(this));
             autoChooser.addOption("Auto_120", new AUTO_120().getAutoCommand(this));
 
@@ -231,6 +236,25 @@ public class RobotContainer {
         // Configure the button bindings
 
         SmartDashboard.putData("Field", field);
+    }
+
+    public class MatchTimer {
+        private double startTime = 0;
+        private boolean running = false;
+    
+        public void start() {
+            startTime = Logger.getTimestamp();
+            running = true;
+        }
+    
+        public void stop() {
+            running = false;
+        }
+    
+        public double getElapsed() {
+            if (!running) return 0;
+            return Logger.getTimestamp() - startTime;
+        }
     }
 
     /**
@@ -292,7 +316,7 @@ public class RobotContainer {
                 ,drive
                 ,()-> FieldConstants.getHubPose()
                 ,ShooterConstants.kShooterOptimization
-                ,1
+                ,0.33
                 ,false
             )
         );
@@ -339,12 +363,22 @@ public class RobotContainer {
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
 
-        Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
-        Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
-        // Logger.recordOutput("Vision/GetTarget", new VisionIOPhotonVisionSim(
-        //                 Vision_Constants.camera0Name,
-        //                 Vision_Constants.robotToCamera0,
-        //                 driveSimulation::getSimulatedDriveTrainPose).);
+        // Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
+        // Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
+
+        double time = Robot.timer.getElapsed()/1000000;
+
+        // Logger.recordOutput("FieldSimulation/timeeeeeeeeeeeeeeeeeeeeeeeeeeeee", time);
+
+        Statistics stats = new Statistics();
+
+        if ((DriverStation.isTeleopEnabled() && (stats.isInInterval(time, 0, 35) || stats.isInInterval(time, 60, 85) || stats.isInInterval(time, 110, 140))) || DriverStation.isAutonomousEnabled()) {
+            Logger.recordOutput("FieldSimulation/BlueShift", true);
+        } else {
+            Logger.recordOutput("FieldSimulation/BlueShift", false);
+        }
+
+        Logger.recordOutput("FieldSimulation/BlueScore", score);
     }
 
     public static boolean motorBrakeEnabled = false;

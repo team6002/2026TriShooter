@@ -45,7 +45,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Side FF Auto",
+  "folder": "Side FF",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

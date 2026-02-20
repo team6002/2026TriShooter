@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
+import frc.robot.RobotContainer;
 import frc.robot.constants.FieldConstants;
 
 import java.util.ArrayList;
@@ -79,6 +80,8 @@ public class ShootFuelSim extends Command {
                         Radians.of(params.angRad())
                     )
                 );
+
+                RobotContainer.score += 1;
             }
 
             timer = 0;

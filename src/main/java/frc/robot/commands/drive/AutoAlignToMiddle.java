@@ -14,11 +14,11 @@ public class AutoAlignToMiddle extends SequentialCommandGroup {
             addCommands(
                 new ConditionalCommand(
                     new SequentialCommandGroup(
-                        new GoToPose(new Pose2d(13.3, 0.9, new Rotation2d()), drive, 0.05)
-                        ,new GoToPose(new Pose2d(9.5, 0.9, new Rotation2d()), drive, 0.05)
+                        new GoToPose(new Pose2d(14, 0.7, new Rotation2d()), drive, 0.05)
+                        ,new GoToPose(new Pose2d(9.5, 0.7, new Rotation2d()), drive, 0.05)
                     )
                     ,new SequentialCommandGroup(
-                        new GoToPose(new Pose2d(13.3, 7.4, new Rotation2d()), drive, 0.05)
+                        new GoToPose(new Pose2d(14, 7.4, new Rotation2d()), drive, 0.05)
                         ,new GoToPose(new Pose2d(9.5, 7.4, new Rotation2d()), drive, 0.05)
                     ) 
                     ,()->drive.getPose().getY() < 4
@@ -28,12 +28,12 @@ public class AutoAlignToMiddle extends SequentialCommandGroup {
             addCommands(
                 new ConditionalCommand(
                     new SequentialCommandGroup(
-                        new GoToPose(new Pose2d(3.2, 1.1, new Rotation2d()), drive, 0.05)
-                        ,new GoToPose(new Pose2d(6, 0.9, new Rotation2d()), drive, 0.05)
+                        new GoToPose(new Pose2d(3, 0.7, new Rotation2d()), drive, 0.05)
+                        ,new GoToPose(new Pose2d(6, 0.7, new Rotation2d()), drive, 0.05)
                     )
                     ,new SequentialCommandGroup(
-                        new GoToPose(new Pose2d(3.2, 7.2, new Rotation2d()), drive, 0.05)
-                        ,new GoToPose(new Pose2d(6, 7.2, new Rotation2d()), drive, 0.05)
+                        new GoToPose(new Pose2d(3, 7.4, new Rotation2d()), drive, 0.05)
+                        ,new GoToPose(new Pose2d(6, 7.4, new Rotation2d()), drive, 0.05)
                     ) 
                     ,()->drive.getPose().getY() < 4
                 )

@@ -41,11 +41,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -45.0
+    "velocity": 0.0,
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "LucasAuto",
+  "folder": "Lucas Auto HFHF",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0
