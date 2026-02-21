@@ -18,10 +18,10 @@ public class AUTO_120 implements Auto{
             ,followPath("SwipeHalfMiddle", false)
             ,followPath("Shoot120", false)
             ,new ShootCommand(robot)
-            ,followPath("SwipeMiddle", false)
-            ,followPath("Shoot120Bottom", false)
-            ,new ShootCommand(robot)
-            ,new AutoAlignToMiddle(robot.drive)
+        //     ,followPath("SwipeMiddle", false)
+        //     ,followPath("Shoot120Bottom", false)
+        //     ,new ShootCommand(robot)
+        //     ,new AutoAlignToMiddle(robot.drive)
         );
     }
 }

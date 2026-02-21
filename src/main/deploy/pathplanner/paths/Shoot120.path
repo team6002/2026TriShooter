@@ -28,7 +28,16 @@
       "linkedName": "Shoot120"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.39872068230276253,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.684434968017056,
+      "rotationDegrees": 45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
