@@ -3,59 +3,63 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.7,
-        "y": 3.5
+        "x": 3.575,
+        "y": 7.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.968901569186875,
-        "y": 3.0969472182596305
+        "x": 4.575000000000005,
+        "y": 7.5
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.453095577746077,
-        "y": 0.5221540656205423
+        "x": 7.5,
+        "y": 7.33
       },
       "prevControl": {
-        "x": 6.898502139800284,
-        "y": 0.4703994293865924
+        "x": 7.3232233047033635,
+        "y": 7.506776695296637
       },
       "nextControl": {
-        "x": 2.450592908807814,
-        "y": 0.5645350744869589
+        "x": 7.6767766952966365,
+        "y": 7.1532233047033635
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.127860199714693,
-        "y": 1.8677746077032817
+        "x": 7.5,
+        "y": 4.5
       },
       "prevControl": {
-        "x": 1.528958630527817,
-        "y": 1.4149215406562061
+        "x": 7.5,
+        "y": 5.5
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SwipeHalfMiddleTrench"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.5,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.40000000000000463,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.45,
+      "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -63,13 +67,17 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Middle HF",
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/gotostartL1.path
+  "folder": "Left HF",
+=======
+  "folder": "Trench",
+>>>>>>> af8164bc99f168f9f0922c492d1e492305ce102c:src/main/deploy/pathplanner/paths/SwipeHalfMiddleTrench.path
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

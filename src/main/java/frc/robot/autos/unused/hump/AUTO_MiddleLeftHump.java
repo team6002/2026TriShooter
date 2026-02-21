@@ -19,7 +19,7 @@ import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_MiddleLeftHump implements Auto {
     @Override
-    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotomiddleMH1", true, robot.drive)
             ,followPath("gotomiddleMH1", true)

@@ -1,5 +1,6 @@
 package frc.robot.subsystems.shooter;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.utils.MapleShooterOptimization;
 
@@ -82,7 +83,7 @@ public class ShooterConstants {
 
     public static final record ShootingParams(double angRad, double velocityMPS, double tofSeconds) {}
 
-    public static final ShootingParams getShootingParams(double distance) {
+    public static final ShootingParams getSimShootingParams(double distance) {
         if (distance <= SHOOTING_TABLE[0][0]) {
             return new ShootingParams(
                 Units.degreesToRadians(SHOOTING_TABLE[0][1]),
@@ -121,5 +122,29 @@ public class ShooterConstants {
         }
 
         return new ShootingParams(Units.degreesToRadians(75), 7.0, 1.0);
+    }
+
+    public static final ShootingParams getShootingParams(double distanceMeters){
+        //linear regressions calculated from desmos
+        double hoodAngle = (0.123023 * distanceMeters) - 0.18125;
+        double shooterVelRad = (44.19548 * distanceMeters) + 186.99956;
+        shooterVelRad = MathUtil.clamp(shooterVelRad, 200, 450);
+
+        //11m/s^2 gravity to match maple sim
+        double g = 11;
+        double targetHeightM = Units.feetToMeters(6.0);
+
+        //convert shooter flywheel angular speed in rad/s to linear speed meter/s, with a roughly 43.5% speed transfer to projectile
+        double projVelMps = shooterVelRad * Units.inchesToMeters(2) * 0.435;
+        //convert from 0 = 90 degress from horizontal to 0 = parralel to floor
+        double launchAngleRad = Math.toRadians(85.0 - (45.0 * hoodAngle));
+        //hood angle is 1 rotation of the motor = 45 degrees of hood travel
+        double vy = (projVelMps) * Math.sin(launchAngleRad);
+        //shooter is mounted 21 inches from the floor, target height is 6 feet off the floor
+        double dy = Units.inchesToMeters(21) - targetHeightM;
+
+        double tofSeconds = (vy + Math.sqrt(vy * vy + 2 * g * dy)) / g;
+
+        return new ShootingParams(hoodAngle, shooterVelRad, tofSeconds);
     }
 }

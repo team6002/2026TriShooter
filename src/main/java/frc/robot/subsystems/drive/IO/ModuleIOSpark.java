@@ -13,6 +13,8 @@
 
 package frc.robot.subsystems.drive.IO;
 
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
 import static frc.robot.subsystems.drive.DriveConstants.*;
 import static frc.robot.utils.SparkUtil.*;
 
@@ -66,6 +68,7 @@ public class ModuleIOSpark implements ModuleIO {
     // Connection debouncers
     private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
+    private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
 
     public ModuleIOSpark(int module) {
         zeroRotation = switch (module) {
@@ -193,11 +196,15 @@ public class ModuleIOSpark implements ModuleIO {
                 turnEncoder::getPosition,
                 (value) -> inputs.turnPosition = new Rotation2d(value).minus(zeroRotation));
         ifOk(turnSpark, turnEncoder::getVelocity, (value) -> inputs.turnVelocityRadPerSec = value);
+
+        inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(!sparkStickyFault);
+
         ifOk(
                 turnSpark,
                 new DoubleSupplier[] {turnSpark::getAppliedOutput, turnSpark::getBusVoltage},
                 (values) -> inputs.turnAppliedVolts = values[0] * values[1]);
         ifOk(turnSpark, turnSpark::getOutputCurrent, (value) -> inputs.turnCurrentAmps = value);
+
         inputs.turnConnected = turnConnectedDebounce.calculate(!sparkStickyFault);
 
         // Update odometry inputs
@@ -211,6 +218,9 @@ public class ModuleIOSpark implements ModuleIO {
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();
+
+        inputs.driveTemp = Fahrenheit.convertFrom(driveSpark.getMotorTemperature(), Celsius);
+        inputs.turnTemp = Fahrenheit.convertFrom(turnSpark.getMotorTemperature(), Celsius);
     }
 
     @Override

@@ -1,0 +1,80 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.5,
+        "y": 4.5
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.169443869291065,
+        "y": 6.1935884005612705
+      },
+      "isLocked": false,
+      "linkedName": "SwipeHalfMiddleBump"
+    },
+    {
+      "anchor": {
+        "x": 2.467,
+        "y": 6.194
+      },
+      "prevControl": {
+        "x": 3.232244302113369,
+        "y": 5.566347892447361
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "ShootBump"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.375,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.668656716417908,
+      "rotationDegrees": 45.0
+    }
+  ],
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Shoot120.path
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.39872068230276253,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.684434968017056,
+      "rotationDegrees": 45.0
+    }
+  ],
+=======
+>>>>>>> af8164bc99f168f9f0922c492d1e492305ce102c:src/main/deploy/pathplanner/paths/ShootBump.path
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.8,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Shoot120.path
+  "folder": "Lucas Auto HFHF",
+=======
+  "folder": "Bump",
+>>>>>>> af8164bc99f168f9f0922c492d1e492305ce102c:src/main/deploy/pathplanner/paths/ShootBump.path
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 135.0
+  },
+  "useDefaultConstraints": true
+}

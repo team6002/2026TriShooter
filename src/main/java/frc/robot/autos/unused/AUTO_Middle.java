@@ -17,7 +17,7 @@ import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_Middle implements Auto{
     @Override
-    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
             // Commands.runOnce(()-> robot.drive.setPose(getStartingPoseAtBlueAlliance()))
             followPath("pickupHPM1", false)

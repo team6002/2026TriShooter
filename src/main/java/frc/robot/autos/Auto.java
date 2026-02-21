@@ -16,12 +16,12 @@ import org.ironmaple.utils.FieldMirroringUtils;
 import org.json.simple.parser.ParseException;
 
 public interface Auto {
-    Command getAutoCommand(RobotContainer robot) throws IOException, ParseException;
+    Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException;
 
     static Auto none() {
         return new Auto() {
             @Override
-            public Command getAutoCommand(RobotContainer robot) {
+            public Command getAutoCommand(RobotContainer robot, boolean mirrored) {
                 return Commands.none();
             }
         };
@@ -65,9 +65,7 @@ public interface Auto {
                 pose.getRotation().unaryMinus());
     }
 
-    default Command followPath(String pathName
-    ,boolean mirrored
-    ){
+    default Command followPath(String pathName, boolean mirrored){
         PathPlannerPath path;
         try{
             path = getPath(pathName, mirrored);

@@ -3,6 +3,10 @@ package frc.robot.subsystems.climb;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
+
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -41,6 +45,7 @@ public class ClimbIOSpark implements ClimbIO {
         inputs.climbCurrent = getCurrent();
         inputs.climbVoltage = getVoltage();
         inputs.climbVelocity = getVelocity();
+        inputs.climbTemp = Fahrenheit.convertFrom(climbMotor.getMotorTemperature(), Celsius);
     }
 
     @Override

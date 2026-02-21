@@ -9,6 +9,7 @@ public interface ClimbIO {
         public double climbVoltage;
         public double climbVelocity;
         public double climbReference;
+        public double climbTemp;
     }
 
     /** Updates the set of loggable inputs. */

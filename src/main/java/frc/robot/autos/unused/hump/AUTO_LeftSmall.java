@@ -19,7 +19,7 @@ import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_LeftSmall implements Auto {
     @Override
-    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotodepotL1", false, robot.drive)
             ,followPath("gotodepotL1", false)

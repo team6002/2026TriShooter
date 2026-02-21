@@ -15,7 +15,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-// import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -30,6 +30,8 @@ import frc.robot.autos.AUTO_120;
 import frc.robot.autos.trench.*;
 import frc.robot.commands.ShootFuelSim;
 // import frc.robot.autos.hump.*;
+import frc.robot.commands.*;
+import frc.robot.autos.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.conveyor.*;
@@ -199,32 +201,35 @@ public class RobotContainer {
         this.superStructure = new SuperStructure(conveyor, hood, intake, kicker, shooter);
 
         // Set up auto routines
-        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+        // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
+        // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
+        // autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
+        // autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
+        // autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
+        // autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
+        // autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
+        // autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
+        // autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
+        // autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
+        // autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
+        autoChooser = new LoggedDashboardChooser<>("Auto Choices");
         try {
-            autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftHF().getAutoCommand(this));
-            autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightHF().getAutoCommand(this));
-            autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftFF().getAutoCommand(this));
-            autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightFF().getAutoCommand(this));
-            autoChooser.addOption("Auto Left (half middle + depot) #T", new AUTO_LeftHF().getAutoCommand(this));
-            autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF().getAutoCommand(this));
-            autoChooser.addOption("Auto_120", new AUTO_120().getAutoCommand(this));
-
-            // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
-            // autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
-            // autoChooser.addOption("Auto Middle Left Side Hump #H", new AUTO_MiddleLeftHump());  
-            // autoChooser.addOption("Auto Middle Right Safe #H", new AUTO_MiddleRightSafe());
-            // autoChooser.addOption("Auto Middle Left Safe #H", new AUTO_MiddleLeftSafe());      
-            // autoChooser.addOption("Auto Left Side Hump (whole field) #H", new AUTO_LeftHump());
-            // autoChooser.addOption("Auto Left Small (depot) #H", new AUTO_LeftSmall());
-            // autoChooser.addOption("Auto Right Side Hump (whole field) #H", new AUTO_RightHump());        
-            // autoChooser.addOption("Auto Right Big (half field + HP) #H", new AUTO_RightBig());     
-            // autoChooser.addOption("Auto Right Small (HP) #H", new AUTO_RightSmall()); 
+            autoChooser.addOption("Trench Left", new AUTO_Trench().getAutoCommand(this, false));
+            autoChooser.addOption("Trench Right", new AUTO_Trench().getAutoCommand(this, true));
+            autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
+            autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
+            autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftHF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightHF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftFF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightFF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Left (half middle + depot) #T", new AUTO_LeftHF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto_120", new AUTO_120().getAutoCommand(this, false));
         } catch (Exception e) {
             e.printStackTrace();
         }
-        
-        
+    
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -235,7 +240,7 @@ public class RobotContainer {
 
         // Configure the button bindings
 
-        SmartDashboard.putData("Field", field);
+        // SmartDashboard.putData("Field", field);
     }
 
     public class MatchTimer {
@@ -271,26 +276,42 @@ public class RobotContainer {
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
-            ? () -> drive.resetOdometry(
-                driveSimulation
-                    .getSimulatedDriveTrainPose())
+            ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
                 // reset odometry to actual robot pose during simulation
             : () -> drive.resetOdometry(
-                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+                // TODO: replace new Translation2d() with: drive.getPose().getTranslation()
+                new Pose2d(new Translation2d(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
         driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
             .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+        driver.autoAlignmentButton().whileTrue(
+            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                driveInput
+                ,drive
+                ,()-> FieldConstants.getHubPose()
+                ,ShooterConstants.kShooterOptimization
+                ,0.5
+                ,false
+            )
+        );
 
-        driver.autoAlignmentButtonRight().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+        if(Robot.CURRENT_ROBOT_MODE == RobotMode.REAL){
+            driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
+                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-        driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+            driver.rightBumper().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
+                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-        driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
+            driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
+                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-        driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
+            driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
+
+            driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
+        }else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM){
+            driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+        }
     }
 
     public void configureButtonBindingsSim() {
@@ -310,7 +331,7 @@ public class RobotContainer {
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        driver.autoAlignmentButtonLeft().whileTrue(
+        driver.autoAlignmentButton().whileTrue(
             JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
                 driveInput
                 ,drive
@@ -358,7 +379,6 @@ public class RobotContainer {
         SimulatedArena.getInstance().simulationPeriodic();
 
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
-        // Logger.recordOutput("FieldSimulation/PoseEstimator", vision.getRobotPoseEstimator(driveSimulation, 0));
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
@@ -368,7 +388,7 @@ public class RobotContainer {
 
         double time = Robot.timer.getElapsed()/1000000;
 
-        // Logger.recordOutput("FieldSimulation/timeeeeeeeeeeeeeeeeeeeeeeeeeeeee", time);
+        Logger.recordOutput("FieldSimulation/timeeeeeeeeeeeeeeeeeeeeeeeeeeeee", time);
 
         Statistics stats = new Statistics();
 
@@ -406,3 +426,4 @@ public class RobotContainer {
         Logger.recordOutput("SuperStructure/pose", superStructure.currentPose().toString());
     }
 }
+

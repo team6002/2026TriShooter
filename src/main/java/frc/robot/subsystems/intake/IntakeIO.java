@@ -10,6 +10,7 @@ public interface IntakeIO {
         public double intakeVelocity;
         public double intakeReference;
         public double intakePosition;
+        public double intakeTemp;
 
         public double extenderCurrent;
         public double extenderVoltage;
@@ -17,6 +18,9 @@ public interface IntakeIO {
         public double extenderReference;
         public double extenderPosition;
         public boolean extenderInPosition;
+        public double extenderTemp;
+
+        public double intakeFollowerTemp;
     }
 
     /** Updates the set of loggable inputs. */

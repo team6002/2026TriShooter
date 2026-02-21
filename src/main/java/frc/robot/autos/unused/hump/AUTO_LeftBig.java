@@ -20,7 +20,7 @@ import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_LeftBig implements Auto {
     @Override
-    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotomiddleL1", false, robot.drive)
             ,followPath("gotomiddleL1", false)

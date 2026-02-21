@@ -2,6 +2,10 @@ package frc.robot.subsystems.conveyor;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
+
+import static edu.wpi.first.units.Units.Celsius;
+import static edu.wpi.first.units.Units.Fahrenheit;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -41,6 +45,7 @@ public class ConveyorIOSpark implements ConveyorIO {
         inputs.conveyorCurrent = getCurrent();
         inputs.conveyorVoltage = getVoltage();
         inputs.conveyorVelocity = getVelocity();
+        inputs.conveyorTemp = Fahrenheit.convertFrom(conveyorMotor.getMotorTemperature(), Celsius);
     }
 
     @Override
