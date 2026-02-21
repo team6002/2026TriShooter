@@ -45,7 +45,7 @@ public class ClimbIOSpark implements ClimbIO {
         inputs.climbCurrent = getCurrent();
         inputs.climbVoltage = getVoltage();
         inputs.climbVelocity = getVelocity();
-        inputs.climbTemp = Fahrenheit.convertFrom(climbMotor.getMotorTemperature(), Celsius);
+        inputs.climbTemp = Fahrenheit.convertFrom(shooterMotor.getMotorTemperature(), Celsius);
     }
 
     @Override

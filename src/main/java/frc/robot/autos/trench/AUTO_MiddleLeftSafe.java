@@ -15,7 +15,7 @@ import frc.robot.subsystems.intake.IntakeIOSim;
 
 public class AUTO_MiddleLeftSafe implements Auto {
     @Override
-    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("gotodepotMLS", false, robot.drive)
             ,followPath("gotodepotMLS", false)

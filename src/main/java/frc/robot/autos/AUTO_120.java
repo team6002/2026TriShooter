@@ -12,7 +12,7 @@ import frc.robot.commands.drive.AutoAlignToMiddle;
 
 public class AUTO_120 implements Auto{
     @Override
-    public Command getAutoCommand(RobotContainer robot) throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
             setAutoStartPose("SwipeHalfMiddle", false, robot.drive)
             ,followPath("SwipeHalfMiddle", false)
