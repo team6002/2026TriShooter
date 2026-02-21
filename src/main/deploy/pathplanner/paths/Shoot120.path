@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.75,
-        "y": 4.45
+        "x": 7.5,
+        "y": 4.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.2970666710705885,
-        "y": 6.14037019600587
+        "x": 7.0470666710705885,
+        "y": 6.19037019600587
       },
       "isLocked": false,
       "linkedName": "SwipeHalfMiddle"
@@ -28,13 +28,22 @@
       "linkedName": "Shoot120"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": -45.0
+    },
+    {
+      "waypointRelativePos": 0.7,
+      "rotationDegrees": -45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,

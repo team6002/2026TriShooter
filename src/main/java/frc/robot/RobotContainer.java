@@ -15,6 +15,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.*;
 import frc.robot.autos.*;
 import frc.robot.autos.hump.*;
 import frc.robot.commands.drive.*;
@@ -172,12 +174,12 @@ public class RobotContainer {
         // autoChooser.addDefaultOption("Auto Middle (HP + middle) #T", new AUTO_Middle());
         try {
             autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftSide().getAutoCommand(this));
-            autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightSide().getAutoCommand(this));
-            autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftSide().getAutoCommand(this));
-            autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightSide().getAutoCommand(this));
-            autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_Left().getAutoCommand(this));
-            autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right().getAutoCommand(this));
-            autoChooser.addOption("Auto_120", new AUTO_120().getAutoCommand(this));
+            // autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightSide().getAutoCommand(this));
+            // autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftSide().getAutoCommand(this));
+            // autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightSide().getAutoCommand(this));
+            // autoChooser.addOption("Auto Left (depot + middle) #T", new AUTO_Left().getAutoCommand(this));
+            // autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_Right().getAutoCommand(this));
+            autoChooser.addDefaultOption("Auto_120", new AUTO_120().getAutoCommand(this));
 
             // autoChooser.addOption("Auto Middle (half field) #H", new AUTO_MiddleHump(drive, driveSimulation));        
             // autoChooser.addDefaultOption("Auto Middle Right Side Hump #H", new AUTO_MiddleRightHump());        
@@ -221,30 +223,29 @@ public class RobotContainer {
 
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
-            ? () -> drive.resetOdometry(
-                driveSimulation
-                    .getSimulatedDriveTrainPose())
+            ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
                 // reset odometry to actual robot pose during simulation
             : () -> drive.resetOdometry(
-                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+                // TODO: replace new Translation2d() with: drive.getPose().getTranslation()
+                new Pose2d(new Translation2d(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        driver.autoAlignmentButtonLeft().whileTrue(
+        driver.autoAlignmentButton().whileTrue(
             JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
                 driveInput
                 ,drive
                 ,()-> FieldConstants.getHubPose()
                 ,ShooterConstants.kShooterOptimization
-                ,0.33
+                ,0.5
                 ,false
             )
         );
 
-        // if(Robot.isReal()){
+        if(Robot.CURRENT_ROBOT_MODE == RobotMode.REAL){
             driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
                 .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-            driver.autoAlignmentButtonRight().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
+            driver.rightBumper().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
                 .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
             driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
@@ -253,9 +254,9 @@ public class RobotContainer {
             driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
 
             driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
-        // }else if (Robot.isSimulation()){
-        //     driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
-        // }
+        }else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM){
+            driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+        }
     }
 
     /**

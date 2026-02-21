@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
-import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.utils.MapleJoystickDriveInput;
@@ -24,9 +23,9 @@ public interface DriverMap extends Subsystem {
 
     Trigger xButton();
 
-    Trigger autoAlignmentButtonLeft();
+    Trigger autoAlignmentButton();
 
-    Trigger autoAlignmentButtonRight();
+    Trigger rightBumper();
 
     Trigger intakeButton();
 
@@ -111,12 +110,12 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger autoAlignmentButtonLeft() {
+        public Trigger autoAlignmentButton() {
             return xboxController.leftBumper();
         }
 
         @Override
-        public Trigger autoAlignmentButtonRight() {
+        public Trigger rightBumper(){
             return xboxController.rightBumper();
         }
 
@@ -210,148 +209,6 @@ public interface DriverMap extends Subsystem {
         @Override
         public DoubleSupplier rotationalAxisY() {
             return xboxController::getLeftY;
-        }
-    }
-
-    abstract class DriverPS5 implements DriverMap {
-        protected final CommandPS5Controller ps5Controller;
-
-        public DriverPS5(int port) {
-            this.ps5Controller = new CommandPS5Controller(port);
-        }
-
-        @Override
-        public Trigger povUp() {
-            return ps5Controller.povUp();
-        }
-
-        @Override
-        public Trigger povDown() {
-            return ps5Controller.povDown();
-        }
-
-        @Override
-        public Trigger povLeft() {
-            return ps5Controller.povLeft();
-        }
-
-        @Override
-        public Trigger povRight() {
-            return ps5Controller.povRight();
-        }
-
-        @Override
-        public Trigger resetOdometryButton() {
-            return ps5Controller.options();
-        }
-
-        @Override
-        public Trigger xButton() {
-            return ps5Controller.square();
-        }
-
-        @Override
-        public Trigger autoAlignmentButtonLeft() {
-            return ps5Controller.L1();
-        }
-
-        @Override
-        public Trigger autoAlignmentButtonRight() {
-            return ps5Controller.R1();
-        }
-
-        @Override
-        public Trigger intakeButton() {
-            return ps5Controller.L2();
-        }
-
-        @Override
-        public Trigger aButton() {
-            return ps5Controller.cross();
-        }
-
-        @Override
-        public Trigger bButton() {
-            return ps5Controller.circle();
-        }
-
-        @Override
-        public Trigger yButton() {
-            return ps5Controller.triangle();
-        }
-
-        @Override
-        public Trigger scoreButton() {
-            return ps5Controller.R2();
-        }
-
-        @Override
-        public CommandGenericHID getController() {
-            return ps5Controller;
-        }
-    }
-
-    final class LeftHandedPS5 extends DriverPS5 {
-
-        public LeftHandedPS5(int port) {
-            super(port);
-        }
-
-        @Override
-        public Trigger autoRotationButton() {
-            return ps5Controller.R3();
-        }
-
-        @Override
-        public DoubleSupplier translationalAxisX() {
-            return ps5Controller::getLeftX;
-        }
-
-        @Override
-        public DoubleSupplier translationalAxisY() {
-            return ps5Controller::getLeftY;
-        }
-
-        @Override
-        public DoubleSupplier rotationalAxisX() {
-            return ps5Controller::getRightX;
-        }
-
-        @Override
-        public DoubleSupplier rotationalAxisY() {
-            return ps5Controller::getRightY;
-        }
-    }
-
-    final class RightHandedPS5 extends DriverPS5 {
-
-        public RightHandedPS5(int port) {
-            super(port);
-        }
-
-        @Override
-        public Trigger autoRotationButton() {
-            return ps5Controller.L3();
-        }
-
-        @Override
-        public DoubleSupplier translationalAxisX() {
-            return ps5Controller::getRightX;
-        }
-
-        @Override
-        public DoubleSupplier translationalAxisY() {
-            return ps5Controller::getRightY;
-        }
-
-        @Override
-        public DoubleSupplier rotationalAxisX() {
-            return ps5Controller::getLeftX;
-        }
-
-        @Override
-        public DoubleSupplier rotationalAxisY() {
-            return ps5Controller::getLeftY;
         }
     }
 }
