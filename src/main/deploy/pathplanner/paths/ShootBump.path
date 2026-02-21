@@ -3,38 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 6.3
+        "x": 7.5,
+        "y": 4.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6807591531358121,
-        "y": 6.383826503655105
+        "x": 6.169443869291065,
+        "y": 6.1935884005612705
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SwipeHalfMiddleBump"
     },
     {
       "anchor": {
-        "x": 0.7,
-        "y": 6.0
+        "x": 2.467,
+        "y": 6.194
       },
       "prevControl": {
-        "x": 0.3837091127148638,
-        "y": 5.885698913586633
+        "x": 3.232244302113369,
+        "y": 5.566347892447361
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootBump"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.375,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.668656716417908,
+      "rotationDegrees": 45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -42,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -0.0
+    "rotation": -45.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Bump",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 135.0
   },
   "useDefaultConstraints": true
 }

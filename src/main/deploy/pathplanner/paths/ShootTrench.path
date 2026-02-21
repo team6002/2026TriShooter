@@ -3,68 +3,77 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.7,
-        "y": 3.5
+        "x": 7.5,
+        "y": 4.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.050923420296092,
-        "y": 3.957650434382258
+        "x": 7.473806047377007,
+        "y": 5.5116406929263695
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SwipeHalfMiddleTrench"
     },
     {
       "anchor": {
-        "x": 6.4068330955753945,
-        "y": 0.5739087018596445
+        "x": 7.5,
+        "y": 7.25
       },
       "prevControl": {
-        "x": 6.220767480327745,
-        "y": 0.40693688740428874
+        "x": 7.6622834747799216,
+        "y": 7.0598314594541085
       },
       "nextControl": {
-        "x": 6.592898710823044,
-        "y": 0.7408805163150003
+        "x": 7.3377165252200784,
+        "y": 7.4401685405458915
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.5,
-        "y": 0.6
+        "x": 2.467,
+        "y": 6.2
       },
       "prevControl": {
-        "x": 3.9304555041282074,
-        "y": 0.4258304464601217
+        "x": 2.467,
+        "y": 8.108626056163802
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootTrench"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.65,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.0,
-    "maxAcceleration": 1.0,
+    "maxVelocity": 4.8,
+    "maxAcceleration": 4.8,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 4.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": -45.0
   },
   "reversed": false,
-  "folder": "Right Auto",
+  "folder": "Trench",
   "idealStartingState": {
-    "velocity": 1.0,
-    "rotation": -90.0
+    "velocity": 0,
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }
