@@ -20,10 +20,6 @@ import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
 import frc.robot.constants.FieldConstants;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class ShootFuelSim extends Command {
     private final AbstractDriveTrainSimulation driveSim;
     private int timer;
@@ -47,45 +43,43 @@ public class ShootFuelSim extends Command {
         if(!RobotBase.isSimulation()) return;
     }
 
+    private int shooterIndex = 0;
+
     @Override
-    public void execute(){
-        if (timer >= 2 && IntakeIOSim.numObjectsInHopper() > 0) {
+    public void execute() {
+        if (!RobotBase.isSimulation()) return;
+
+        if (timer >= 3 && IntakeIOSim.numObjectsInHopper() > 0) {
             Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
-            
-            int maxShots = Math.min(3, IntakeIOSim.numObjectsInHopper());
-            int numShots = 1 + (int)(Math.random() * maxShots);
-            
-            List<Integer> laneIndices = new ArrayList<>();
-            for (int i = 0; i < 3; i++) {
-                laneIndices.add(i);
-            }
-            Collections.shuffle(laneIndices);
-            
-            for (int i = 0; i < numShots; i++) {
-                Translation2d shooterOffset = SHOOTER_OFFSETS[laneIndices.get(i)];
-                
-                ShootingParams params = calculateLeadingParams(robotPose, shooterOffset, FieldConstants.getHubPose());
+            Translation2d shooterOffset = SHOOTER_OFFSETS[shooterIndex];
 
-                IntakeIOSim.obtainFuelFromHopper();
+            ShootingParams params = calculateLeadingParams(
+                robotPose,
+                shooterOffset,
+                FieldConstants.getHubPose()
+            );
 
-                SimulatedArena.getInstance().addGamePieceProjectile(
-                    new RebuiltFuelOnFly(
-                        robotPose.getTranslation(),
-                        shooterOffset,
-                        driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                        robotPose.getRotation(),
-                        Inches.of(21),
-                        MetersPerSecond.of(params.velocityMPS()),
-                        Radians.of(params.angRad())
-                    )
-                );
-            }
+            IntakeIOSim.obtainFuelFromHopper();
 
+            SimulatedArena.getInstance().addGamePieceProjectile(
+                new RebuiltFuelOnFly(
+                    robotPose.getTranslation(),
+                    shooterOffset,
+                    driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                    robotPose.getRotation(),
+                    Inches.of(21),
+                    MetersPerSecond.of(params.velocityMPS()),
+                    Radians.of(params.angRad())
+                )
+            );
+
+            shooterIndex = (shooterIndex + 1) % 3;
             timer = 0;
         } else {
             timer++;
         }
     }
+
 
     @Override
     public boolean isFinished(){
@@ -102,13 +96,13 @@ public class ShootFuelSim extends Command {
         Translation2d relativeVel = robotVel.unaryMinus();
 
         double distance = shooterPos.getDistance(hubPosition);
-        ShootingParams params = ShooterConstants.getShootingParams(distance);
+        ShootingParams params = ShooterConstants.getSimShootingParams(distance);
         
         Translation2d targetPos = hubPosition;
         
         for (int i = 0; i < 10; i++) {
             double predictedDistance = shooterPos.getDistance(targetPos);
-            params = ShooterConstants.getShootingParams(predictedDistance);
+            params = ShooterConstants.getSimShootingParams(predictedDistance);
             
             double projSpeed = Math.cos(params.angRad()) * params.velocityMPS();
             

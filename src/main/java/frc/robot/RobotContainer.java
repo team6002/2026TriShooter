@@ -24,8 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.*;
-import frc.robot.autos.hump.AUTO_120;
-// import frc.robot.autos.hump.*;
+import frc.robot.autos.hump.*;
 import frc.robot.commands.drive.*;
 import frc.robot.constants.*;
 import frc.robot.subsystems.conveyor.*;
@@ -230,29 +229,33 @@ public class RobotContainer {
                 new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-        // driver.autoAlignmentButtonLeft().whileTrue(
-        //     JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-        //         driveInput
-        //         ,drive
-        //         ,()-> FieldConstants.getHubPose()
-        //         ,ShooterConstants.kShooterOptimization
-        //         ,1
-        //         ,false
-        //     )
-        // );
+        driver.autoAlignmentButtonLeft().whileTrue(
+            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                driveInput
+                ,drive
+                ,()-> FieldConstants.getHubPose()
+                ,ShooterConstants.kShooterOptimization
+                ,0.33
+                ,false
+            )
+        );
 
-        driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+        // if(Robot.isReal()){
+            driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
+                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-        driver.autoAlignmentButtonRight().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+            driver.autoAlignmentButtonRight().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
+                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-        driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
-            .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+            driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
+                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
 
-        driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
+            driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
 
-        driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
+            driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
+        // }else if (Robot.isSimulation()){
+        //     driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+        // }
     }
 
     /**
@@ -285,7 +288,6 @@ public class RobotContainer {
         SimulatedArena.getInstance().simulationPeriodic();
 
         Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
-        // Logger.recordOutput("FieldSimulation/PoseEstimator", vision.getRobotPoseEstimator(driveSimulation, 0));
         Logger.recordOutput(
                 "FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
