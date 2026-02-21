@@ -11,14 +11,14 @@ import frc.robot.autos.Auto;
 import frc.robot.commands.ShootCommand;
 import frc.robot.commands.drive.AutoAlignToMiddle;
 
-public class AUTO_LeftFF implements Auto {
+public class AUTO_SideFF implements Auto {
     @Override
     public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
-            setAutoStartPose("gotomiddleS1", false, robot.drive)
-            ,followPath("gotomiddleS1", false)
-            ,followPath("grabfuelS1", false)
-            ,followPath("gotolineS1", false)
+            setAutoStartPose("gotomiddleS1", mirrored, robot.drive)
+            ,followPath("gotomiddleS1", mirrored)
+            ,followPath("grabfuelS1", mirrored)
+            ,followPath("gotolineS1", mirrored)
             ,new ShootCommand(robot)
             ,new AutoAlignToMiddle(robot.drive)
         );

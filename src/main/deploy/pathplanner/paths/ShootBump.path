@@ -38,19 +38,6 @@
       "rotationDegrees": 45.0
     }
   ],
-<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Shoot120.path
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.39872068230276253,
-      "rotationDegrees": 45.0
-    },
-    {
-      "waypointRelativePos": 0.684434968017056,
-      "rotationDegrees": 45.0
-    }
-  ],
-=======
->>>>>>> af8164bc99f168f9f0922c492d1e492305ce102c:src/main/deploy/pathplanner/paths/ShootBump.path
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -67,11 +54,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-<<<<<<< HEAD:src/main/deploy/pathplanner/paths/Shoot120.path
-  "folder": "Lucas Auto HFHF",
-=======
   "folder": "Bump",
->>>>>>> af8164bc99f168f9f0922c492d1e492305ce102c:src/main/deploy/pathplanner/paths/ShootBump.path
   "idealStartingState": {
     "velocity": 0,
     "rotation": 135.0

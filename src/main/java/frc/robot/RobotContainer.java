@@ -219,10 +219,10 @@ public class RobotContainer {
             autoChooser.addOption("Trench Right", new AUTO_Trench().getAutoCommand(this, true));
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
-            autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleLeftHF().getAutoCommand(this, false));
-            autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleRightHF().getAutoCommand(this, false));
-            autoChooser.addOption("Auto Left (whole field) #T", new AUTO_LeftFF().getAutoCommand(this, false));
-            autoChooser.addOption("Auto Right (whole field) #T", new AUTO_RightFF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Middle Left (half middle) #T", new AUTO_MiddleSideHF().getAutoCommand(this, true));
+            autoChooser.addOption("Auto Middle Right (half middle) #T", new AUTO_MiddleSideHF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Left (whole field) #T", new AUTO_SideFF().getAutoCommand(this, false));
+            autoChooser.addOption("Auto Right (whole field) #T", new AUTO_SideFF().getAutoCommand(this, true));
             autoChooser.addOption("Auto Left (half middle + depot) #T", new AUTO_LeftHF().getAutoCommand(this, false));
             autoChooser.addOption("Auto Right (half middle + HP) #T", new AUTO_RightHF().getAutoCommand(this, false));
             autoChooser.addOption("Auto_120", new AUTO_120().getAutoCommand(this, false));

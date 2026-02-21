@@ -74,11 +74,7 @@
     "rotation": 90.0
   },
   "reversed": false,
-<<<<<<< HEAD:src/main/deploy/pathplanner/paths/SwipeMiddle.path
-  "folder": "Lucas Auto HFHF",
-=======
   "folder": "Trench",
->>>>>>> af8164bc99f168f9f0922c492d1e492305ce102c:src/main/deploy/pathplanner/paths/SwipeMiddleTrench.path
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
