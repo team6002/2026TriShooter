@@ -171,8 +171,18 @@ public class RobotContainer {
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
         try {
-            autoChooser.addOption("Trench Left", new AUTO_Trench().getAutoCommand(this, false));
-            autoChooser.addOption("Trench Right", new AUTO_Trench().getAutoCommand(this, true));
+            autoChooser.addOption("Left Trench (Start intake facing bump, swipe our half, shoot, swipe other half, and shoot on opposite side)", new AUTO_Trench().getAutoCommand(this, false));
+            autoChooser.addOption("Right Trench (Start intake facing bump, swipe our half, shoot, swipe other half, and shoot on opposite side)", new AUTO_Trench().getAutoCommand(this, true));
+
+            autoChooser.addOption("Left Trench Opposing (Start intake facing bump, swipe our half, shoot, swipe opposing alliance's half, and shoot on same side)", new AUTO_TrenchOpposing().getAutoCommand(this, false));
+            autoChooser.addOption("Right Trench Opposing (Start intake facing bump, swipe our half, shoot, swipe opposing alliance's half, and shoot on same side)", new AUTO_TrenchOpposing().getAutoCommand(this, true));
+
+            autoChooser.addOption("Left Trench Bump (Start intake facing bump, swipe our half, back over bump, shoot, swipe other half, over bump on other half, and shoot on opposite side)", new AUTO_TrenchBump().getAutoCommand(this, false));
+            autoChooser.addOption("Right Trench Bump (Start intake facing bump, swipe our half, back over bump, shoot, swipe other half, over bump on other half, and shoot on opposite side)", new AUTO_TrenchBump().getAutoCommand(this, true));
+
+            autoChooser.addOption("Left Trench Opposing Bump (Start intake facing bump, swipe our half, come back over the bump, shoot, go back through trench, swipe other alliance's half, back over bump, shoot)", new AUTO_TrenchBumpOpposing().getAutoCommand(this, false));
+            autoChooser.addOption("Right Trench Opposing Bump (Start intake facing bump, swipe our half, come back over the bump, shoot, go back through trench, swipe other alliance's half, back over bump, shoot)", new AUTO_TrenchBumpOpposing().getAutoCommand(this, true));
+
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
         } catch (Exception e) {

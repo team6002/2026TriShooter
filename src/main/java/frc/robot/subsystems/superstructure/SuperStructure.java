@@ -166,6 +166,7 @@ public class SuperStructure {
                 Commands.runOnce(()-> shooter.startShooting()),
                 conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
                 intake.setExtenderTargetAngle(pose.intakeAngle.in(Radians)),
+                new WaitUntilCommand(()-> intake.getExtenderInPosition()),
                 Commands.runOnce(()-> currentPose = pose)
             )
             .finallyDo(
@@ -180,17 +181,15 @@ public class SuperStructure {
             );
         }
 
-        return Commands.runOnce(
-            ()-> {
-                shooter.stopShooting();
-                conveyor.setVoltage(pose.conveyorVoltage.baseUnitMagnitude());
-                hood.setReference(HoodConstants.kMinAngle);
-                intake.setVoltage(pose.intakeVoltage.baseUnitMagnitude());
-                intake.setExtenderReference(pose.intakeAngle.in(Radians));
-                kicker.setVoltage(pose.kickerReference.baseUnitMagnitude());
-                currentPose = pose;
-            },
-            conveyor, intake, kicker
+        return Commands.sequence(
+            Commands.runOnce(()-> shooter.stopShooting(), shooter),
+            conveyor.runVoltage(pose.conveyorVoltage.baseUnitMagnitude()),
+            hood.setTargetPos(HoodConstants.kMinAngle),
+            intake.runVoltage(pose.intakeVoltage.baseUnitMagnitude()),
+            intake.setExtenderTargetAngle(pose.intakeAngle.in(Radians)),
+            kicker.runVoltage(pose.kickerReference.baseUnitMagnitude()),
+            new WaitUntilCommand(()-> intake.getExtenderInPosition()),
+            Commands.runOnce(()-> currentPose = pose)
         );
     }
 

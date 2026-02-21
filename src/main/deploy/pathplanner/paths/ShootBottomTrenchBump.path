@@ -3,48 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 5.5
+        "x": 7.5,
+        "y": 2.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.567485401500034,
-        "y": 5.5
+        "x": 6.792893218813452,
+        "y": 2.7071067811865475
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "SwipeMiddleTrench"
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 5.5
+        "x": 2.467,
+        "y": 1.883
       },
       "prevControl": {
-        "x": 6.737954024057548,
-        "y": 6.404384766999735
-      },
-      "nextControl": {
-        "x": 7.868004356943307,
-        "y": 5.063257933095898
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.5,
-        "y": 4.5
-      },
-      "prevControl": {
-        "x": 7.56089781673978,
-        "y": 4.742469494816004
+        "x": 3.1741067811865475,
+        "y": 2.5901067811865475
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SwipeHalfMiddleBump"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3809128630705391,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 0.7261410788381701,
+      "rotationDegrees": 45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,13 +51,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 45.0
   },
   "reversed": false,
-  "folder": "Bump",
+  "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

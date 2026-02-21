@@ -3,48 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5,
-        "y": 5.5
+        "x": 2.467,
+        "y": 6.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.567485401500034,
-        "y": 5.5
+        "x": 2.4127469879518073,
+        "y": 8.045469879518071
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootTrench"
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 5.5
+        "x": 7.876602409638554,
+        "y": 7.018265060240964
       },
       "prevControl": {
-        "x": 6.737954024057548,
-        "y": 6.404384766999735
+        "x": 7.1616549483573815,
+        "y": 7.5478080884955805
       },
       "nextControl": {
-        "x": 7.868004356943307,
-        "y": 5.063257933095898
+        "x": 8.626651140541483,
+        "y": 6.462723432623847
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 4.5
+        "x": 8.75,
+        "y": 4.4
       },
       "prevControl": {
-        "x": 7.56089781673978,
-        "y": 4.742469494816004
+        "x": 8.75,
+        "y": 5.428134416588871
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SwipeHalfMiddleBump"
+      "linkedName": "SwipeOpposingHalfTrench"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4165975103734426,
+      "rotationDegrees": -179.85160072182512
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Bump",
+  "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }
