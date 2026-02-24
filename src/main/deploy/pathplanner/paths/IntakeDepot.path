@@ -3,39 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.5,
-        "y": 4.5
+        "x": 1.3,
+        "y": 6.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.169443869291065,
-        "y": 6.1935884005612705
+        "x": 1.05,
+        "y": 6.0
       },
       "isLocked": false,
-      "linkedName": "SwipeHalfMiddleBump"
+      "linkedName": "ShootDepot"
     },
     {
       "anchor": {
-        "x": 2.467,
-        "y": 6.194
+        "x": 0.45,
+        "y": 6.0
       },
       "prevControl": {
-        "x": 3.232244302113369,
-        "y": 5.566347892447361
+        "x": 0.7,
+        "y": 6.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootBump"
+      "linkedName": "IntakeDepot"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.375,
-      "rotationDegrees": 45.0
-    },
-    {
-      "waypointRelativePos": 0.668656716417908,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 0.19654088050314472,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [],
@@ -51,13 +47,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -45.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Bump",
+  "folder": "Middle+Depot",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 135.0
+    "rotation": -29.999999999999996
   },
   "useDefaultConstraints": true
 }

@@ -15,7 +15,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -174,6 +173,9 @@ public class RobotContainer {
             autoChooser.addOption("Left Trench (Start intake facing bump, swipe our half, shoot, swipe other half, and shoot on opposite side)", new AUTO_Trench().getAutoCommand(this, false));
             autoChooser.addOption("Right Trench (Start intake facing bump, swipe our half, shoot, swipe other half, and shoot on opposite side)", new AUTO_Trench().getAutoCommand(this, true));
 
+            autoChooser.addOption("Left Trench Shoot First (start shooter facing hub, shoot, swipe our half, come back through trench, shoot, swipe other half, and shoot on opposite side)", new AUTO_TrenchShootFirst().getAutoCommand(this, false));
+            autoChooser.addOption("Right Trench Shoot First (start shooter facing hub, shoot, swipe our half, come back through trench, shoot, swipe other half, and shoot on opposite side)", new AUTO_TrenchShootFirst().getAutoCommand(this, true));
+
             autoChooser.addOption("Left Trench Opposing (Start intake facing bump, swipe our half, shoot, swipe opposing alliance's half, and shoot on same side)", new AUTO_TrenchOpposing().getAutoCommand(this, false));
             autoChooser.addOption("Right Trench Opposing (Start intake facing bump, swipe our half, shoot, swipe opposing alliance's half, and shoot on same side)", new AUTO_TrenchOpposing().getAutoCommand(this, true));
 
@@ -182,6 +184,8 @@ public class RobotContainer {
 
             autoChooser.addOption("Left Trench Opposing Bump (Start intake facing bump, swipe our half, come back over the bump, shoot, go back through trench, swipe other alliance's half, back over bump, shoot)", new AUTO_TrenchBumpOpposing().getAutoCommand(this, false));
             autoChooser.addOption("Right Trench Opposing Bump (Start intake facing bump, swipe our half, come back over the bump, shoot, go back through trench, swipe other alliance's half, back over bump, shoot)", new AUTO_TrenchBumpOpposing().getAutoCommand(this, true));
+
+            autoChooser.addOption("Trench + Depot (Start intake facing bump on depot side, swipe middle, drive in front of depot, shoot, back into depot, and shoot again)", new AUTO_TrenchDepot().getAutoCommand(this, false));
 
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
@@ -220,8 +224,7 @@ public class RobotContainer {
             ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
                 // reset odometry to actual robot pose during simulation
             : () -> drive.resetOdometry(
-                // TODO: replace new Translation2d() with: drive.getPose().getTranslation()
-                new Pose2d(new Translation2d(), new Rotation2d())); // zero gyro
+                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
         driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
         driver.autoAlignmentButton().whileTrue(

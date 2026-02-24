@@ -73,15 +73,16 @@ public class ShooterIOSpark implements ShooterIO {
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.shooterReference = Units.radiansToDegrees(getReference());
+        inputs.readyToShoot = isReady();
 
         inputs.leftShooterCurrent = getLeftCurrent();
         inputs.leftShooterVoltage = getLeftVoltage();
         inputs.leftShooterVelocity = Units.radiansToDegrees(getLeftVelocity());
         inputs.leftShooterTemp = Fahrenheit.convertFrom(leftShooterMotor.getMotorTemperature(), Celsius);
 
-        inputs.shooterCurrent = getMiddleCurrent();
-        inputs.shooterVoltage = getMiddleVoltage();
-        inputs.shooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
+        inputs.middleShooterCurrent = getMiddleCurrent();
+        inputs.middleShooterVoltage = getMiddleVoltage();
+        inputs.middleShooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
         inputs.leftShooterTemp = Fahrenheit.convertFrom(middleShooterMotor.getMotorTemperature(), Celsius);
 
         inputs.rightShooterCurrent = getRightCurrent();

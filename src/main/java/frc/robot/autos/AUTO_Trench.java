@@ -18,7 +18,9 @@ public class AUTO_Trench implements Auto{
         return Commands.sequence(
             //reset odometry and put intake down
             setAutoStartPose("SwipeHalfMiddleTrench", mirrored, robot.drive)
-            ,robot.superStructure.moveToPose(SuperStructurePose.INTAKE)
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                robot.superStructure.moveToPose(SuperStructurePose.INTAKE) 
+                : Commands.none()
             //run out and intake half of our side of the field
             ,followPath("SwipeHalfMiddleTrench", mirrored)
             ,followPath("ShootTrench", mirrored)
@@ -27,7 +29,9 @@ public class AUTO_Trench implements Auto{
                 robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120)
                 : new ShootFuelSim(robot.driveSimulation)
             //put intake down and swipe the second half of our side of the field
-            ,robot.superStructure.moveToPose(SuperStructurePose.INTAKE)
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                robot.superStructure.moveToPose(SuperStructurePose.INTAKE) 
+                : Commands.none()
             ,followPath("SwipeMiddleTrench", mirrored)
             ,followPath("ShootBottomTrench", mirrored)
             //shoot fuel

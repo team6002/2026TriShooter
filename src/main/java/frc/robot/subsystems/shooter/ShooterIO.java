@@ -5,22 +5,23 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
-        public double shooterCurrent;
-        public double shooterVoltage;
-        public double shooterVelocity;
         public double shooterReference;
+        public boolean readyToShoot;
+
+        public double middleShooterCurrent;
+        public double middleShooterVoltage;
+        public double middleShooterVelocity;
+        public double middleShooterTemp;
 
         public double leftShooterCurrent;
         public double leftShooterVoltage;
         public double leftShooterVelocity;
+        public double leftShooterTemp;
 
         public double rightShooterCurrent;
         public double rightShooterVoltage;
         public double rightShooterVelocity;
-
         public double rightShooterTemp;
-        public double middleShooterTemp;
-        public double leftShooterTemp;
     }
 
     /** Updates the set of loggable inputs. */
