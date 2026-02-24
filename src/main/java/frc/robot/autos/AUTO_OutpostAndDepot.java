@@ -6,35 +6,27 @@ import org.json.simple.parser.ParseException;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ShootFuelSim;
 import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
-public class AUTO_TrenchDepot implements Auto{
+public class AUTO_OutpostAndDepot implements Auto{
+
     @Override
     public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
-            //reset odometry and put intake down
-            setAutoStartPose("SwipeMiddleDepot", mirrored, robot.drive)
+            setAutoStartPose("IntakeOutpost", mirrored, robot.drive)
+            ,followPath("IntakeOutpost", mirrored)
+            ,new WaitCommand(3)
+            ,followPath("ShootOutpost", mirrored)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.INTAKE) 
-                : Commands.none()
-            //run out and intake half of our side of the field
-            ,followPath("SwipeMiddleDepot", mirrored)
-            ,followPath("ShootDepot", mirrored)
-            //shoot fuel
-            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120)
+                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT)
                 : new ShootFuelSim(robot.driveSimulation)
-            //put intake down and intake the depot
-            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.INTAKE) 
-                : Commands.none()
-            ,followPath("IntakeDepot", mirrored)
+            ,followPath("IntakeDepotFromOutpost", mirrored)
             ,followPath("ShootFromDepot", mirrored)
-            //shoot fuel
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT)
                 : new ShootFuelSim(robot.driveSimulation)

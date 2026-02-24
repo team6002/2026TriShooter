@@ -10,8 +10,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.constants.RobotMode;
+import frc.robot.subsystems.conveyor.ConveyorConstants;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.SwervePhysicsSim;
+import frc.robot.subsystems.hood.HoodConstants;
+import frc.robot.subsystems.intake.IntakeConstants;
+import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
+import frc.robot.subsystems.kicker.KickerConstants;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 import java.util.HashMap;
@@ -100,6 +106,15 @@ public class Robot extends LoggedRobot {
                 put(DriveConstants.frontRightTurnCanId, "front Right Turn");
                 put(DriveConstants.backLeftTurnCanId, "back Left Turn");
                 put(DriveConstants.backRightTurnCanId, "back right Turn");
+                put(IntakeConstants.kIntakeCanId, "intake leader");
+                put(IntakeConstants.kIntakeFollowerCanId, "intake follower");
+                put(ExtenderConstants.kIntakeExtenderCanId, "intake extender");
+                put(ShooterConstants.kLeftShooterCanId, "left shooter");
+                put(ShooterConstants.kMiddleShooterCanId, "middle shooter");
+                put(ShooterConstants.kRightShooterCanId, "right shooter");
+                put(ConveyorConstants.kConveyorCanId, "conveyor");
+                put(KickerConstants.kKickerCanId, "kicker");
+                put(HoodConstants.kHoodCanId, "hood");
             }
         }));
         //allow the drivetrain to pass over the bump in simulation mode

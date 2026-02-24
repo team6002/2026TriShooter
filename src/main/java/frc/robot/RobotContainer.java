@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -187,6 +188,8 @@ public class RobotContainer {
 
             autoChooser.addOption("Trench + Depot (Start intake facing bump on depot side, swipe middle, drive in front of depot, shoot, back into depot, and shoot again)", new AUTO_TrenchDepot().getAutoCommand(this, false));
 
+            autoChooser.addOption("Outpost + Depot (Start intake facing driver station wall in the middle of right trench, run to outpost, wait for balls to drop, shoot, run over to depot, shoot)", new AUTO_OutpostAndDepot().getAutoCommand(this, false));
+
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
         } catch (Exception e) {
@@ -321,5 +324,36 @@ public class RobotContainer {
 
         Logger.recordOutput("SuperStructure/goal", superStructure.targetPose().toString());
         Logger.recordOutput("SuperStructure/pose", superStructure.currentPose().toString());
+        Logger.recordOutput("Hub Active", isHubActive());
+        Logger.recordOutput("Match Time", DriverStation.getMatchTime());
+    }
+
+    public boolean isHubActive() {
+        // 1. Hubs are always active during Auto, the 10s Transition, and the final 30s Endgame.
+        if (DriverStation.isAutonomous()) return true;
+        double time = DriverStation.getMatchTime();
+        if (time > 130 || time <= 30) return true;
+
+        // 2. Get FMS Data: Who goes inactive first?
+        var myAlliance = DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue);
+        boolean redInactiveFirst, weAreInactiveFirst;
+
+        if(Robot.CURRENT_ROBOT_MODE == RobotMode.REAL){
+            String gameData = DriverStation.getGameSpecificMessage();
+            if (gameData.isEmpty()) return true; // Default to active if data hasn't arrived
+
+            redInactiveFirst = gameData.charAt(0) == 'R';
+            weAreInactiveFirst = (myAlliance == DriverStation.Alliance.Red) ? redInactiveFirst : !redInactiveFirst;
+        }else{
+            weAreInactiveFirst = true;
+        }
+        
+        // 3. Determine if we are the "First Inactive" alliance
+
+        // 4. Check the 25-second shifts
+        if (time > 105) return !weAreInactiveFirst; // Shift 1
+        if (time > 80)  return weAreInactiveFirst;  // Shift 2
+        if (time > 55)  return !weAreInactiveFirst; // Shift 3
+        return weAreInactiveFirst;                  // Shift 4
     }
 }
