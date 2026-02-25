@@ -78,3 +78,5 @@ Press Ctrl + Shift + P, search for
 ` WPILib: Simulate Robot Code `, and then choose:
   - Sim GUI if you don’t have the NI Game Tools installed
   - Real Driver Station if you want to use the official NI Driver Station
+
+- Using Gradle: ` ./gradlew simulateJava`
