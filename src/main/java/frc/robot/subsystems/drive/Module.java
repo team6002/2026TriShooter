@@ -14,8 +14,8 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.constants.DriveControlLoops.SWERVE_VELOCITY_DEADBAND;
 import static frc.robot.subsystems.drive.DriveConstants.*;
+import static frc.robot.utils.DriveControlLoops.SWERVE_VELOCITY_DEADBAND;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;

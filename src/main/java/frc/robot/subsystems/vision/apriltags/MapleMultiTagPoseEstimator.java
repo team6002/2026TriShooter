@@ -1,8 +1,8 @@
 package frc.robot.subsystems.vision.apriltags;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.constants.LogPaths.APRIL_TAGS_VISION_PATH;
-import static frc.robot.constants.VisionConstants.*;
+import static frc.robot.utils.LogPaths.APRIL_TAGS_VISION_PATH;
+import static frc.robot.utils.VisionConstants.*;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;

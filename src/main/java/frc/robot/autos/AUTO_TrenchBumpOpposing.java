@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.*;
-import frc.robot.constants.RobotMode;
+import frc.robot.utils.RobotMode;
 
 public class AUTO_TrenchBumpOpposing implements Auto{
     @Override

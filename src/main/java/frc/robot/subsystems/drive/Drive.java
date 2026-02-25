@@ -49,13 +49,13 @@ import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Robot;
-import frc.robot.constants.*;
 import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.ChassisHeadingController;
 import frc.robot.utils.LocalADStarAK;
+import frc.robot.utils.RobotMode;
 
 import java.util.OptionalDouble;
 import java.util.concurrent.locks.Lock;

@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
-import frc.robot.constants.FieldConstants;
+import frc.robot.utils.FieldConstants;
 
 public class ShootFuelSim extends Command {
     private final AbstractDriveTrainSimulation driveSim;

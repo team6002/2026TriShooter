@@ -1,4 +1,4 @@
-package frc.robot.constants;
+package frc.robot.utils;
 
 /** Configs for the driver's joystick See {@link frc.robot.utils.MapleJoystickDriveInput} */
 public class JoystickConfigs {

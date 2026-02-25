@@ -1,7 +1,7 @@
 package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.Seconds;
-import static frc.robot.constants.DriveControlLoops.*;
+import static frc.robot.utils.DriveControlLoops.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathfindingCommand;

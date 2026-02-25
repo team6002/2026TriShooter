@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.*;
 import frc.robot.autos.*;
 import frc.robot.commands.drive.*;
-import frc.robot.constants.*;
 import frc.robot.subsystems.conveyor.*;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.*;
@@ -39,7 +38,9 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
+import frc.robot.utils.FieldConstants;
 import frc.robot.utils.MapleJoystickDriveInput;
+import frc.robot.utils.RobotMode;
 
 import java.util.function.IntSupplier;
 

@@ -5,8 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.constants.FieldConstants;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.utils.FieldConstants;
 
 public class AutoAlignToClimb extends SequentialCommandGroup {
     public AutoAlignToClimb(Drive drive) {

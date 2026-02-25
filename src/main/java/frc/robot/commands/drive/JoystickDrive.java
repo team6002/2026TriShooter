@@ -1,7 +1,7 @@
 package frc.robot.commands.drive;
 
-import static frc.robot.constants.JoystickConfigs.*;
 import static frc.robot.subsystems.drive.HolonomicDriveSubsystem.isZero;
+import static frc.robot.utils.JoystickConfigs.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;

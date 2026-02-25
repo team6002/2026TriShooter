@@ -9,7 +9,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.robot.constants.RobotMode;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.SwervePhysicsSim;
@@ -18,6 +17,7 @@ import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.utils.RobotMode;
 
 import java.util.HashMap;
 

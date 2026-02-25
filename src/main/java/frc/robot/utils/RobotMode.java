@@ -1,4 +1,4 @@
-package frc.robot.constants;
+package frc.robot.utils;
 
 public enum RobotMode {
     /** Running on a real robot. */
