@@ -13,6 +13,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.util.Units;
@@ -165,6 +166,33 @@ public class IntakeIOSpark implements IntakeIO {
     public boolean getExtenderInPosition() {
         double positionError = Math.abs(intakeExtenderEncoder.getPosition() - intakeExtenderReference);
         return positionError < ExtenderConstants.kPositionTolerance;
+    }
+
+    @Override
+    public void setExtenderLowCurrentMode(boolean lowCurrentMode){
+        if (lowCurrentMode){
+            SparkFlexConfig newLeadConfig = new SparkFlexConfig();
+            newLeadConfig.apply(IntakeConfig.intakeConfig);
+            newLeadConfig.smartCurrentLimit(5);
+
+            SparkFlexConfig newFollowerConfig = new SparkFlexConfig();
+            newFollowerConfig.apply(IntakeConfig.intakeConfig);
+            newFollowerConfig.smartCurrentLimit(5);
+
+            intakeMotor.configureAsync(newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            intakeFollowerMotor.configureAsync(newFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        }else{
+            SparkFlexConfig newLeadConfig = new SparkFlexConfig();
+            newLeadConfig.apply(IntakeConfig.intakeConfig);
+            newLeadConfig.smartCurrentLimit(40);
+
+            SparkFlexConfig newFollowerConfig = new SparkFlexConfig();
+            newFollowerConfig.apply(IntakeConfig.intakeConfig);
+            newFollowerConfig.smartCurrentLimit(40);
+
+            intakeMotor.configureAsync(newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            intakeFollowerMotor.configureAsync(newFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+        }
     }
 
     @Override

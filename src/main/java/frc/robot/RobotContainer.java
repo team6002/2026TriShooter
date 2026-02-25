@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -35,8 +36,6 @@ import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.shooter.*;
-import frc.robot.subsystems.superstructure.SuperStructure;
-import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
@@ -62,7 +61,6 @@ public class RobotContainer {
     public final Conveyor conveyor;
     public final Kicker kicker;
     public final Hood hood;
-    public final SuperStructure superStructure;
     public final Vision vision;
     public final LEDStatusLight ledStatusLight;
 
@@ -166,7 +164,6 @@ public class RobotContainer {
         }
 
         this.ledStatusLight = new LEDStatusLight(0, 155, true, false);
-        this.superStructure = new SuperStructure(conveyor, hood, intake, kicker, shooter);
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices");
@@ -193,6 +190,7 @@ public class RobotContainer {
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
         } catch (Exception e) {
+            AlertsManager.create("Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
             e.printStackTrace();
         }
         
@@ -222,6 +220,12 @@ public class RobotContainer {
         final JoystickDrive joystickDrive = new JoystickDrive(driveInput, () -> true, pov, drive);
         drive.setDefaultCommand(joystickDrive);
 
+        //default commands
+        shooter.setDefaultCommand(shooter.setTargetVelolcity(0));
+        hood.setDefaultCommand(hood.setTargetPos(HoodConstants.kMinAngle));
+        kicker.setDefaultCommand(kicker.runVoltage(KickerConstants.kOff));
+        conveyor.setDefaultCommand(conveyor.runVoltage(ConveyorConstants.kOff));
+
         // Reset gyro / odometry
         final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
             ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
@@ -241,19 +245,15 @@ public class RobotContainer {
             )
         );
 
+        driver.stopWithXButton().onTrue(Commands.runOnce(()-> drive.stopWithX()));
+
         if(Robot.CURRENT_ROBOT_MODE == RobotMode.REAL){
-            driver.scoreButton().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT))
-                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
+           driver.intakeButton().whileTrue(new CMD_Intake(intake));
+           driver.yButton().onTrue(new CMD_Stow(intake));
+           driver.aButton().onTrue(new CMD_Home(intake));
 
-            driver.rightBumper().whileTrue(superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120))
-                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
-
-            driver.intakeButton().onTrue(superStructure.moveToPose(SuperStructurePose.INTAKE))
-                .onFalse(superStructure.moveToPose(SuperStructurePose.EXTENDED));
-
-            driver.xButton().onTrue(superStructure.moveToPose(SuperStructurePose.HOME));
-
-            driver.aButton().onTrue(superStructure.moveToPose(SuperStructurePose.STOW));
+           driver.scoreButton().whileTrue(new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.35, Math.toRadians(21000)));
+           driver.rightBumper().whileTrue(new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.2, Math.toRadians(18000)));
         }else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM){
             driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
         }
@@ -314,16 +314,14 @@ public class RobotContainer {
 
     public void updateTelemetryAndLED() {
         field.setRobotPose(
-                Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
-                        ? driveSimulation.getSimulatedDriveTrainPose()
-                        : drive.getPose());
+            Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
+                ? driveSimulation.getSimulatedDriveTrainPose()
+                : drive.getPose());
         if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM)
             field.getObject("Odometry").setPose(drive.getPose());
 
         AlertsManager.updateLEDAndLog(ledStatusLight);
 
-        Logger.recordOutput("SuperStructure/goal", superStructure.targetPose().toString());
-        Logger.recordOutput("SuperStructure/pose", superStructure.currentPose().toString());
         Logger.recordOutput("Hub Active", isHubActive());
         Logger.recordOutput("Match Time", DriverStation.getMatchTime());
     }

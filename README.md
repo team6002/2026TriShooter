@@ -56,18 +56,18 @@ You can build the robot code in two ways
 
 - Using WPILib VsCode:
  Press Ctrl + Shift + P, then search for 
- ` WPILib: Build Robot Code `
+ `WPILib: Build Robot Code`
 - Using Gradle
-` ./gradlew build `
+`./gradlew build`
 
 ### Deploying the code
 
 Similarly there are two ways to deploy the code to a robot
 
 - Using WPILib VsCode: Press Ctrl + Shift + P, then search for
- ` WPILib: Deploy Robot Code `
+ `WPILib: Deploy Robot Code`
 
-- Using Gradle ` ./gradlew deploy `
+- Using Gradle `./gradlew deploy`
 
 ### Simulating the code
 
@@ -75,8 +75,8 @@ You can also simulate the robot code with two methods
 
 - Using WPILib VsCode:
 Press Ctrl + Shift + P, search for 
-` WPILib: Simulate Robot Code `, and then choose:
+`WPILib: Simulate Robot Code `, and then choose:
   - Sim GUI if you don’t have the NI Game Tools installed
   - Real Driver Station if you want to use the official NI Driver Station
 
-- Using Gradle: ` ./gradlew simulateJava`
+- Using Gradle: `./gradlew simulateJava`

@@ -68,8 +68,8 @@ public class ShootFuelSim extends Command {
                     driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                     robotPose.getRotation(),
                     Inches.of(21),
-                    MetersPerSecond.of(params.velocityMPS()),
-                    Radians.of(params.angRad())
+                    MetersPerSecond.of(params.shooterReference()),
+                    Radians.of(params.hoodReference())
                 )
             );
 
@@ -104,7 +104,7 @@ public class ShootFuelSim extends Command {
             double predictedDistance = shooterPos.getDistance(targetPos);
             params = ShooterConstants.getSimShootingParams(predictedDistance);
             
-            double projSpeed = Math.cos(params.angRad()) * params.velocityMPS();
+            double projSpeed = Math.cos(params.hoodReference()) * params.shooterReference();
             
             Translation2d toTarget = targetPos.minus(shooterPos);
             double t = toTarget.getNorm() / projSpeed;

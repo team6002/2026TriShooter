@@ -9,9 +9,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.*;
 import frc.robot.constants.RobotMode;
-import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_OutpostAndDepot implements Auto{
 
@@ -23,12 +22,15 @@ public class AUTO_OutpostAndDepot implements Auto{
             ,new WaitCommand(3)
             ,followPath("ShootOutpost", mirrored)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT)
+                new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.35, Math.toRadians(21000)).withTimeout(5)
                 : new ShootFuelSim(robot.driveSimulation)
             ,followPath("IntakeDepotFromOutpost", mirrored)
+            ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+                new CMD_Intake(robot.intake)
+                : Commands.none()
             ,followPath("ShootFromDepot", mirrored)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT)
+                new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.35, Math.toRadians(21000)).withTimeout(5)
                 : new ShootFuelSim(robot.driveSimulation)
         );
     }

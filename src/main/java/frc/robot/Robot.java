@@ -18,7 +18,6 @@ import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 import java.util.HashMap;
 
@@ -138,7 +137,6 @@ public class Robot extends LoggedRobot {
     @Override
     public void disabledInit() {
         robotContainer.resetSimulationField();
-        robotContainer.superStructure.moveToPose(SuperStructurePose.HOME);
     }
 
     /** This function is called periodically when disabled. */
@@ -150,7 +148,6 @@ public class Robot extends LoggedRobot {
     /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
     @Override
     public void autonomousInit() {
-        robotContainer.superStructure.moveToPose(SuperStructurePose.HOME);
         autonomousCommand = robotContainer.getAutonomousCommand();
         // robotContainer.resetSimulationField();
 
@@ -170,7 +167,6 @@ public class Robot extends LoggedRobot {
     /** This function is called once when teleop is enabled. */
     @Override
     public void teleopInit() {
-        robotContainer.superStructure.moveToPose(SuperStructurePose.HOME);
         robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderPosition());
     }
 

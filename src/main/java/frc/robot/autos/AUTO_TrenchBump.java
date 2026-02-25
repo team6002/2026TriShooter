@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
-import frc.robot.commands.ShootFuelSim;
+import frc.robot.commands.*;
 import frc.robot.constants.RobotMode;
-import frc.robot.subsystems.superstructure.SuperStructure.SuperStructurePose;
 
 public class AUTO_TrenchBump implements Auto{
     @Override
@@ -19,7 +18,7 @@ public class AUTO_TrenchBump implements Auto{
             //reset odometry and put intake down
             setAutoStartPose("SwipeHalfMiddleTrench", mirrored, robot.drive)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.INTAKE) 
+                new CMD_Intake(robot.intake)
                 : Commands.none()
             //run out and intake half of our side of the field
             ,followPath("SwipeHalfMiddleTrench", mirrored)
@@ -27,18 +26,18 @@ public class AUTO_TrenchBump implements Auto{
             ,followPath("ShootTrenchBump", mirrored)
             //shoot fuel
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120)
+                new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.2, Math.toRadians(18000)).withTimeout(5)
                 : new ShootFuelSim(robot.driveSimulation)
             //put intake down and swipe the second half of our side of the field
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.INTAKE) 
+                new CMD_Intake(robot.intake)
                 : Commands.none()
             ,followPath("SwipeMiddleTrenchBump", mirrored)
             //come back over opposite halve's bump and shoot
             ,followPath("ShootBottomTrenchBump", mirrored)
             //shoot fuel
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
-                robot.superStructure.moveToPose(SuperStructurePose.READY_TO_SHOOT_120)
+                new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.2, Math.toRadians(18000)).withTimeout(5)
                 : new ShootFuelSim(robot.driveSimulation)
         );
     }

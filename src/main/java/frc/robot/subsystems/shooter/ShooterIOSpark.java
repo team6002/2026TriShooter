@@ -12,6 +12,7 @@ import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.util.Units;
 
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -26,6 +27,8 @@ public class ShooterIOSpark implements ShooterIO {
     private double shooterReference;
     private ControlType shooterType;
     private boolean shooting;
+
+    private final Debouncer shooterDebouncer = new Debouncer(.05);
 
     //tuning
     // private final LoggedNetworkNumber leftS, leftV, middleS, middleV, rightS, rightV, reference;
@@ -83,12 +86,12 @@ public class ShooterIOSpark implements ShooterIO {
         inputs.middleShooterCurrent = getMiddleCurrent();
         inputs.middleShooterVoltage = getMiddleVoltage();
         inputs.middleShooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
-        inputs.leftShooterTemp = Fahrenheit.convertFrom(middleShooterMotor.getMotorTemperature(), Celsius);
+        inputs.middleShooterTemp = Fahrenheit.convertFrom(middleShooterMotor.getMotorTemperature(), Celsius);
 
         inputs.rightShooterCurrent = getRightCurrent();
         inputs.rightShooterVoltage = getRightVoltage();
         inputs.rightShooterVelocity = Units.radiansToDegrees(getRightVelocity());
-        inputs.leftShooterTemp = Fahrenheit.convertFrom(rightShooterMotor.getMotorTemperature(), Celsius);
+        inputs.rightShooterTemp = Fahrenheit.convertFrom(rightShooterMotor.getMotorTemperature(), Celsius);
     }
 
     @Override
@@ -159,7 +162,7 @@ public class ShooterIOSpark implements ShooterIO {
         boolean middleReady = Math.abs(getMiddleVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
         boolean rightReady = Math.abs(getRightVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
 
-        return leftReady && middleReady && rightReady;
+        return shooterDebouncer.calculate(leftReady && middleReady && rightReady);
     }
 
     @Override

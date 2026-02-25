@@ -109,6 +109,10 @@ public class Intake extends SubsystemBase {
         return io.getExtenderInPosition();
     }
 
+    public void setExtenderLowCurrentMode(boolean lowCurrentMode){
+        io.setExtenderLowCurrentMode(lowCurrentMode);
+    }
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

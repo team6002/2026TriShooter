@@ -21,7 +21,7 @@ public interface DriverMap extends Subsystem {
 
     Trigger resetOdometryButton();
 
-    Trigger xButton();
+    Trigger stopWithXButton();
 
     Trigger autoAlignmentButton();
 
@@ -105,7 +105,7 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger xButton() {
+        public Trigger stopWithXButton() {
             return xboxController.x();
         }
 

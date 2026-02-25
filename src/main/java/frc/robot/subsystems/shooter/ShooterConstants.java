@@ -47,8 +47,7 @@ public class ShooterConstants {
 
     public static final double kGearRatio = 1;
 
-    public static final double kStartOnTargetVel = 15; // radians
-    public static final double kStopOnTargetVel = 30; // radians
+    public static final double kStartOnTargetVel = Math.toRadians(720); // radians
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {
@@ -81,7 +80,7 @@ public class ShooterConstants {
         extractColumn(3)  // time of flight, seconds
     );
 
-    public static final record ShootingParams(double angRad, double velocityMPS, double tofSeconds) {}
+    public static final record ShootingParams(double hoodReference, double shooterReference, double tofSeconds) {}
 
     public static final ShootingParams getSimShootingParams(double distance) {
         if (distance <= SHOOTING_TABLE[0][0]) {
