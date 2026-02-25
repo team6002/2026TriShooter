@@ -39,12 +39,41 @@
         "x": 7.5,
         "y": 4.75
       },
-      "nextControl": null,
+      "nextControl": {
+        "x": 7.5,
+        "y": 4.25
+      },
       "isLocked": false,
       "linkedName": "SwipeHalfMiddleTrench"
+    },
+    {
+      "anchor": {
+        "x": 5.75,
+        "y": 6.0
+      },
+      "prevControl": {
+        "x": 5.75,
+        "y": 4.25
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "SweepHalfMiddle"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.528301886792457,
+      "rotationDegrees": -45.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -58,7 +87,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": "Middle+Depot",
