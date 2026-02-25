@@ -1,8 +1,8 @@
 package frc.robot.subsystems.vision.apriltags;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.utils.LogPaths.APRIL_TAGS_VISION_PATH;
-import static frc.robot.utils.VisionConstants.*;
+import static frc.robot.utils.PathPlanner.LogPaths.APRIL_TAGS_VISION_PATH;
+import static frc.robot.utils.constants.VisionConstants.*;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.Matrix;
@@ -14,7 +14,8 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import frc.robot.Robot;
 import frc.robot.RobotState;
-import frc.robot.utils.CustomMaths.Statistics;
+import frc.robot.utils.Statistics;
+
 import java.util.*;
 import org.littletonrobotics.junction.Logger;
 

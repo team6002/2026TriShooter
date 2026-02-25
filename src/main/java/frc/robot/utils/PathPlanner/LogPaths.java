@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.PathPlanner;
 
 public class LogPaths {
     public static final String SYSTEM_PERFORMANCE_PATH = "SystemPerformance/";

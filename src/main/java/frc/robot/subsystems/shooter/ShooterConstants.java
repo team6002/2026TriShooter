@@ -2,7 +2,7 @@ package frc.robot.subsystems.shooter;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
-import frc.robot.utils.MapleShooterOptimization;
+import frc.robot.utils.CustomPIDs.MapleShooterOptimization;
 
 public class ShooterConstants {
     public static final int kLeftShooterCanId = 3;

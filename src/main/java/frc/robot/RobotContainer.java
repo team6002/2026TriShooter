@@ -38,9 +38,9 @@ import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.utils.AlertsManager;
-import frc.robot.utils.FieldConstants;
-import frc.robot.utils.MapleJoystickDriveInput;
-import frc.robot.utils.RobotMode;
+import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
+import frc.robot.utils.constants.FieldConstants;
+import frc.robot.utils.constants.RobotMode;
 
 import java.util.function.IntSupplier;
 

@@ -1,11 +1,11 @@
-package frc.robot.utils;
+package frc.robot.utils.CustomPIDs;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
-import static frc.robot.utils.JoystickConfigs.*;
+import static frc.robot.utils.constants.JoystickConfigs.*;
 
 import java.util.function.DoubleSupplier;
 import org.ironmaple.utils.mathutils.MapleCommonMath;

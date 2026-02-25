@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.utils.FieldConstants;
+import frc.robot.utils.constants.FieldConstants;
 
 import java.io.IOException;
 import org.ironmaple.utils.FieldMirroringUtils;

@@ -1,4 +1,4 @@
-package frc.robot.utils;
+package frc.robot.utils.CustomPIDs;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -10,7 +10,6 @@ import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.units.measure.Time;
 import frc.robot.commands.drive.AutoAlignment;
-import frc.robot.utils.CustomPIDs.MaplePIDController;
 
 public class DriveControlLoops {
     public static final boolean ENABLE_SOFTWARE_CONSTRAIN = true;

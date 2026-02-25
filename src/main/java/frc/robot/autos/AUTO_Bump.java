@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.*;
-import frc.robot.utils.RobotMode;
+import frc.robot.utils.constants.RobotMode;
 
 public class AUTO_Bump implements Auto{
     @Override

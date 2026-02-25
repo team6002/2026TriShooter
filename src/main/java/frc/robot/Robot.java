@@ -17,7 +17,7 @@ import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.ShooterConstants;
-import frc.robot.utils.RobotMode;
+import frc.robot.utils.constants.RobotMode;
 
 import java.util.HashMap;
 

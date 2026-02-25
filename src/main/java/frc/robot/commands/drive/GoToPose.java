@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.utils.FieldConstants;
+import frc.robot.utils.constants.FieldConstants;
 
 public class GoToPose extends SequentialCommandGroup {
     public GoToPose(Pose2d targetPose, Drive drive, double tolerance) {

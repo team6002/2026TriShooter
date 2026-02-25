@@ -1,6 +1,6 @@
 // By 5516 Iron Maple https://github.com/Shenzhen-Robotics-Alliance/
 
-package frc.robot.utils.CustomConfigs;
+package frc.robot.utils;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;

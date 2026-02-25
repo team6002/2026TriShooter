@@ -5,9 +5,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 import frc.robot.subsystems.drive.HolonomicDriveSubsystem;
-import frc.robot.utils.ChassisHeadingController;
-import frc.robot.utils.MapleJoystickDriveInput;
-import frc.robot.utils.MapleShooterOptimization;
+import frc.robot.utils.CustomPIDs.ChassisHeadingController;
+import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
+import frc.robot.utils.CustomPIDs.MapleShooterOptimization;
+
 import java.util.function.Supplier;
 
 /**

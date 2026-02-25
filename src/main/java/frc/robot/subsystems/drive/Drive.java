@@ -53,9 +53,9 @@ import frc.robot.subsystems.drive.IO.GyroIO;
 import frc.robot.subsystems.drive.IO.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.drive.IO.ModuleIO;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.utils.ChassisHeadingController;
-import frc.robot.utils.LocalADStarAK;
-import frc.robot.utils.RobotMode;
+import frc.robot.utils.CustomPIDs.ChassisHeadingController;
+import frc.robot.utils.PathPlanner.LocalADStarAK;
+import frc.robot.utils.constants.RobotMode;
 
 import java.util.OptionalDouble;
 import java.util.concurrent.locks.Lock;

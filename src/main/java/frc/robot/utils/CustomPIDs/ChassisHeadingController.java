@@ -1,8 +1,8 @@
-package frc.robot.utils;
+package frc.robot.utils.CustomPIDs;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
-import static frc.robot.utils.DriveControlLoops.*;
+import static frc.robot.utils.CustomPIDs.DriveControlLoops.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Robot;
-import frc.robot.utils.CustomPIDs.MaplePIDController;
+
 import java.util.OptionalDouble;
 import java.util.function.Supplier;
 import org.ironmaple.utils.mathutils.MapleCommonMath;
