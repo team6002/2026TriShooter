@@ -20,6 +20,8 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -106,15 +108,15 @@ public class Vision extends SubsystemBase {
             for (var observation : inputs[cameraIndex].poseObservations) {
                 // Check whether to reject pose
                 boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
-                        || (observation.tagCount() == 1
-                                && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
-                        || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
+                    || (observation.tagCount() == 1
+                            && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+                    || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
 
-                        // Must be within the field boundaries
-                        || observation.pose().getX() < 0.0
-                        || observation.pose().getX() > aprilTagLayout.getFieldLength()
-                        || observation.pose().getY() < 0.0
-                        || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+                    // Must be within the field boundaries
+                    || observation.pose().getX() < 0.0
+                    || observation.pose().getX() > aprilTagLayout.getFieldLength()
+                    || observation.pose().getY() < 0.0
+                    || observation.pose().getY() > aprilTagLayout.getFieldWidth();
 
                 // Add pose to log
                 robotPoses.add(observation.pose());
@@ -128,8 +130,6 @@ public class Vision extends SubsystemBase {
                 if (rejectPose) {
                     continue;
                 }
-
-                
 
                 // Calculate standard deviations
                 double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0) * Vision_Constants.stdDevFactor / observation.tagCount();
@@ -147,7 +147,7 @@ public class Vision extends SubsystemBase {
                 }
 
                 // Send vision observation
-                 consumer.accept(
+                consumer.accept(
                     observation.pose().toPose2d(),
                     observation.timestamp(),
                     VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
@@ -215,6 +215,27 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    public double lastResultDistance(Drive drive, int cameraIndex) {
+        List<Pose3d> theTagPoses=new ArrayList<>();
+        double tagDistanceFromRobot=1000;
+        double closestTagDistanceFromRobot=tagDistanceFromRobot;
+        Pose3d currentTag;
+        Transform3d robotToCamera = cameraIndex == 0 ? robotToCamera0 : robotToCamera1;
+        Pose2d currentRobotPose=drive.getPose().plus(new Transform2d(robotToCamera.getTranslation().toTranslation2d(), new Rotation2d()));
+        
+        for (int i=0; i<inputs[cameraIndex].tagIds.length; i++){
+            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            theTagPoses.add(currentTag);
+            tagDistanceFromRobot = currentRobotPose.getTranslation().getDistance(currentTag.getTranslation().toTranslation2d());
+            
+            if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
+                closestTagDistanceFromRobot=tagDistanceFromRobot;
+            }
+        }
+
+        return closestTagDistanceFromRobot;
+    }
+
     public int lastResultId(SwerveDriveSimulation driveSimulation, int cameraIndex) {
         List<Pose3d> theTagPoses=new ArrayList<>();
         int tagIndexOfClosestTag=0;
@@ -272,7 +293,6 @@ public class Vision extends SubsystemBase {
     }
 
     public Pose3d getRobotPoseEstimator(SwerveDriveSimulation sim, int index) {
-        // Pose3d target = lastResult(sim, index);
         Pose3d robotPose = new Pose3d();
         int targetId = lastResultId(sim, index);
 

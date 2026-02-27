@@ -99,6 +99,7 @@ public class RobotContainer {
                 this.vision = new Vision(
                     drive,
                     new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0)
+                    ,new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1)
                 );
 
                 break;
@@ -125,22 +126,14 @@ public class RobotContainer {
 
                 vision = new Vision(
                     drive
-                    // ,new VisionIOPhotonVisionSim(
-                    //     Vision_Constants.camera0Name,
-                    //     Vision_Constants.robotToCamera0,
-                    //     driveSimulation::getSimulatedDriveTrainPose)
+                    ,new VisionIOPhotonVisionSim(
+                        Vision_Constants.camera0Name,
+                        Vision_Constants.robotToCamera0,
+                        driveSimulation::getSimulatedDriveTrainPose)
                     ,new VisionIOPhotonVisionSim(
                         Vision_Constants.camera1Name,
                         Vision_Constants.robotToCamera1,
                         driveSimulation::getSimulatedDriveTrainPose)
-                    ,new VisionIOPhotonVisionSim(
-                        Vision_Constants.camera2Name,
-                        Vision_Constants.robotToCamera2,
-                        driveSimulation::getSimulatedDriveTrainPose)
-                    // ,new VisionIOPhotonVisionSim(
-                    //     Vision_Constants.camera3Name,
-                    //     Vision_Constants.robotToCamera3,
-                    //     driveSimulation::getSimulatedDriveTrainPose)
                 );
 
                 break;
@@ -300,10 +293,6 @@ public class RobotContainer {
 
         Logger.recordOutput("FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
         Logger.recordOutput("FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
-        // Logger.recordOutput("Vision/GetTarget", new VisionIOPhotonVisionSim(
-        //                 Vision_Constants.camera0Name,
-        //                 Vision_Constants.robotToCamera0,
-        //                 driveSimulation::getSimulatedDriveTrainPose).);
     }
 
     public static boolean motorBrakeEnabled = false;
@@ -351,8 +340,6 @@ public class RobotContainer {
             weAreInactiveFirst = true;
         }
         
-        // 3. Determine if we are the "First Inactive" alliance
-
         // 4. Check the 25-second shifts
         if (time > 105) return !weAreInactiveFirst; // Shift 1
         if (time > 80)  return weAreInactiveFirst;  // Shift 2
