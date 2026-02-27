@@ -4,21 +4,29 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.simulation.DCMotorSim;
+import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class HoodIOSim implements HoodIO {
-
-    private final DCMotorSim hoodSim;
+    private final SingleJointedArmSim hoodSim;
 
     private final PIDController hoodPIDController =
-            new PIDController(HoodConstants.kPSim, HoodConstants.kISim, HoodConstants.kDSim);
+        new PIDController(HoodConstants.kPSim, 0.0, HoodConstants.kDSim);
+
     private double reference = 0;
-    public static double objectsInHopper = 0;
 
     public HoodIOSim() {
-        hoodSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, HoodConstants.kGearRatio),
-                DCMotor.getNeo550(1));
+        hoodSim = new SingleJointedArmSim(
+            LinearSystemId.createSingleJointedArmSystem(
+                DCMotor.getNeo550(1), HoodConstants.kHoodMOI, HoodConstants.kGearRatio
+            ), 
+            DCMotor.getNeo550(1), 
+            HoodConstants.kGearRatio, 
+            HoodConstants.kHoodRadius, 
+            HoodConstants.kMinHoodAngle, 
+            HoodConstants.kMaxHoodAngle, 
+            true, 
+            HoodConstants.kStartHoodAngle
+        );
     }
 
     @Override
@@ -27,12 +35,12 @@ public class HoodIOSim implements HoodIO {
         inputs.hoodVoltage = getVoltage();
         inputs.hoodReference = getReference();
         inputs.hoodVelocity = Units.radiansToDegrees(getVelocity());
-        inputs.hoodPos = Units.radiansToDegrees(hoodSim.getAngularPositionRad());
+        inputs.hoodPos = Units.radiansToDegrees(hoodSim.getAngleRads());
     }
 
     @Override
     public void setReference(double reference) {
-        this.reference = reference;
+        this.reference = Math.toRadians(85 - (reference * 45));
     }
 
     @Override
@@ -41,13 +49,13 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
-    public void setVoltage(double voltage) {
-        hoodSim.setInputVoltage(voltage);
+    public double getPosition(){
+        return hoodSim.getAngleRads();
     }
 
     @Override
-    public double getVoltage() {
-        return hoodSim.getInputVoltage();
+    public void setVoltage(double voltage) {
+        hoodSim.setInputVoltage(voltage);
     }
 
     @Override
@@ -57,7 +65,7 @@ public class HoodIOSim implements HoodIO {
 
     @Override
     public double getVelocity(){
-        return hoodSim.getAngularVelocityRadPerSec();
+        return hoodSim.getVelocityRadPerSec();
     }
 
     @Override
@@ -67,8 +75,8 @@ public class HoodIOSim implements HoodIO {
 
     @Override
     public void periodic() {
-        hoodSim.setInput(hoodPIDController.calculate(hoodSim.getAngularVelocityRadPerSec(), reference));
-
         hoodSim.update(0.02);
+
+        hoodSim.setInputVoltage(hoodPIDController.calculate(hoodSim.getAngleRads(), reference));
     }
 }

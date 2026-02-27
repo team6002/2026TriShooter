@@ -82,7 +82,7 @@ public class ShootFuelSim extends Command {
                     robotPose.getRotation(),
                     Inches.of(21), // Height of the shooter exit
                     MetersPerSecond.of(exitVelocityMps),
-                    Degrees.of(45) // convert hood position in rotations to degrees 85 - hood.getPosition() * 45
+                    Degrees.of(hood.getPosition()) // convert hood position in rotations to degrees 85 - hood.getPosition() * 45
                 )
             );
 

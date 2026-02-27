@@ -39,7 +39,7 @@ public class HoodIOSpark implements HoodIO {
                 HoodConfig.hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
-        hoodReference = HoodConstants.kMinAngle;
+        hoodReference = HoodConstants.kMinPos;
         hoodType = ControlType.kPosition;
     }
 
@@ -86,7 +86,7 @@ public class HoodIOSpark implements HoodIO {
 
     @Override
     public void setReference(double reference) {
-        hoodReference = MathUtil.clamp(reference, HoodConstants.kMinAngle, HoodConstants.kMaxAngle);
+        hoodReference = MathUtil.clamp(reference, HoodConstants.kMinPos, HoodConstants.kMaxPos);
         hoodType = ControlType.kPosition;
     }
 

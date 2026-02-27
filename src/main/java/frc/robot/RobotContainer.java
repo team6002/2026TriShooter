@@ -223,7 +223,7 @@ public class RobotContainer {
 
         //default commands
         shooter.setDefaultCommand(shooter.setTargetVelolcity(0));
-        hood.setDefaultCommand(hood.setTargetPos(HoodConstants.kMinAngle));
+        hood.setDefaultCommand(hood.setTargetPos(HoodConstants.kMinPos));
         kicker.setDefaultCommand(kicker.runVoltage(KickerConstants.kOff));
         conveyor.setDefaultCommand(conveyor.runVoltage(ConveyorConstants.kOff));
 
