@@ -16,35 +16,22 @@ public class FollowPathFaceToTarget {
             double offSetSeconds,
             Supplier<Translation2d> targetPositionSupplier,
             MapleShooterOptimization shooterOptimization) {
-        final Runnable requestFaceToTarget =
-                () ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(
-                                        new ChassisHeadingController.FaceToTargetRequest(
-                                                targetPositionSupplier, shooterOptimization));
-        final Runnable requestNull =
-                () ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(new ChassisHeadingController.NullRequest());
+        final Runnable requestFaceToTarget = () -> ChassisHeadingController.getInstance()
+                .setHeadingRequest(
+                        new ChassisHeadingController.FaceToTargetRequest(targetPositionSupplier, shooterOptimization));
+        final Runnable requestNull = () ->
+                ChassisHeadingController.getInstance().setHeadingRequest(new ChassisHeadingController.NullRequest());
         return AutoBuilder.followPath(path)
                 .deadlineFor(Commands.waitSeconds(offSetSeconds).andThen(requestFaceToTarget))
                 .finallyDo(requestNull);
     }
 
     public static Command followPathFacetToTarget(
-            PathPlannerPath path,
-            double offSetSeconds,
-            Supplier<Rotation2d> rotationTargetOverride) {
-        final Runnable requestFaceToRotation =
-                () ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(
-                                        new ChassisHeadingController.FaceToRotationRequest(
-                                                rotationTargetOverride.get()));
-        final Runnable requestNull =
-                () ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(new ChassisHeadingController.NullRequest());
+            PathPlannerPath path, double offSetSeconds, Supplier<Rotation2d> rotationTargetOverride) {
+        final Runnable requestFaceToRotation = () -> ChassisHeadingController.getInstance()
+                .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(rotationTargetOverride.get()));
+        final Runnable requestNull = () ->
+                ChassisHeadingController.getInstance().setHeadingRequest(new ChassisHeadingController.NullRequest());
         return AutoBuilder.followPath(path)
                 .deadlineFor(Commands.waitSeconds(offSetSeconds).andThen(requestFaceToRotation))
                 .finallyDo(requestNull);

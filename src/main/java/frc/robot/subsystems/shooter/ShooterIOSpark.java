@@ -17,9 +17,7 @@ import edu.wpi.first.math.util.Units;
 public class ShooterIOSpark implements ShooterIO {
     private final SparkMax leftShooterMotor, middleShooterMotor, rightShooterMotor;
     private final RelativeEncoder leftShooterEncoder, middleShooterEncoder, rightShooterEncoder;
-    private final SparkClosedLoopController leftShooterController,
-            middleShooterController,
-            rightShooterController;
+    private final SparkClosedLoopController leftShooterController, middleShooterController, rightShooterController;
 
     private double shooterReference;
     private ControlType shooterType;
@@ -33,8 +31,7 @@ public class ShooterIOSpark implements ShooterIO {
     public ShooterIOSpark() {
         // initialize motor
         leftShooterMotor = new SparkMax(ShooterConstants.kLeftShooterCanId, MotorType.kBrushless);
-        middleShooterMotor =
-                new SparkMax(ShooterConstants.kMiddleShooterCanId, MotorType.kBrushless);
+        middleShooterMotor = new SparkMax(ShooterConstants.kMiddleShooterCanId, MotorType.kBrushless);
         rightShooterMotor = new SparkMax(ShooterConstants.kRightShooterCanId, MotorType.kBrushless);
 
         // initalize encoder
@@ -49,19 +46,13 @@ public class ShooterIOSpark implements ShooterIO {
 
         // apply config
         leftShooterMotor.configure(
-                ShooterConfig.leftShooterConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                ShooterConfig.leftShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         middleShooterMotor.configure(
-                ShooterConfig.middleShooterConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                ShooterConfig.middleShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         rightShooterMotor.configure(
-                ShooterConfig.rightShooterConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                ShooterConfig.rightShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // tuning
 
@@ -89,20 +80,17 @@ public class ShooterIOSpark implements ShooterIO {
         inputs.leftShooterCurrent = getLeftCurrent();
         inputs.leftShooterVoltage = getLeftVoltage();
         inputs.leftShooterVelocity = Units.radiansToDegrees(getLeftVelocity());
-        inputs.leftShooterTemp =
-                Fahrenheit.convertFrom(leftShooterMotor.getMotorTemperature(), Celsius);
+        inputs.leftShooterTemp = Fahrenheit.convertFrom(leftShooterMotor.getMotorTemperature(), Celsius);
 
         inputs.middleShooterCurrent = getMiddleCurrent();
         inputs.middleShooterVoltage = getMiddleVoltage();
         inputs.middleShooterVelocity = Units.radiansToDegrees(getMiddleVelocity());
-        inputs.middleShooterTemp =
-                Fahrenheit.convertFrom(middleShooterMotor.getMotorTemperature(), Celsius);
+        inputs.middleShooterTemp = Fahrenheit.convertFrom(middleShooterMotor.getMotorTemperature(), Celsius);
 
         inputs.rightShooterCurrent = getRightCurrent();
         inputs.rightShooterVoltage = getRightVoltage();
         inputs.rightShooterVelocity = Units.radiansToDegrees(getRightVelocity());
-        inputs.rightShooterTemp =
-                Fahrenheit.convertFrom(rightShooterMotor.getMotorTemperature(), Celsius);
+        inputs.rightShooterTemp = Fahrenheit.convertFrom(rightShooterMotor.getMotorTemperature(), Celsius);
     }
 
     @Override
@@ -169,12 +157,9 @@ public class ShooterIOSpark implements ShooterIO {
 
     @Override
     public boolean isReady() {
-        boolean leftReady =
-                Math.abs(getLeftVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
-        boolean middleReady =
-                Math.abs(getMiddleVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
-        boolean rightReady =
-                Math.abs(getRightVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
+        boolean leftReady = Math.abs(getLeftVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
+        boolean middleReady = Math.abs(getMiddleVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
+        boolean rightReady = Math.abs(getRightVelocity() - getReference()) < ShooterConstants.kStartOnTargetVel;
 
         return shooterDebouncer.calculate(leftReady && middleReady && rightReady);
     }
@@ -223,17 +208,11 @@ public class ShooterIOSpark implements ShooterIO {
         // real
 
         if (shooterType == ControlType.kVelocity) {
-            leftFF =
-                    ShooterConstants.kLeftShooterS
-                            + (ShooterConstants.kLeftShooterV * getReference());
+            leftFF = ShooterConstants.kLeftShooterS + (ShooterConstants.kLeftShooterV * getReference());
 
-            middleFF =
-                    ShooterConstants.kMiddleShooterS
-                            + (ShooterConstants.kMiddleShooterV * getReference());
+            middleFF = ShooterConstants.kMiddleShooterS + (ShooterConstants.kMiddleShooterV * getReference());
 
-            rightFF =
-                    ShooterConstants.kRightShooterS
-                            + (ShooterConstants.kRightShooterV * getReference());
+            rightFF = ShooterConstants.kRightShooterS + (ShooterConstants.kRightShooterV * getReference());
         }
 
         if (shooting) {
@@ -244,12 +223,9 @@ public class ShooterIOSpark implements ShooterIO {
 
         // Bypass velocity control at 0 RPM to prevent chatter and allow a smooth coast-down
         if (shooterReference > 0) {
-            leftShooterController.setSetpoint(
-                    shooterReference, shooterType, ClosedLoopSlot.kSlot0, leftFF);
-            middleShooterController.setSetpoint(
-                    shooterReference, shooterType, ClosedLoopSlot.kSlot0, middleFF);
-            rightShooterController.setSetpoint(
-                    shooterReference, shooterType, ClosedLoopSlot.kSlot0, rightFF);
+            leftShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, leftFF);
+            middleShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, middleFF);
+            rightShooterController.setSetpoint(shooterReference, shooterType, ClosedLoopSlot.kSlot0, rightFF);
         } else {
             leftShooterController.setSetpoint(0, ControlType.kVoltage);
             middleShooterController.setSetpoint(0, ControlType.kVoltage);

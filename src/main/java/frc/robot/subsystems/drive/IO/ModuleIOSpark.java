@@ -71,34 +71,30 @@ public class ModuleIOSpark implements ModuleIO {
     private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
 
     public ModuleIOSpark(int module) {
-        zeroRotation =
+        zeroRotation = switch (module) {
+            case 0 -> frontLeftZeroRotation;
+            case 1 -> frontRightZeroRotation;
+            case 2 -> backLeftZeroRotation;
+            case 3 -> backRightZeroRotation;
+            default -> new Rotation2d();};
+        driveSpark = new SparkFlex(
                 switch (module) {
-                    case 0 -> frontLeftZeroRotation;
-                    case 1 -> frontRightZeroRotation;
-                    case 2 -> backLeftZeroRotation;
-                    case 3 -> backRightZeroRotation;
-                    default -> new Rotation2d();
-                };
-        driveSpark =
-                new SparkFlex(
-                        switch (module) {
-                            case 0 -> frontLeftDriveCanId;
-                            case 1 -> frontRightDriveCanId;
-                            case 2 -> backLeftDriveCanId;
-                            case 3 -> backRightDriveCanId;
-                            default -> 0;
-                        },
-                        MotorType.kBrushless);
-        turnSpark =
-                new SparkMax(
-                        switch (module) {
-                            case 0 -> frontLeftTurnCanId;
-                            case 1 -> frontRightTurnCanId;
-                            case 2 -> backLeftTurnCanId;
-                            case 3 -> backRightTurnCanId;
-                            default -> 0;
-                        },
-                        MotorType.kBrushless);
+                    case 0 -> frontLeftDriveCanId;
+                    case 1 -> frontRightDriveCanId;
+                    case 2 -> backLeftDriveCanId;
+                    case 3 -> backRightDriveCanId;
+                    default -> 0;
+                },
+                MotorType.kBrushless);
+        turnSpark = new SparkMax(
+                switch (module) {
+                    case 0 -> frontLeftTurnCanId;
+                    case 1 -> frontRightTurnCanId;
+                    case 2 -> backLeftTurnCanId;
+                    case 3 -> backRightTurnCanId;
+                    default -> 0;
+                },
+                MotorType.kBrushless);
         driveEncoder = driveSpark.getEncoder();
         turnEncoder = turnSpark.getAbsoluteEncoder();
         driveController = driveSpark.getClosedLoopController();
@@ -117,12 +113,8 @@ public class ModuleIOSpark implements ModuleIO {
                 .velocityConversionFactor(driveEncoderVelocityFactor)
                 .uvwMeasurementPeriod(10)
                 .uvwAverageDepth(2);
-        driveConfig
-                .closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(driveKp, 0.0, driveKd);
-        driveConfig.closedLoop.feedForward.sva(
-                DriveConstants.driveKs, DriveConstants.driveKv, DriveConstants.driveKa);
+        driveConfig.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder).pid(driveKp, 0.0, driveKd);
+        driveConfig.closedLoop.feedForward.sva(DriveConstants.driveKs, DriveConstants.driveKv, DriveConstants.driveKa);
         driveConfig
                 .signals
                 .primaryEncoderPositionAlwaysOn(true)
@@ -135,11 +127,8 @@ public class ModuleIOSpark implements ModuleIO {
         tryUntilOk(
                 driveSpark,
                 5,
-                () ->
-                        driveSpark.configure(
-                                driveConfig,
-                                ResetMode.kResetSafeParameters,
-                                PersistMode.kPersistParameters));
+                () -> driveSpark.configure(
+                        driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
         tryUntilOk(driveSpark, 5, () -> driveEncoder.setPosition(0.0));
 
         // Configure turn motor
@@ -173,21 +162,13 @@ public class ModuleIOSpark implements ModuleIO {
         tryUntilOk(
                 turnSpark,
                 5,
-                () ->
-                        turnSpark.configure(
-                                turnConfig,
-                                ResetMode.kResetSafeParameters,
-                                PersistMode.kPersistParameters));
+                () -> turnSpark.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
         this.configurationFailed = sparkStickyFault;
 
         // Create odometry queues
         timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-        drivePositionQueue =
-                SparkOdometryThread.getInstance()
-                        .registerSignal(driveSpark, driveEncoder::getPosition);
-        turnPositionQueue =
-                SparkOdometryThread.getInstance()
-                        .registerSignal(turnSpark, turnEncoder::getPosition);
+        drivePositionQueue = SparkOdometryThread.getInstance().registerSignal(driveSpark, driveEncoder::getPosition);
+        turnPositionQueue = SparkOdometryThread.getInstance().registerSignal(turnSpark, turnEncoder::getPosition);
     }
 
     @Override
@@ -196,10 +177,7 @@ public class ModuleIOSpark implements ModuleIO {
         // Update drive inputs
         sparkStickyFault = false;
         ifOk(driveSpark, driveEncoder::getPosition, (value) -> inputs.drivePositionRad = value);
-        ifOk(
-                driveSpark,
-                driveEncoder::getVelocity,
-                (value) -> inputs.driveVelocityRadPerSec = value);
+        ifOk(driveSpark, driveEncoder::getVelocity, (value) -> inputs.driveVelocityRadPerSec = value);
         ifOk(
                 driveSpark,
                 new DoubleSupplier[] {driveSpark::getAppliedOutput, driveSpark::getBusVoltage},
@@ -230,10 +208,9 @@ public class ModuleIOSpark implements ModuleIO {
                 timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
         inputs.odometryDrivePositionsRad =
                 drivePositionQueue.stream().mapToDouble((Double value) -> value).toArray();
-        inputs.odometryTurnPositions =
-                turnPositionQueue.stream()
-                        .map((Double value) -> new Rotation2d(value).minus(zeroRotation))
-                        .toArray(Rotation2d[]::new);
+        inputs.odometryTurnPositions = turnPositionQueue.stream()
+                .map((Double value) -> new Rotation2d(value).minus(zeroRotation))
+                .toArray(Rotation2d[]::new);
         timestampQueue.clear();
         drivePositionQueue.clear();
         turnPositionQueue.clear();
@@ -256,18 +233,13 @@ public class ModuleIOSpark implements ModuleIO {
     public void setDriveVelocity(double velocityRadPerSec) {
         double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
         driveController.setSetpoint(
-                velocityRadPerSec,
-                ControlType.kVelocity,
-                ClosedLoopSlot.kSlot0,
-                ffVolts,
-                ArbFFUnits.kVoltage);
+                velocityRadPerSec, ControlType.kVelocity, ClosedLoopSlot.kSlot0, ffVolts, ArbFFUnits.kVoltage);
     }
 
     @Override
     public void setTurnPosition(Rotation2d rotation) {
         double setpoint =
-                MathUtil.inputModulus(
-                        rotation.plus(zeroRotation).getRadians(), turnPIDMinInput, turnPIDMaxInput);
+                MathUtil.inputModulus(rotation.plus(zeroRotation).getRadians(), turnPIDMinInput, turnPIDMaxInput);
         turnController.setSetpoint(setpoint, ControlType.kPosition);
     }
 
@@ -278,11 +250,7 @@ public class ModuleIOSpark implements ModuleIO {
         tryUntilOk(
                 driveSpark,
                 5,
-                () ->
-                        driveSpark.configure(
-                                config,
-                                ResetMode.kResetSafeParameters,
-                                PersistMode.kNoPersistParameters));
+                () -> driveSpark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters));
     }
 
     @Override
@@ -293,10 +261,6 @@ public class ModuleIOSpark implements ModuleIO {
         tryUntilOk(
                 turnSpark,
                 5,
-                () ->
-                        turnSpark.configure(
-                                config,
-                                ResetMode.kNoResetSafeParameters,
-                                PersistMode.kNoPersistParameters));
+                () -> turnSpark.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters));
     }
 }

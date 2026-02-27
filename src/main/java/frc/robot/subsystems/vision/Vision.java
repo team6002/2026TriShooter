@@ -57,9 +57,7 @@ public class Vision extends SubsystemBase {
         this.disconnectedAlerts = new Alert[io.length];
         for (int i = 0; i < inputs.length; i++) {
             disconnectedAlerts[i] =
-                    new Alert(
-                            "Vision camera " + Integer.toString(i) + " is disconnected.",
-                            AlertType.kWarning);
+                    new Alert("Vision camera " + Integer.toString(i) + " is disconnected.", AlertType.kWarning);
         }
     }
 
@@ -107,19 +105,16 @@ public class Vision extends SubsystemBase {
             // Loop over pose observations
             for (var observation : inputs[cameraIndex].poseObservations) {
                 // Check whether to reject pose
-                boolean rejectPose =
-                        observation.tagCount() == 0 // Must have at least one tag
-                                || (observation.tagCount() == 1
-                                        && observation.ambiguity()
-                                                > maxAmbiguity) // Cannot be high ambiguity
-                                || Math.abs(observation.pose().getZ())
-                                        > maxZError // Must have realistic Z coordinate
+                boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
+                        || (observation.tagCount() == 1
+                                && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
+                        || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
 
-                                // Must be within the field boundaries
-                                || observation.pose().getX() < 0.0
-                                || observation.pose().getX() > aprilTagLayout.getFieldLength()
-                                || observation.pose().getY() < 0.0
-                                || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+                        // Must be within the field boundaries
+                        || observation.pose().getX() < 0.0
+                        || observation.pose().getX() > aprilTagLayout.getFieldLength()
+                        || observation.pose().getY() < 0.0
+                        || observation.pose().getY() > aprilTagLayout.getFieldWidth();
 
                 // Add pose to log
                 robotPoses.add(observation.pose());
@@ -135,10 +130,9 @@ public class Vision extends SubsystemBase {
                 }
 
                 // Calculate standard deviations
-                double stdDevFactor =
-                        Math.pow(observation.averageTagDistance(), 2.0)
-                                * Vision_Constants.stdDevFactor
-                                / observation.tagCount();
+                double stdDevFactor = Math.pow(observation.averageTagDistance(), 2.0)
+                        * Vision_Constants.stdDevFactor
+                        / observation.tagCount();
                 double linearStdDev = linearStdDevBaseline * stdDevFactor;
                 Logger.recordOutput("Vision/LinearStdDev", linearStdDev);
                 double angularStdDev = angularStdDevBaseline * stdDevFactor;
@@ -179,11 +173,8 @@ public class Vision extends SubsystemBase {
         }
 
         // Log summary data
-        Logger.recordOutput(
-                "Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
-        Logger.recordOutput(
-                "Vision/Summary/RobotPoses",
-                allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
+        Logger.recordOutput("Vision/Summary/TagPoses", allTagPoses.toArray(new Pose3d[allTagPoses.size()]));
+        Logger.recordOutput("Vision/Summary/RobotPoses", allRobotPoses.toArray(new Pose3d[allRobotPoses.size()]));
         Logger.recordOutput(
                 "Vision/Summary/RobotPosesAccepted",
                 allRobotPosesAccepted.toArray(new Pose3d[allRobotPosesAccepted.size()]));
@@ -194,10 +185,7 @@ public class Vision extends SubsystemBase {
 
     @FunctionalInterface
     public interface VisionConsumer {
-        void accept(
-                Pose2d visionRobotPoseMeters,
-                double timestampSeconds,
-                Matrix<N3, N1> visionMeasurementStdDevs);
+        void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);
     }
 
     public Pose3d lastResult(SwerveDriveSimulation driveSimulation, int cameraIndex) {
@@ -209,12 +197,12 @@ public class Vision extends SubsystemBase {
         Pose2d currentRobotPose = driveSimulation.getSimulatedDriveTrainPose();
 
         for (int i = 0; i < inputs[cameraIndex].tagIds.length; i++) {
-            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            currentTag =
+                    aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
             theTagPoses.add(currentTag);
-            tagDistanceFromRobot =
-                    currentRobotPose
-                            .getTranslation()
-                            .getDistance(currentTag.getTranslation().toTranslation2d());
+            tagDistanceFromRobot = currentRobotPose
+                    .getTranslation()
+                    .getDistance(currentTag.getTranslation().toTranslation2d());
 
             if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
                 closestTagDistanceFromRobot = tagDistanceFromRobot;
@@ -235,20 +223,16 @@ public class Vision extends SubsystemBase {
         double closestTagDistanceFromRobot = tagDistanceFromRobot;
         Pose3d currentTag;
         Transform3d robotToCamera = cameraIndex == 0 ? robotToCamera0 : robotToCamera1;
-        Pose2d currentRobotPose =
-                drive.getPose()
-                        .plus(
-                                new Transform2d(
-                                        robotToCamera.getTranslation().toTranslation2d(),
-                                        new Rotation2d()));
+        Pose2d currentRobotPose = drive.getPose()
+                .plus(new Transform2d(robotToCamera.getTranslation().toTranslation2d(), new Rotation2d()));
 
         for (int i = 0; i < inputs[cameraIndex].tagIds.length; i++) {
-            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            currentTag =
+                    aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
             theTagPoses.add(currentTag);
-            tagDistanceFromRobot =
-                    currentRobotPose
-                            .getTranslation()
-                            .getDistance(currentTag.getTranslation().toTranslation2d());
+            tagDistanceFromRobot = currentRobotPose
+                    .getTranslation()
+                    .getDistance(currentTag.getTranslation().toTranslation2d());
 
             if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
                 closestTagDistanceFromRobot = tagDistanceFromRobot;
@@ -267,12 +251,12 @@ public class Vision extends SubsystemBase {
         Pose2d currentRobotPose = driveSimulation.getSimulatedDriveTrainPose();
 
         for (int i = 0; i < inputs[cameraIndex].tagIds.length; i++) {
-            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            currentTag =
+                    aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
             theTagPoses.add(currentTag);
-            tagDistanceFromRobot =
-                    currentRobotPose
-                            .getTranslation()
-                            .getDistance(currentTag.getTranslation().toTranslation2d());
+            tagDistanceFromRobot = currentRobotPose
+                    .getTranslation()
+                    .getDistance(currentTag.getTranslation().toTranslation2d());
 
             if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
                 closestTagDistanceFromRobot = tagDistanceFromRobot;
@@ -300,12 +284,12 @@ public class Vision extends SubsystemBase {
         Pose2d currentRobotPose = drive.getPose();
 
         for (int i = 0; i < inputs[cameraIndex].tagIds.length; i++) {
-            currentTag = aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
+            currentTag =
+                    aprilTagLayout.getTagPose(inputs[cameraIndex].tagIds[i]).get();
             theTagPoses.add(currentTag);
-            tagDistanceFromRobot =
-                    currentRobotPose
-                            .getTranslation()
-                            .getDistance(currentTag.getTranslation().toTranslation2d());
+            tagDistanceFromRobot = currentRobotPose
+                    .getTranslation()
+                    .getDistance(currentTag.getTranslation().toTranslation2d());
 
             if (tagDistanceFromRobot < closestTagDistanceFromRobot) {
                 closestTagDistanceFromRobot = tagDistanceFromRobot;
@@ -325,19 +309,17 @@ public class Vision extends SubsystemBase {
         int targetId = lastResultId(sim, index);
 
         if (aprilTagLayout.getTagPose(targetId).isPresent()) {
-            PhotonTrackedTarget target =
-                    new VisionIOPhotonVisionSim(
-                                    Vision_Constants.camera0Name,
-                                    Vision_Constants.robotToCamera0,
-                                    sim::getSimulatedDriveTrainPose)
-                            .camera
-                            .getLatestResult()
-                            .getBestTarget();
-            robotPose =
-                    PhotonUtils.estimateFieldToRobotAprilTag(
-                            target.bestCameraToTarget,
-                            aprilTagLayout.getTagPose(targetId).get(),
-                            Vision_Constants.robotToCamera0);
+            PhotonTrackedTarget target = new VisionIOPhotonVisionSim(
+                            Vision_Constants.camera0Name,
+                            Vision_Constants.robotToCamera0,
+                            sim::getSimulatedDriveTrainPose)
+                    .camera
+                    .getLatestResult()
+                    .getBestTarget();
+            robotPose = PhotonUtils.estimateFieldToRobotAprilTag(
+                    target.bestCameraToTarget,
+                    aprilTagLayout.getTagPose(targetId).get(),
+                    Vision_Constants.robotToCamera0);
         }
 
         return robotPose;

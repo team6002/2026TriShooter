@@ -14,19 +14,10 @@ public class Kicker extends SubsystemBase {
 
     public Kicker(KickerIO io) {
         this.io = io;
-        this.sysIdRoutine =
-                new SysIdRoutine(
-                        new SysIdRoutine.Config(
-                                null,
-                                null,
-                                null,
-                                (state) ->
-                                        Logger.recordOutput(
-                                                "/Kicker/SysIdState", state.toString())),
-                        new SysIdRoutine.Mechanism(
-                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                                null,
-                                this));
+        this.sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        null, null, null, (state) -> Logger.recordOutput("/Kicker/SysIdState", state.toString())),
+                new SysIdRoutine.Mechanism((voltage) -> io.setVoltage(voltage.baseUnitMagnitude()), null, this));
     }
 
     public SysIdRoutine getSysIdRoutine() {

@@ -25,11 +25,7 @@ public class ShooterConfig {
                 .uvwMeasurementPeriod(10);
         middleShooterConfig
                 .closedLoop
-                .pid(
-                        ShooterConstants.kMiddleShooterP,
-                        0.0,
-                        ShooterConstants.kMiddleShooterD,
-                        ClosedLoopSlot.kSlot0)
+                .pid(ShooterConstants.kMiddleShooterP, 0.0, ShooterConstants.kMiddleShooterD, ClosedLoopSlot.kSlot0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
                 .positionWrappingEnabled(false);
@@ -48,11 +44,7 @@ public class ShooterConfig {
                 .uvwMeasurementPeriod(10);
         leftShooterConfig
                 .closedLoop
-                .pid(
-                        ShooterConstants.kLeftShooterP,
-                        0.0,
-                        ShooterConstants.kLeftShooterD,
-                        ClosedLoopSlot.kSlot0)
+                .pid(ShooterConstants.kLeftShooterP, 0.0, ShooterConstants.kLeftShooterD, ClosedLoopSlot.kSlot0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
                 .positionWrappingEnabled(false);
@@ -71,11 +63,7 @@ public class ShooterConfig {
                 .uvwMeasurementPeriod(10);
         rightShooterConfig
                 .closedLoop
-                .pid(
-                        ShooterConstants.kRightShooterP,
-                        0.0,
-                        ShooterConstants.kRightShooterD,
-                        ClosedLoopSlot.kSlot0)
+                .pid(ShooterConstants.kRightShooterP, 0.0, ShooterConstants.kRightShooterD, ClosedLoopSlot.kSlot0)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 .outputRange(ShooterConstants.kMinOutput, ShooterConstants.kMaxOutput)
                 .positionWrappingEnabled(false);

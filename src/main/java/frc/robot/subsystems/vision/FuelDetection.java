@@ -20,14 +20,12 @@ public class FuelDetection {
     /** Whether this detection is considered “high confidence.” */
     public final boolean highConfidence;
 
-    public final BiConsumer<FuelDetection, Double> fuelConsumer =
-            (detection, timestamp) -> {
-                Logger.recordOutput("Vision/Fuel/LatestDetection", detection.toString());
-                Logger.recordOutput("Vision/Fuel/LatestTimestamp", timestamp.toString());
-            };
+    public final BiConsumer<FuelDetection, Double> fuelConsumer = (detection, timestamp) -> {
+        Logger.recordOutput("Vision/Fuel/LatestDetection", detection.toString());
+        Logger.recordOutput("Vision/Fuel/LatestTimestamp", timestamp.toString());
+    };
 
-    public FuelDetection(
-            double x, double y, double size, double timestamp, boolean highConfidence) {
+    public FuelDetection(double x, double y, double size, double timestamp, boolean highConfidence) {
         this.x = x;
         this.y = y;
         this.size = size;

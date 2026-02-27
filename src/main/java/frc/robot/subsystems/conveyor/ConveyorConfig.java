@@ -26,9 +26,6 @@ public class ConveyorConfig {
                 .outputRange(ConveyorConstants.kMinOutput, ConveyorConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         conveyorConfig.closedLoop.feedForward.svag(
-                ConveyorConstants.kS,
-                ConveyorConstants.kV,
-                ConveyorConstants.kA,
-                ConveyorConstants.kG);
+                ConveyorConstants.kS, ConveyorConstants.kV, ConveyorConstants.kA, ConveyorConstants.kG);
     }
 }

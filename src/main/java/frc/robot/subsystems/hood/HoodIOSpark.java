@@ -32,10 +32,7 @@ public class HoodIOSpark implements HoodIO {
         hoodEncoder = hoodMotor.getAbsoluteEncoder();
 
         // apply config
-        hoodMotor.configure(
-                HoodConfig.hoodConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+        hoodMotor.configure(HoodConfig.hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         hoodReference = HoodConstants.kMinPos;

@@ -38,8 +38,7 @@ public class AlertsManager {
                         .toArray(String[]::new));
 
         // Flash LED red if there is an Error.
-        if (hasAlertType(Alert.AlertType.kError))
-            runIfNotRunning(getFlashLEDForErrorCommand(statusLight));
+        if (hasAlertType(Alert.AlertType.kError)) runIfNotRunning(getFlashLEDForErrorCommand(statusLight));
         // Flash LED Orange if there is a Warning.
         else if (hasAlertType(Alert.AlertType.kWarning) && DriverStation.isDisabled())
             runIfNotRunning(getFlashLEDForWarningCommand(statusLight));
@@ -53,13 +52,11 @@ public class AlertsManager {
      */
     private static Command getFlashLEDForErrorCommand(LEDStatusLight statusLight) {
         if (flashLEDForError == null)
-            flashLEDForError =
-                    statusLight
-                            .playAnimationPeriodically(
-                                    new LEDAnimation.Breathe(() -> Color.kRed), 2)
-                            .until(() -> !hasAlertType(Alert.AlertType.kError))
-                            .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
-                            .ignoringDisable(true);
+            flashLEDForError = statusLight
+                    .playAnimationPeriodically(new LEDAnimation.Breathe(() -> Color.kRed), 2)
+                    .until(() -> !hasAlertType(Alert.AlertType.kError))
+                    .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+                    .ignoringDisable(true);
         return flashLEDForError;
     }
 
@@ -72,15 +69,13 @@ public class AlertsManager {
      */
     private static Command getFlashLEDForWarningCommand(LEDStatusLight statusLight) {
         if (flashLEDForWarning == null)
-            flashLEDForWarning =
-                    statusLight
-                            .playAnimationPeriodically(
-                                    new LEDAnimation.Breathe(() -> Color.kOrange), 0.5)
-                            .until(() -> !hasAlertType(Alert.AlertType.kWarning))
-                            .until(() -> hasAlertType(Alert.AlertType.kError))
-                            .until(DriverStation::isEnabled)
-                            .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
-                            .ignoringDisable(true);
+            flashLEDForWarning = statusLight
+                    .playAnimationPeriodically(new LEDAnimation.Breathe(() -> Color.kOrange), 0.5)
+                    .until(() -> !hasAlertType(Alert.AlertType.kWarning))
+                    .until(() -> hasAlertType(Alert.AlertType.kError))
+                    .until(DriverStation::isEnabled)
+                    .withInterruptBehavior(Command.InterruptionBehavior.kCancelIncoming)
+                    .ignoringDisable(true);
         return flashLEDForWarning;
     }
 

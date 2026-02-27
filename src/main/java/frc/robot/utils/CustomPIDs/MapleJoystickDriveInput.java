@@ -20,9 +20,7 @@ public class MapleJoystickDriveInput {
      *     RIGHTWARDS
      */
     public MapleJoystickDriveInput(
-            DoubleSupplier joystickXSupplier,
-            DoubleSupplier joystickYSupplier,
-            DoubleSupplier joystickOmegaSupplier) {
+            DoubleSupplier joystickXSupplier, DoubleSupplier joystickYSupplier, DoubleSupplier joystickOmegaSupplier) {
         this.joystickXSupplier = joystickXSupplier;
         this.joystickYSupplier = joystickYSupplier;
         this.joystickOmegaSupplier = joystickOmegaSupplier;
@@ -37,13 +35,10 @@ public class MapleJoystickDriveInput {
             double chassisMaxVelocityMetersPerSec, double maxAngularVelocityRadPerSec) {
         final Translation2d linearSpeedMetersPerSec =
                 getTranslationalSpeedsFromJoystick(chassisMaxVelocityMetersPerSec);
-        final double rotationSpeedRadPerSec =
-                getRotationalSpeedFromJoystick(maxAngularVelocityRadPerSec);
+        final double rotationSpeedRadPerSec = getRotationalSpeedFromJoystick(maxAngularVelocityRadPerSec);
 
         return new ChassisSpeeds(
-                linearSpeedMetersPerSec.getX(),
-                linearSpeedMetersPerSec.getY(),
-                rotationSpeedRadPerSec);
+                linearSpeedMetersPerSec.getX(), linearSpeedMetersPerSec.getY(), rotationSpeedRadPerSec);
     }
 
     /**
@@ -86,13 +81,8 @@ public class MapleJoystickDriveInput {
      * @param otherAxisValue the value of the other axis on the stick
      */
     private static double applySmartDeadBand(double axisValue, double otherAxisValue) {
-        final double deadBand =
-                MapleCommonMath.linearInterpretationWithBounding(
-                        0,
-                        DEAD_BAND_WHEN_OTHER_AXIS_EMPTY,
-                        1,
-                        DEAD_BAND_WHEN_OTHER_AXIS_FULL,
-                        Math.abs(otherAxisValue));
+        final double deadBand = MapleCommonMath.linearInterpretationWithBounding(
+                0, DEAD_BAND_WHEN_OTHER_AXIS_EMPTY, 1, DEAD_BAND_WHEN_OTHER_AXIS_FULL, Math.abs(otherAxisValue));
         return MathUtil.applyDeadband(axisValue, deadBand, 1);
     }
 }

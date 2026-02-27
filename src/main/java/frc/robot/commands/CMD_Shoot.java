@@ -83,8 +83,7 @@ public class CMD_Shoot extends Command {
         if (shooting) {
             // Toggles state every 0.5 seconds
             boolean shouldBeStowed = ((int) (timer.get() / 1) % 2 == 0);
-            intake.setExtenderReference(
-                    shouldBeStowed ? ExtenderConstants.kHome : ExtenderConstants.kStow);
+            intake.setExtenderReference(shouldBeStowed ? ExtenderConstants.kHome : ExtenderConstants.kStow);
         }
     }
 }

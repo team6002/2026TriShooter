@@ -13,18 +13,10 @@ public class Hood extends SubsystemBase {
 
     public Hood(HoodIO io) {
         this.io = io;
-        this.sysIdRoutine =
-                new SysIdRoutine(
-                        new SysIdRoutine.Config(
-                                null,
-                                null,
-                                null,
-                                (state) ->
-                                        Logger.recordOutput("/Hood/SysIdState", state.toString())),
-                        new SysIdRoutine.Mechanism(
-                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                                null,
-                                this));
+        this.sysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        null, null, null, (state) -> Logger.recordOutput("/Hood/SysIdState", state.toString())),
+                new SysIdRoutine.Mechanism((voltage) -> io.setVoltage(voltage.baseUnitMagnitude()), null, this));
     }
 
     public SysIdRoutine getSysIdRoutine() {

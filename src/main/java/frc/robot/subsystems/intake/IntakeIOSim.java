@@ -31,11 +31,9 @@ public class IntakeIOSim implements IntakeIO {
 
     private final DCMotorSim intakeExtenderSim;
     private final PIDController intakeExtenderPIDController =
-            new PIDController(
-                    ExtenderConstants.kPSim, ExtenderConstants.kISim, ExtenderConstants.kDSim);
+            new PIDController(ExtenderConstants.kPSim, ExtenderConstants.kISim, ExtenderConstants.kDSim);
     private final SimpleMotorFeedforward intakeExtenderFeedforward =
-            new SimpleMotorFeedforward(
-                    ExtenderConstants.kS, ExtenderConstants.kV, IntakeConstants.kA);
+            new SimpleMotorFeedforward(ExtenderConstants.kS, ExtenderConstants.kV, IntakeConstants.kA);
     private double extenderReference = 0;
 
     public static double objectsInHopper = 0;
@@ -43,31 +41,23 @@ public class IntakeIOSim implements IntakeIO {
     private final LoggedMechanism2d intakeMechanism;
     private final LoggedMechanismRoot2d intakeRoot;
     private final LoggedMechanismLigament2d intakeVisualizer =
-            new LoggedMechanismLigament2d(
-                    "intake", Inches.of(1), Degrees.of(-87.5), 50, new Color8Bit(255, 92, 0));
+            new LoggedMechanismLigament2d("intake", Inches.of(1), Degrees.of(-87.5), 50, new Color8Bit(255, 92, 0));
 
     public IntakeIOSim(AbstractDriveTrainSimulation driveSim) {
-        intakeSim =
-                new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(
-                                DCMotor.getNEO(1), .178, IntakeConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+        intakeSim = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, IntakeConstants.kGearRatio),
+                DCMotor.getNEO(1));
 
-        intakeExtenderSim =
-                new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(
-                                DCMotor.getNEO(1), .1, ExtenderConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+        intakeExtenderSim = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .1, ExtenderConstants.kGearRatio),
+                DCMotor.getNEO(1));
 
         intakeMechanism = new LoggedMechanism2d(Inches.of(24), Inches.of(10));
-        intakeRoot =
-                intakeMechanism.getRoot(
-                        "Intake", Units.inchesToMeters(-16), Units.inchesToMeters(0));
+        intakeRoot = intakeMechanism.getRoot("Intake", Units.inchesToMeters(-16), Units.inchesToMeters(0));
         intakeRoot.append(intakeVisualizer);
 
-        intakeSimulation =
-                IntakeSimulation.OverTheBumperIntake(
-                        "Fuel", driveSim, Inches.of(24), Inches.of(10), IntakeSide.BACK, 48);
+        intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+                "Fuel", driveSim, Inches.of(24), Inches.of(10), IntakeSide.BACK, 48);
 
         intakeSimulation.startIntake();
     }
@@ -142,15 +132,12 @@ public class IntakeIOSim implements IntakeIO {
 
     @Override
     public void periodic() {
-        intakeSim.setInput(
-                intakePIDController.calculate(intakeSim.getAngularVelocityRadPerSec(), reference)
-                        + intakeFeedforward.calculateWithVelocities(getVelocity(), reference));
+        intakeSim.setInput(intakePIDController.calculate(intakeSim.getAngularVelocityRadPerSec(), reference)
+                + intakeFeedforward.calculateWithVelocities(getVelocity(), reference));
 
         intakeExtenderSim.setInput(
-                intakeExtenderPIDController.calculate(
-                                intakeExtenderSim.getAngularVelocityRadPerSec(), reference)
-                        + intakeExtenderFeedforward.calculateWithVelocities(
-                                getVelocity(), reference));
+                intakeExtenderPIDController.calculate(intakeExtenderSim.getAngularVelocityRadPerSec(), reference)
+                        + intakeExtenderFeedforward.calculateWithVelocities(getVelocity(), reference));
 
         intakeSim.update(0.02);
         intakeExtenderSim.update(0.02);

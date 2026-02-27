@@ -35,29 +35,20 @@ public class ShooterIOSim implements ShooterIO {
     public static double objectsInHopper = 0;
 
     public ShooterIOSim() {
-        middleShooterSim =
-                new FlywheelSim(
-                        LinearSystemId.createFlywheelSystem(
-                                DCMotor.getNEO(1),
-                                ShooterConstants.kShooterMOI,
-                                ShooterConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+        middleShooterSim = new FlywheelSim(
+                LinearSystemId.createFlywheelSystem(
+                        DCMotor.getNEO(1), ShooterConstants.kShooterMOI, ShooterConstants.kGearRatio),
+                DCMotor.getNEO(1));
 
-        leftShooterSim =
-                new FlywheelSim(
-                        LinearSystemId.createFlywheelSystem(
-                                DCMotor.getNEO(1),
-                                ShooterConstants.kShooterMOI,
-                                ShooterConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+        leftShooterSim = new FlywheelSim(
+                LinearSystemId.createFlywheelSystem(
+                        DCMotor.getNEO(1), ShooterConstants.kShooterMOI, ShooterConstants.kGearRatio),
+                DCMotor.getNEO(1));
 
-        rightShooterSim =
-                new FlywheelSim(
-                        LinearSystemId.createFlywheelSystem(
-                                DCMotor.getNEO(1),
-                                ShooterConstants.kShooterMOI,
-                                ShooterConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+        rightShooterSim = new FlywheelSim(
+                LinearSystemId.createFlywheelSystem(
+                        DCMotor.getNEO(1), ShooterConstants.kShooterMOI, ShooterConstants.kGearRatio),
+                DCMotor.getNEO(1));
     }
 
     /** Helper class to manage ball travel and torque loading */
@@ -69,16 +60,14 @@ public class ShooterIOSim implements ShooterIO {
             if (!active) return;
 
             // Ball center moves at half surface speed: (omega * r) / 2
-            double wheelSurfaceVel =
-                    sim.getAngularVelocityRadPerSec() * ShooterConstants.kFlywheelRadiusMeters;
+            double wheelSurfaceVel = sim.getAngularVelocityRadPerSec() * ShooterConstants.kFlywheelRadiusMeters;
             position += (wheelSurfaceVel / 2.0) * dt;
 
             // Apply load torque: FrictionForce * Radius
             // 130N * 0.75 * 0.0508m = ~4.95Nm
-            double loadTorque =
-                    ShooterConstants.kNormalForceNewtons
-                            * ShooterConstants.kWheelCOF
-                            * ShooterConstants.kFlywheelRadiusMeters;
+            double loadTorque = ShooterConstants.kNormalForceNewtons
+                    * ShooterConstants.kWheelCOF
+                    * ShooterConstants.kFlywheelRadiusMeters;
 
             // Apply current load to the sim
             sim.setInputVoltage(sim.getInputVoltage()); // Maintain set voltage
@@ -196,16 +185,12 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public boolean isReady() {
-        boolean leftReadyToShoot =
-                Math.abs(getLeftVelocity() - getReference()) <= ShooterConstants.kStartOnTargetVel;
+        boolean leftReadyToShoot = Math.abs(getLeftVelocity() - getReference()) <= ShooterConstants.kStartOnTargetVel;
         boolean middleReadyToShoot =
-                Math.abs(getMiddleVelocity() - getReference())
-                        <= ShooterConstants.kStartOnTargetVel;
-        boolean rightReadyToShoot =
-                Math.abs(getRightVelocity() - getReference()) <= ShooterConstants.kStartOnTargetVel;
+                Math.abs(getMiddleVelocity() - getReference()) <= ShooterConstants.kStartOnTargetVel;
+        boolean rightReadyToShoot = Math.abs(getRightVelocity() - getReference()) <= ShooterConstants.kStartOnTargetVel;
 
-        return shooterDebouncer.calculate(
-                leftReadyToShoot && middleReadyToShoot && rightReadyToShoot);
+        return shooterDebouncer.calculate(leftReadyToShoot && middleReadyToShoot && rightReadyToShoot);
     }
 
     @Override
@@ -230,16 +215,13 @@ public class ShooterIOSim implements ShooterIO {
         middleShooterSim.update(0.02);
         rightShooterSim.update(.02);
 
-        leftShooterSim.setInputVoltage(
-                leftShooterPIDController.calculate(getLeftVelocity(), reference)
-                        + shooterFeedforward.calculate(reference));
+        leftShooterSim.setInputVoltage(leftShooterPIDController.calculate(getLeftVelocity(), reference)
+                + shooterFeedforward.calculate(reference));
 
-        middleShooterSim.setInputVoltage(
-                middleShooterPIDController.calculate(getMiddleVelocity(), reference)
-                        + shooterFeedforward.calculate(reference));
+        middleShooterSim.setInputVoltage(middleShooterPIDController.calculate(getMiddleVelocity(), reference)
+                + shooterFeedforward.calculate(reference));
 
-        rightShooterSim.setInputVoltage(
-                rightShooterPIDController.calculate(getRightVelocity(), reference)
-                        + shooterFeedforward.calculate(reference));
+        rightShooterSim.setInputVoltage(rightShooterPIDController.calculate(getRightVelocity(), reference)
+                + shooterFeedforward.calculate(reference));
     }
 }

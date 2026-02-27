@@ -15,33 +15,18 @@ public class Intake extends SubsystemBase {
 
     public Intake(IntakeIO io) {
         this.io = io;
-        this.intakeSysIdRoutine =
-                new SysIdRoutine(
-                        new SysIdRoutine.Config(
-                                null,
-                                null,
-                                null,
-                                (state) ->
-                                        Logger.recordOutput(
-                                                "/Intake/SysIdState", state.toString())),
-                        new SysIdRoutine.Mechanism(
-                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                                null,
-                                this));
+        this.intakeSysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        null, null, null, (state) -> Logger.recordOutput("/Intake/SysIdState", state.toString())),
+                new SysIdRoutine.Mechanism((voltage) -> io.setVoltage(voltage.baseUnitMagnitude()), null, this));
 
-        this.intakeExtenderSysIdRoutine =
-                new SysIdRoutine(
-                        new SysIdRoutine.Config(
-                                null,
-                                null,
-                                null,
-                                (state) ->
-                                        Logger.recordOutput(
-                                                "/Intake/ExtenderSysIdState", state.toString())),
-                        new SysIdRoutine.Mechanism(
-                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                                null,
-                                this));
+        this.intakeExtenderSysIdRoutine = new SysIdRoutine(
+                new SysIdRoutine.Config(
+                        null,
+                        null,
+                        null,
+                        (state) -> Logger.recordOutput("/Intake/ExtenderSysIdState", state.toString())),
+                new SysIdRoutine.Mechanism((voltage) -> io.setVoltage(voltage.baseUnitMagnitude()), null, this));
     }
 
     public SysIdRoutine getIntakeSysIdRoutine() {

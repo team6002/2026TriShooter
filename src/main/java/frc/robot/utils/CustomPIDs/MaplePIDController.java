@@ -18,19 +18,14 @@ public class MaplePIDController extends PIDController {
     @Override
     public double calculate(double measurement) {
         final double constrainedCorrection =
-                MathUtil.clamp(
-                        super.calculate(measurement), -config.maximumPower, config.maximumPower);
+                MathUtil.clamp(super.calculate(measurement), -config.maximumPower, config.maximumPower);
 
         if (Math.abs(constrainedCorrection) < config.deadBand) return 0;
         return constrainedCorrection;
     }
 
     public static final class MaplePIDConfig {
-        public final double maximumPower,
-                errorStartDecelerate,
-                deadBand,
-                errorTolerance,
-                timeThinkAhead;
+        public final double maximumPower, errorStartDecelerate, deadBand, errorTolerance, timeThinkAhead;
         public final double Kp, Ki, Kd;
         public final boolean isCircularLoop;
 

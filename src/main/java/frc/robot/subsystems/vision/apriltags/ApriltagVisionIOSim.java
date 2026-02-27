@@ -24,14 +24,12 @@ public class ApriltagVisionIOSim extends AprilTagVisionIOReal {
         camerasSim = new PhotonCameraSim[cameraProperties.size()];
 
         for (int i = 0; i < cameraProperties.size(); i++) {
-            final PhotonCameraSim cameraSim =
-                    new PhotonCameraSim(
-                            super.cameras[i], cameraProperties.get(i).getSimulationProperties());
+            final PhotonCameraSim cameraSim = new PhotonCameraSim(
+                    super.cameras[i], cameraProperties.get(i).getSimulationProperties());
             cameraSim.enableRawStream(true);
             cameraSim.enableProcessedStream(true);
             cameraSim.enableDrawWireframe(true);
-            visionSystemSim.addCamera(
-                    camerasSim[i] = cameraSim, cameraProperties.get(i).robotToCamera);
+            visionSystemSim.addCamera(camerasSim[i] = cameraSim, cameraProperties.get(i).robotToCamera);
         }
     }
 

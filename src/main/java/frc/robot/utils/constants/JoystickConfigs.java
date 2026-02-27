@@ -33,6 +33,5 @@ public class JoystickConfigs {
      * the amount of time that the chassis waits after the pilot's last rotational input, before it
      * starts to "lock" its rotation with PID
      */
-    public static final double
-            TIME_ACTIVATE_ROTATION_MAINTENANCE_AFTER_NO_ROTATIONAL_INPUT_SECONDS = 0.6;
+    public static final double TIME_ACTIVATE_ROTATION_MAINTENANCE_AFTER_NO_ROTATIONAL_INPUT_SECONDS = 0.6;
 }

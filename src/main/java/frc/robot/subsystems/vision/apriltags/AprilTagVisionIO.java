@@ -62,8 +62,7 @@ public interface AprilTagVisionIO {
 
             this.fieldToCameraResultPresent = pipelineResult.getMultiTagResult().isPresent();
             if (fieldToCameraResultPresent)
-                this.bestFieldToCamera =
-                        pipelineResult.getMultiTagResult().get().estimatedPose.best;
+                this.bestFieldToCamera = pipelineResult.getMultiTagResult().get().estimatedPose.best;
             else this.bestFieldToCamera = new Transform3d();
         }
 
@@ -83,19 +82,14 @@ public interface AprilTagVisionIO {
         @Override
         public void fromLog(LogTable table) {
             cameraConnected = table.get("CameraConnected", cameraConnected);
-            newPipeLineResultAvailable =
-                    table.get("NewPipeLineResultAvailable", newPipeLineResultAvailable);
+            newPipeLineResultAvailable = table.get("NewPipeLineResultAvailable", newPipeLineResultAvailable);
             timeStampSeconds = table.get("TimeStampSeconds", timeStampSeconds);
             bestTargetTagID = table.get("BestTargetTagID", bestTargetTagID);
             bestTargetAmbiguity = table.get("BestTargetAmbiguity", bestTargetAmbiguity);
-            bestTargetCameraToTarget =
-                    table.get("BestTargetCameraToTarget", bestTargetCameraToTarget);
+            bestTargetCameraToTarget = table.get("BestTargetCameraToTarget", bestTargetCameraToTarget);
             bestTargetAlternativeCameraToTarget =
-                    table.get(
-                            "BestTargetAlternativeCameraToTarget",
-                            bestTargetAlternativeCameraToTarget);
-            fieldToCameraResultPresent =
-                    table.get("FieldToCameraResultPresent", fieldToCameraResultPresent);
+                    table.get("BestTargetAlternativeCameraToTarget", bestTargetAlternativeCameraToTarget);
+            fieldToCameraResultPresent = table.get("FieldToCameraResultPresent", fieldToCameraResultPresent);
             bestFieldToCamera = table.get("BestFieldToCamera", bestFieldToCamera);
         }
     }
