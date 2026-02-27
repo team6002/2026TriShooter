@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Hood extends SubsystemBase {
@@ -14,15 +13,18 @@ public class Hood extends SubsystemBase {
 
     public Hood(HoodIO io) {
         this.io = io;
-        this.sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, null, null, 
-                (state) -> Logger.recordOutput("/Hood/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                null,
-                this
-            )
-        );
+        this.sysIdRoutine =
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                null,
+                                null,
+                                null,
+                                (state) ->
+                                        Logger.recordOutput("/Hood/SysIdState", state.toString())),
+                        new SysIdRoutine.Mechanism(
+                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
+                                null,
+                                this));
     }
 
     public SysIdRoutine getSysIdRoutine() {
@@ -53,15 +55,15 @@ public class Hood extends SubsystemBase {
         io.setReference(pos);
     }
 
-    public Command setTargetPos(double pos){
-        return Commands.runOnce(()-> setReference(pos), this);
+    public Command setTargetPos(double pos) {
+        return Commands.runOnce(() -> setReference(pos), this);
     }
 
     public double getPosition() {
         return io.getPosition();
     }
 
-    public boolean atReference(){
+    public boolean atReference() {
         return io.atReference();
     }
 

@@ -10,23 +10,24 @@ public class HoodIOSim implements HoodIO {
     private final SingleJointedArmSim hoodSim;
 
     private final PIDController hoodPIDController =
-        new PIDController(HoodConstants.kPSim, 0.0, HoodConstants.kDSim);
+            new PIDController(HoodConstants.kPSim, 0.0, HoodConstants.kDSim);
 
     private double reference = HoodConstants.kMinHoodAngle;
 
     public HoodIOSim() {
-        hoodSim = new SingleJointedArmSim(
-            LinearSystemId.createSingleJointedArmSystem(
-                DCMotor.getNeo550(1), HoodConstants.kHoodMOI, HoodConstants.kGearRatio
-            ), 
-            DCMotor.getNeo550(1), 
-            HoodConstants.kGearRatio, 
-            HoodConstants.kHoodRadius, 
-            HoodConstants.kMinHoodAngle, 
-            HoodConstants.kMaxHoodAngle, 
-            true, 
-            HoodConstants.kStartHoodAngle
-        );
+        hoodSim =
+                new SingleJointedArmSim(
+                        LinearSystemId.createSingleJointedArmSystem(
+                                DCMotor.getNeo550(1),
+                                HoodConstants.kHoodMOI,
+                                HoodConstants.kGearRatio),
+                        DCMotor.getNeo550(1),
+                        HoodConstants.kGearRatio,
+                        HoodConstants.kHoodRadius,
+                        HoodConstants.kMinHoodAngle,
+                        HoodConstants.kMaxHoodAngle,
+                        true,
+                        HoodConstants.kStartHoodAngle);
     }
 
     @Override
@@ -44,12 +45,12 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
-    public double getReference(){
+    public double getReference() {
         return reference;
     }
 
     @Override
-    public double getPosition(){
+    public double getPosition() {
         return hoodSim.getAngleRads();
     }
 
@@ -64,12 +65,12 @@ public class HoodIOSim implements HoodIO {
     }
 
     @Override
-    public double getVelocity(){
+    public double getVelocity() {
         return hoodSim.getVelocityRadPerSec();
     }
 
     @Override
-    public boolean atReference(){
+    public boolean atReference() {
         return Math.abs(getReference() - getPosition()) < HoodConstants.kTolerance;
     }
 

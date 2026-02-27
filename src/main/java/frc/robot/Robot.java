@@ -18,9 +18,7 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.utils.constants.RobotMode;
-
 import java.util.HashMap;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.LogFileUtil;
@@ -81,7 +79,7 @@ public class Robot extends LoggedRobot {
                 // Running a physics simulator
                 // Log to CodeDirectory/logs if you want to test logging system in a simulation
                 // Logger.addDataReceiver(new WPILOGWriter());
-                
+
                 Logger.addDataReceiver(new NT4Publisher());
             }
             case REPLAY -> {
@@ -89,34 +87,37 @@ public class Robot extends LoggedRobot {
                 setUseTiming(false); // Run as fast as possible
                 String logPath = LogFileUtil.findReplayLog();
                 Logger.setReplaySource(new WPILOGReader(logPath));
-                Logger.addDataReceiver(new WPILOGWriter(
-                        LogFileUtil.addPathSuffix(logPath, "_replayed"),
-                        WPILOGWriter.AdvantageScopeOpenBehavior.ALWAYS));
+                Logger.addDataReceiver(
+                        new WPILOGWriter(
+                                LogFileUtil.addPathSuffix(logPath, "_replayed"),
+                                WPILOGWriter.AdvantageScopeOpenBehavior.ALWAYS));
             }
         }
         // Initialize URCL for external devices
-        Logger.registerURCL(URCL.startExternal(new HashMap<Integer, String>() {
-            {
-                put(DriveConstants.frontLeftDriveCanId, "front Left Drive");
-                put(DriveConstants.frontRightDriveCanId, "front Right Drive");
-                put(DriveConstants.backLeftDriveCanId, "back Left Drive");
-                put(DriveConstants.backRightDriveCanId, "back right Drive");
-                put(DriveConstants.frontLeftTurnCanId, "front Left Turn");
-                put(DriveConstants.frontRightTurnCanId, "front Right Turn");
-                put(DriveConstants.backLeftTurnCanId, "back Left Turn");
-                put(DriveConstants.backRightTurnCanId, "back right Turn");
-                put(IntakeConstants.kIntakeCanId, "intake leader");
-                put(IntakeConstants.kIntakeFollowerCanId, "intake follower");
-                put(ExtenderConstants.kIntakeExtenderCanId, "intake extender");
-                put(ShooterConstants.kLeftShooterCanId, "left shooter");
-                put(ShooterConstants.kMiddleShooterCanId, "middle shooter");
-                put(ShooterConstants.kRightShooterCanId, "right shooter");
-                put(ConveyorConstants.kConveyorCanId, "conveyor");
-                put(KickerConstants.kKickerCanId, "kicker");
-                put(HoodConstants.kHoodCanId, "hood");
-            }
-        }));
-        //allow the drivetrain to pass over the bump in simulation mode
+        Logger.registerURCL(
+                URCL.startExternal(
+                        new HashMap<Integer, String>() {
+                            {
+                                put(DriveConstants.frontLeftDriveCanId, "front Left Drive");
+                                put(DriveConstants.frontRightDriveCanId, "front Right Drive");
+                                put(DriveConstants.backLeftDriveCanId, "back Left Drive");
+                                put(DriveConstants.backRightDriveCanId, "back right Drive");
+                                put(DriveConstants.frontLeftTurnCanId, "front Left Turn");
+                                put(DriveConstants.frontRightTurnCanId, "front Right Turn");
+                                put(DriveConstants.backLeftTurnCanId, "back Left Turn");
+                                put(DriveConstants.backRightTurnCanId, "back right Turn");
+                                put(IntakeConstants.kIntakeCanId, "intake leader");
+                                put(IntakeConstants.kIntakeFollowerCanId, "intake follower");
+                                put(ExtenderConstants.kIntakeExtenderCanId, "intake extender");
+                                put(ShooterConstants.kLeftShooterCanId, "left shooter");
+                                put(ShooterConstants.kMiddleShooterCanId, "middle shooter");
+                                put(ShooterConstants.kRightShooterCanId, "right shooter");
+                                put(ConveyorConstants.kConveyorCanId, "conveyor");
+                                put(KickerConstants.kKickerCanId, "kicker");
+                                put(HoodConstants.kHoodCanId, "hood");
+                            }
+                        }));
+        // allow the drivetrain to pass over the bump in simulation mode
         SimulatedArena.overrideInstance(new Arena2026Rebuilt(false));
         // Instantiate our RobotContainer. This will perform all our button bindings,
         // and put our autonomous chooser on the dashboard.
@@ -145,7 +146,9 @@ public class Robot extends LoggedRobot {
         // robotContainer.checkForCommandChanges();
     }
 
-    /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+    /**
+     * This autonomous runs the autonomous command selected by your {@link RobotContainer} class.
+     */
     @Override
     public void autonomousInit() {
         autonomousCommand = robotContainer.getAutonomousCommand();
@@ -197,8 +200,9 @@ public class Robot extends LoggedRobot {
     /** This function is called once when the robot is first started up. */
     @Override
     public void simulationInit() {
-        // sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(), robotContainer.resetPose.getRotation().getRadians());
-        
+        // sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(),
+        // robotContainer.resetPose.getRotation().getRadians());
+
         robotContainer.resetSimulationField();
     }
 
@@ -212,7 +216,7 @@ public class Robot extends LoggedRobot {
         // Step physics using the module states commanded by your Drive subsystem
         sim.step(dt, robotContainer.drive.getModuleStates());
         sim.syncToRealPose(robotContainer.drive.getPose());
-    
+
         // simPose = sim.getPose2d();
 
         // // Push the pose into your Drive subsystem's odometry

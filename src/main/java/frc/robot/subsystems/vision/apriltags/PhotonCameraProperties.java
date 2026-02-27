@@ -7,7 +7,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Frequency;
 import edu.wpi.first.units.measure.Time;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.photonvision.simulation.SimCameraProperties;
@@ -50,8 +49,12 @@ public class PhotonCameraProperties {
                                 mountPositionOnRobotMeters.getX(),
                                 mountPositionOnRobotMeters.getY(),
                                 mountHeight.in(Meters),
-                                new Rotation3d(0, -cameraPitch.in(Radians), cameraFacing.getRadians()))
-                        .plus(new Transform3d(new Translation3d(), new Rotation3d(rotateImage.in(Radians), 0, 0))));
+                                new Rotation3d(
+                                        0, -cameraPitch.in(Radians), cameraFacing.getRadians()))
+                        .plus(
+                                new Transform3d(
+                                        new Translation3d(),
+                                        new Rotation3d(rotateImage.in(Radians), 0, 0))));
     }
 
     public PhotonCameraProperties(
@@ -78,7 +81,8 @@ public class PhotonCameraProperties {
 
         System.out.println("Created photon camera: " + name + " on robot");
         System.out.println(
-                "Advantage Scope Asset String:\n" + toAdvantageScopeAssetFixedCameraConfigurationJsonString());
+                "Advantage Scope Asset String:\n"
+                        + toAdvantageScopeAssetFixedCameraConfigurationJsonString());
     }
 
     public SimCameraProperties getSimulationProperties() {
@@ -87,7 +91,8 @@ public class PhotonCameraProperties {
         cameraProperties.setAvgLatencyMs(averageLatency.in(Millisecond));
         cameraProperties.setLatencyStdDevMs(latencyStandardDeviation.in(Millisecond));
         cameraProperties.setCalibration(captureWidthPixels, captureHeightPixels, cameraFOVDiag);
-        cameraProperties.setCalibError(calibrationAverageErrorPixel, calibrationErrorStandardDeviation);
+        cameraProperties.setCalibError(
+                calibrationAverageErrorPixel, calibrationErrorStandardDeviation);
         return cameraProperties;
     }
 

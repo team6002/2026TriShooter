@@ -28,10 +28,10 @@ public class HoodConstants {
 
     public static final double kMaxVel = 1;
     public static final double kMaxAccel = 3;
-    
+
     public static final double kGearRatio = 25;
 
-    //sim
+    // sim
     public static final double kHoodMOI = 0.0145;
     public static final double kMinHoodAngle = Math.toRadians(53);
     public static final double kMaxHoodAngle = Math.toRadians(85);

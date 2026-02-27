@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
-
 import java.util.function.DoubleSupplier;
 
 public interface DriverMap extends Subsystem {
@@ -56,8 +55,9 @@ public interface DriverMap extends Subsystem {
     }
 
     default Command rumble(double seconds) {
-        return runEnd(() -> getController().setRumble(GenericHID.RumbleType.kBothRumble, 1), () -> getController()
-                        .setRumble(GenericHID.RumbleType.kBothRumble, 0))
+        return runEnd(
+                        () -> getController().setRumble(GenericHID.RumbleType.kBothRumble, 1),
+                        () -> getController().setRumble(GenericHID.RumbleType.kBothRumble, 0))
                 .withTimeout(seconds);
     }
 
@@ -65,10 +65,11 @@ public interface DriverMap extends Subsystem {
         return Commands.sequence(
                 runOnce(() -> getController().setRumble(GenericHID.RumbleType.kLeftRumble, 1)),
                 Commands.waitSeconds(seconds),
-                runOnce(() -> {
-                    getController().setRumble(GenericHID.RumbleType.kLeftRumble, 0);
-                    getController().setRumble(GenericHID.RumbleType.kRightRumble, 1);
-                }),
+                runOnce(
+                        () -> {
+                            getController().setRumble(GenericHID.RumbleType.kLeftRumble, 0);
+                            getController().setRumble(GenericHID.RumbleType.kRightRumble, 1);
+                        }),
                 Commands.waitSeconds(seconds),
                 runOnce(() -> getController().setRumble(GenericHID.RumbleType.kBothRumble, 0)));
     }
@@ -116,7 +117,7 @@ public interface DriverMap extends Subsystem {
         }
 
         @Override
-        public Trigger rightBumper(){
+        public Trigger rightBumper() {
             return xboxController.rightBumper();
         }
 

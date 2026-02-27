@@ -36,7 +36,9 @@ public interface KickerIO {
 
     public default void setReference(double velocity) {}
 
-    public default boolean atVelocity(){ return false; }
+    public default boolean atVelocity() {
+        return false;
+    }
 
     public default void periodic() {}
 }

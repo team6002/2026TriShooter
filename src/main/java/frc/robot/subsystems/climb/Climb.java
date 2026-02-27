@@ -2,7 +2,6 @@ package frc.robot.subsystems.climb;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Climb extends SubsystemBase {
@@ -12,15 +11,18 @@ public class Climb extends SubsystemBase {
 
     public Climb(ClimbIO io) {
         this.io = io;
-        this.sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, null, null, 
-                (state) -> Logger.recordOutput("/Climb/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                null,
-                this
-            )
-        );
+        this.sysIdRoutine =
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                null,
+                                null,
+                                null,
+                                (state) ->
+                                        Logger.recordOutput("/Climb/SysIdState", state.toString())),
+                        new SysIdRoutine.Mechanism(
+                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
+                                null,
+                                this));
     }
 
     public SysIdRoutine getSysIdRoutine() {

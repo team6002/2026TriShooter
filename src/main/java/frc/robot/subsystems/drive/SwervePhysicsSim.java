@@ -1,11 +1,5 @@
 package frc.robot.subsystems.drive;
 
-import org.ode4j.math.DMatrix3C;
-import org.ode4j.math.DQuaternion;
-import org.ode4j.math.DQuaternionC;
-import org.ode4j.math.DVector3C;
-import org.ode4j.ode.*;
-
 import static org.ode4j.ode.OdeHelper.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -13,6 +7,11 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import org.ode4j.math.DMatrix3C;
+import org.ode4j.math.DQuaternion;
+import org.ode4j.math.DQuaternionC;
+import org.ode4j.math.DVector3C;
+import org.ode4j.ode.*;
 
 public class SwervePhysicsSim {
 
@@ -26,19 +25,20 @@ public class SwervePhysicsSim {
     // Robot physical params
     private static final double ROBOT_MASS = 38;
     private static final double ROBOT_LENGTH = 0.685;
-    private static final double ROBOT_WIDTH  = 0.685;
+    private static final double ROBOT_WIDTH = 0.685;
     private static final double ROBOT_HEIGHT = 0.2;
 
     private static final double MAX_WHEEL_FORCE = 80;
-    private static final double MAX_SPEED       = 4.0;   // m/s
+    private static final double MAX_SPEED = 4.0; // m/s
 
     // Module positions in robot frame (x forward, y left)
-    private final double[][] modulePositions = new double[][] {
-        {  ROBOT_LENGTH / 2.0,  ROBOT_WIDTH / 2.0 }, // FL
-        {  ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0 }, // FR
-        { -ROBOT_LENGTH / 2.0,  ROBOT_WIDTH / 2.0 }, // BL
-        { -ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0 }  // BR
-    };
+    private final double[][] modulePositions =
+            new double[][] {
+                {ROBOT_LENGTH / 2.0, ROBOT_WIDTH / 2.0}, // FL
+                {ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0}, // FR
+                {-ROBOT_LENGTH / 2.0, ROBOT_WIDTH / 2.0}, // BL
+                {-ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0} // BR
+            };
 
     public SwervePhysicsSim() {
         initODE2(0);
@@ -48,7 +48,7 @@ public class SwervePhysicsSim {
         contactGroup = createJointGroup();
 
         world.setGravity(0, 0, -9.81);
-        world.setDamping(0, 0.1);  // slows rotation
+        world.setDamping(0, 0.1); // slows rotation
 
         // Ground plane z = 0
         createPlane(space, 0, 0, 1, 0);
@@ -84,63 +84,63 @@ public class SwervePhysicsSim {
 
         // Trench Right
         createWall(1, 0.5, 1, 4.5, 1.4);
-        
+
         // Bump
         // Left Back
         RampBuilder.createRamp(
-            world,
-            space,
-            4,   // baseX
-            5.5,
-            0,  
-            "x",  
-            -15.0,    // slope angle
-            0.564,   // length (X)
-            1.854,   // width (Y)
-            0.16    // height (Z)
-        );
+                world,
+                space,
+                4, // baseX
+                5.5,
+                0,
+                "x",
+                -15.0, // slope angle
+                0.564, // length (X)
+                1.854, // width (Y)
+                0.16 // height (Z)
+                );
 
         // Left Front
         RampBuilder.createRamp(
-            world,
-            space,
-            4.5,   // baseX
-            5.5,
-            0, 
-            "x", 
-            15.0,    // slope angle
-            0.564,   // length (X)
-            1.854,   // width (Y)
-            0.16    // height (Z)
-        );
+                world,
+                space,
+                4.5, // baseX
+                5.5,
+                0,
+                "x",
+                15.0, // slope angle
+                0.564, // length (X)
+                1.854, // width (Y)
+                0.16 // height (Z)
+                );
 
         // Right Back
         RampBuilder.createRamp(
-            world,
-            space,
-            4,   // baseX
-            2.5,
-            0, 
-            "x", 
-            -15.0,    // slope angle
-            0.564,   // length (X)
-            1.854,   // width (Y)
-            0.16    // height (Z)
-        );
+                world,
+                space,
+                4, // baseX
+                2.5,
+                0,
+                "x",
+                -15.0, // slope angle
+                0.564, // length (X)
+                1.854, // width (Y)
+                0.16 // height (Z)
+                );
 
         // Right Front
         RampBuilder.createRamp(
-            world,
-            space,
-            4.5,   // baseX
-            2.5,
-            0,
-            "x", 
-            15.0,    // slope angle
-            0.564,   // length (X)
-            1.854,   // width (Y)
-            0.16    // height (Z)
-        );
+                world,
+                space,
+                4.5, // baseX
+                2.5,
+                0,
+                "x",
+                15.0, // slope angle
+                0.564, // length (X)
+                1.854, // width (Y)
+                0.16 // height (Z)
+                );
 
         // // Funny Ramp
         // RampBuilder.createRampX(
@@ -155,16 +155,15 @@ public class SwervePhysicsSim {
         public static DBody createRamp(
                 DWorld world,
                 DSpace space,
-                double baseX,        // lowest point X
+                double baseX, // lowest point X
                 double baseY,
-                double baseZ,        // lowest point Z
+                double baseZ, // lowest point Z
                 String axis,
                 double angleDeg,
                 double length,
                 double width,
-                double height
-        ) {
-            final double EPS = 0.001;  // prevents ground-plane jitter
+                double height) {
+            final double EPS = 0.001; // prevents ground-plane jitter
 
             // 1. Create body
             DBody body = OdeHelper.createBody(world);
@@ -230,34 +229,36 @@ public class SwervePhysicsSim {
         applyModuleForces(moduleStates);
 
         // Collisions
-        space.collide(null, new DGeom.DNearCallback() {
-            @Override
-            public void call(Object data, DGeom o1, DGeom o2) {
+        space.collide(
+                null,
+                new DGeom.DNearCallback() {
+                    @Override
+                    public void call(Object data, DGeom o1, DGeom o2) {
 
-                DContactBuffer contacts = new DContactBuffer(8);
-                int n = OdeHelper.collide(o1, o2, 8, contacts.getGeomBuffer());
+                        DContactBuffer contacts = new DContactBuffer(8);
+                        int n = OdeHelper.collide(o1, o2, 8, contacts.getGeomBuffer());
 
-                // System.out.println(n);
+                        // System.out.println(n);
 
-                for (int i = 0; i < n; i++) {
-                    DContact contact = contacts.get(i);
+                        for (int i = 0; i < n; i++) {
+                            DContact contact = contacts.get(i);
 
-                    // No special flags in your ODE version
-                    contact.surface.mode = 0;
+                            // No special flags in your ODE version
+                            contact.surface.mode = 0;
 
-                    // THIS is friction
-                    contact.surface.mu = 2.5;   // strong carpet friction
+                            // THIS is friction
+                            contact.surface.mu = 2.5; // strong carpet friction
 
-                    // No bounce
-                    contact.surface.bounce = 0.0;
-                    contact.surface.bounce_vel = 0.0;
+                            // No bounce
+                            contact.surface.bounce = 0.0;
+                            contact.surface.bounce_vel = 0.0;
 
-                    // Attach the contact joint
-                    DJoint c = OdeHelper.createContactJoint(world, contactGroup, contact);
-                    c.attach(o1.getBody(), o2.getBody());
-                }
-            }
-        });
+                            // Attach the contact joint
+                            DJoint c = OdeHelper.createContactJoint(world, contactGroup, contact);
+                            c.attach(o1.getBody(), o2.getBody());
+                        }
+                    }
+                });
 
         world.quickStep(dt);
         contactGroup.empty();
@@ -286,20 +287,16 @@ public class SwervePhysicsSim {
             double fy_robot = Math.sin(wheelAngle) * forceMag;
 
             // Transform to world frame
-            double fx_world =
-                    R.get(0, 0) * fx_robot + R.get(0, 1) * fy_robot;
-            double fy_world =
-                    R.get(1, 0) * fx_robot + R.get(1, 1) * fy_robot;
+            double fx_world = R.get(0, 0) * fx_robot + R.get(0, 1) * fy_robot;
+            double fy_world = R.get(1, 0) * fx_robot + R.get(1, 1) * fy_robot;
 
             // Module position in robot frame
             double rx_robot = modulePositions[i][0];
             double ry_robot = modulePositions[i][1];
 
             // Rotate module offset into world frame
-            double rx_world =
-                    R.get(0, 0) * rx_robot + R.get(0, 1) * ry_robot;
-            double ry_world =
-                    R.get(1, 0) * rx_robot + R.get(1, 1) * ry_robot;
+            double rx_world = R.get(0, 0) * rx_robot + R.get(0, 1) * ry_robot;
+            double ry_world = R.get(1, 0) * rx_robot + R.get(1, 1) * ry_robot;
 
             double px = pos.get0() + rx_world;
             double py = pos.get1() + ry_world;
@@ -312,7 +309,7 @@ public class SwervePhysicsSim {
         // LINEAR DRAG (sets terminal velocity)
         // ---------------------------------------
         DVector3C vel = chassisBody.getLinearVel();
-        double kDrag = MAX_WHEEL_FORCE + 10;  // tune this
+        double kDrag = MAX_WHEEL_FORCE + 10; // tune this
 
         double dragFx = -kDrag * vel.get0();
         double dragFy = -kDrag * vel.get1();
@@ -323,7 +320,7 @@ public class SwervePhysicsSim {
         // ANGULAR DRAG (prevents crazy spinning)
         // ---------------------------------------
         DVector3C angVel = chassisBody.getAngularVel();
-        double kAngDrag = 5.0;  // tune this
+        double kAngDrag = 5.0; // tune this
 
         double tX = -kAngDrag * angVel.get0();
         double tY = -kAngDrag * angVel.get1();
@@ -340,6 +337,7 @@ public class SwervePhysicsSim {
         // Optional: stop spinning
         chassisBody.setAngularVel(0, 0, 0);
     }
+
     public void syncToRealPose(Pose2d realPose) {
         double xReal = realPose.getX();
         double yReal = realPose.getY();
@@ -347,9 +345,11 @@ public class SwervePhysicsSim {
 
         DMatrix3C R = chassisBody.getRotation();
 
-        double roll  = Math.atan2(R.get(2,1), R.get(2,2));
-        double pitch = Math.atan2(-R.get(2,0),
-                Math.sqrt(R.get(2,1)*R.get(2,1) + R.get(2,2)*R.get(2,2)));
+        double roll = Math.atan2(R.get(2, 1), R.get(2, 2));
+        double pitch =
+                Math.atan2(
+                        -R.get(2, 0),
+                        Math.sqrt(R.get(2, 1) * R.get(2, 1) + R.get(2, 2) * R.get(2, 2)));
 
         DQuaternion qNew = rpyToQuat(roll, pitch, yawReal);
 
@@ -376,7 +376,6 @@ public class SwervePhysicsSim {
         return q;
     }
 
-
     private double clamp(double v, double min, double max) {
         return Math.max(min, Math.min(max, v));
     }
@@ -394,19 +393,21 @@ public class SwervePhysicsSim {
         // DQuaternionC q = chassisBody.getQuaternion();
         DMatrix3C R = chassisBody.getRotation();
 
-        double roll  = Math.atan2(R.get(2,1), R.get(2,2));
-        double pitch = Math.atan2(-R.get(2,0),
-                                Math.sqrt(R.get(2,1)*R.get(2,1) + R.get(2,2)*R.get(2,2)));
-        double yaw   = Math.atan2(R.get(1,0), R.get(0,0));
+        double roll = Math.atan2(R.get(2, 1), R.get(2, 2));
+        double pitch =
+                Math.atan2(
+                        -R.get(2, 0),
+                        Math.sqrt(R.get(2, 1) * R.get(2, 1) + R.get(2, 2) * R.get(2, 2)));
+        double yaw = Math.atan2(R.get(1, 0), R.get(0, 0));
 
         return new Pose3d(pos.get0(), pos.get1(), pos.get2(), new Rotation3d(roll, pitch, yaw));
     }
 
     public void setPose(double x, double y, double yaw) {
-        chassisBody.setPosition(x, y, ROBOT_HEIGHT/2+0.01);
+        chassisBody.setPosition(x, y, ROBOT_HEIGHT / 2 + 0.01);
         setYaw(yaw);
-        
-         // Zero linear velocity
+
+        // Zero linear velocity
         chassisBody.setLinearVel(0, 0, 0);
 
         // Zero angular velocity

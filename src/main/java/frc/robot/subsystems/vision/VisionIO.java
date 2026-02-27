@@ -15,14 +15,14 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface VisionIO {
     @AutoLog
     class VisionIOInputs {
         public boolean connected = false;
-        public TargetObservation latestTargetObservation = new TargetObservation(new Rotation2d(), new Rotation2d());
+        public TargetObservation latestTargetObservation =
+                new TargetObservation(new Rotation2d(), new Rotation2d());
         // public List<FuelDetection> fuelDetections = new ArrayList<>();
         public PoseObservation[] poseObservations = new PoseObservation[0];
         public int[] tagIds = new int[0];

@@ -14,15 +14,16 @@ public class ClimbIOSim implements ClimbIO {
     private final PIDController climbPIDController =
             new PIDController(ClimbConstants.kPSim, ClimbConstants.kISim, ClimbConstants.kDSim);
     private final SimpleMotorFeedforward climbFeedforward =
-            new SimpleMotorFeedforward(ClimbConstants.kS, ClimbConstants.kV,
-                    ClimbConstants.kA);
+            new SimpleMotorFeedforward(ClimbConstants.kS, ClimbConstants.kV, ClimbConstants.kA);
     private double reference = 0;
     public static double objectsInHopper = 0;
 
     public ClimbIOSim() {
-        climbSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, ClimbConstants.kGearRatio),
-                DCMotor.getNEO(1));
+        climbSim =
+                new DCMotorSim(
+                        LinearSystemId.createDCMotorSystem(
+                                DCMotor.getNEO(1), .178, ClimbConstants.kGearRatio),
+                        DCMotor.getNEO(1));
     }
 
     @Override
@@ -39,7 +40,7 @@ public class ClimbIOSim implements ClimbIO {
     }
 
     @Override
-    public double getReference(){
+    public double getReference() {
         return reference;
     }
 
@@ -59,16 +60,15 @@ public class ClimbIOSim implements ClimbIO {
     }
 
     @Override
-    public double getVelocity(){
+    public double getVelocity() {
         return climbSim.getAngularVelocityRadPerSec();
     }
 
     @Override
     public void periodic() {
         climbSim.setInput(
-            climbPIDController.calculate(getVelocity(), reference) 
-            + climbFeedforward.calculateWithVelocities(getVelocity(), reference)
-        ); 
+                climbPIDController.calculate(getVelocity(), reference)
+                        + climbFeedforward.calculateWithVelocities(getVelocity(), reference));
 
         climbSim.update(0.02);
     }

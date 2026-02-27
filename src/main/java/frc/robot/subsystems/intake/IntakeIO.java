@@ -66,7 +66,7 @@ public interface IntakeIO {
         return 0;
     }
 
-    public default double getExtenderPosition(){
+    public default double getExtenderPosition() {
         return 0;
     }
 

@@ -55,24 +55,28 @@ public class LEDStatusLight extends SubsystemBase {
             for (int i = 0; i < ledColors.length; i++)
                 views[led].setLED(viewsReversed[led] ? ledColors.length - i - 1 : i, ledColors[i]);
         led.setData(buffer);
-        for (int i = 0; i < DASHBOARD_DISPLAY_LENGTH; i++) dashboardColorsHex[i] = dashboardColors[i].toHexString();
+        for (int i = 0; i < DASHBOARD_DISPLAY_LENGTH; i++)
+            dashboardColorsHex[i] = dashboardColors[i].toHexString();
         if (Robot.LOG_DETAILS) Logger.recordOutput("Status Light", dashboardColorsHex);
     }
 
     public Command playAnimation(LEDAnimation animation, double timeSeconds) {
         Timer timer = new Timer();
         timer.start();
-        return this.run(() -> {
-                    animation.play(ledColors, timer.get() / timeSeconds);
-                    animation.play(dashboardColors, timer.get() / timeSeconds);
-                })
+        return this.run(
+                        () -> {
+                            animation.play(ledColors, timer.get() / timeSeconds);
+                            animation.play(dashboardColors, timer.get() / timeSeconds);
+                        })
                 .beforeStarting(timer::reset)
                 .withTimeout(timeSeconds)
                 .ignoringDisable(true);
     }
 
     public Command playAnimation(LEDAnimation animation, double timeSeconds, int loopNum) {
-        return playAnimation(animation, timeSeconds).repeatedly().withTimeout(timeSeconds * loopNum);
+        return playAnimation(animation, timeSeconds)
+                .repeatedly()
+                .withTimeout(timeSeconds * loopNum);
     }
 
     public Command playAnimationPeriodically(LEDAnimation animation, double hz) {
@@ -81,22 +85,28 @@ public class LEDStatusLight extends SubsystemBase {
     }
 
     public Command showRobotState() {
-        return defer(() -> {
-                    if (DriverStation.isEnabled())
-                        return playAnimation(
-                                        new LEDAnimation.SlideBackAndForth(
-                                                () -> RobotState.getInstance().visionObservationRate() > 0.25
-                                                        ? new Color(0, 200, 255)
-                                                        : new Color(255, 255, 255)),
-                                        2.5)
-                                .until(DriverStation::isDisabled);
-                    return playAnimation(
-                                    new LEDAnimation.Breathe(() -> RobotContainer.motorBrakeEnabled
-                                            ? new Color(0, 200, 255)
-                                            : new Color(255, 255, 255)),
-                                    3)
-                            .until(DriverStation::isEnabled);
-                })
+        return defer(
+                        () -> {
+                            if (DriverStation.isEnabled())
+                                return playAnimation(
+                                                new LEDAnimation.SlideBackAndForth(
+                                                        () ->
+                                                                RobotState.getInstance()
+                                                                                        .visionObservationRate()
+                                                                                > 0.25
+                                                                        ? new Color(0, 200, 255)
+                                                                        : new Color(255, 255, 255)),
+                                                2.5)
+                                        .until(DriverStation::isDisabled);
+                            return playAnimation(
+                                            new LEDAnimation.Breathe(
+                                                    () ->
+                                                            RobotContainer.motorBrakeEnabled
+                                                                    ? new Color(0, 200, 255)
+                                                                    : new Color(255, 255, 255)),
+                                            3)
+                                    .until(DriverStation::isEnabled);
+                        })
                 .repeatedly()
                 .ignoringDisable(true);
     }

@@ -46,26 +46,26 @@ public class ShooterConstants {
     public static final double kFuelDiameterMeters = Units.inchesToMeters(5.91);
     public static final double kShooterMOI = 0.00176;
     public static final double kFlywheelRadiusMeters = Units.inchesToMeters(2);
-    //distance between hood and flywheel
+    // distance between hood and flywheel
     public static final double kGapMeters = Units.inchesToMeters(5.0);
-    //rough COF between polyurethane foam game piece and TPU
+    // rough COF between polyurethane foam game piece and TPU
     public static final double kWheelCOF = .75;
     public static final double kNormalForceNewtons = 80; // 130
 
-    public static double getExitDistMeters(double hoodRotations){
+    public static double getExitDistMeters(double hoodRotations) {
         // Current exit angle in degrees
         double exitAngle = 85.0 - (40.0 * hoodRotations);
-        
+
         // Assuming entry is fixed at the "bottom" of the arc (e.g., 135 degrees)
         // You'll need to check your CAD for the actual entry transition point
-        double entryAngle = -90; 
-        
+        double entryAngle = -90;
+
         double deltaThetaDegrees = exitAngle - entryAngle;
         double deltaThetaRadians = Math.toRadians(deltaThetaDegrees);
-        
+
         // Path radius (Wheel radius + half ball thickness)
-        double rPath = kFlywheelRadiusMeters + kGapMeters / 2; 
-        
+        double rPath = kFlywheelRadiusMeters + kGapMeters / 2;
+
         return rPath * deltaThetaRadians;
     }
 
@@ -73,15 +73,15 @@ public class ShooterConstants {
 
     // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
     public static final double[][] SHOOTING_TABLE = {
-        {1.0,  85.00, 6.02,  0.7608},
-        {2.0,  65.43, 6.43,  0.7482},
-        {3.0,  56.90, 7.04,  0.7641},
-        {4.0,  58.75, 7.86,  0.9812},
-        {5.0,  48.88, 8.47,  0.8978},
-        {6.0,  42.88, 9.29,  0.8818},
-        {7.0,  41.60, 9.90,  0.9457},
-        {8.0,  40.16, 10.51, 0.9960},
-        {9.0,  38.67, 11.12, 1.0365},
+        {1.0, 85.00, 6.02, 0.7608},
+        {2.0, 65.43, 6.43, 0.7482},
+        {3.0, 56.90, 7.04, 0.7641},
+        {4.0, 58.75, 7.86, 0.9812},
+        {5.0, 48.88, 8.47, 0.8978},
+        {6.0, 42.88, 9.29, 0.8818},
+        {7.0, 41.60, 9.90, 0.9457},
+        {8.0, 40.16, 10.51, 0.9960},
+        {9.0, 38.67, 11.12, 1.0365},
         {10.0, 37.20, 11.73, 1.0699}
     };
 
@@ -94,33 +94,37 @@ public class ShooterConstants {
         return result;
     }
 
-    public static final MapleShooterOptimization kShooterOptimization = new MapleShooterOptimization(
-        "shooterOptimization",
-        extractColumn(0), // distance, meters
-        extractColumn(1), // hood angle, degrees
-        extractColumn(2), // shooter velocity, m/s
-        extractColumn(3)  // time of flight, seconds
-    );
+    public static final MapleShooterOptimization kShooterOptimization =
+            new MapleShooterOptimization(
+                    "shooterOptimization",
+                    extractColumn(0), // distance, meters
+                    extractColumn(1), // hood angle, degrees
+                    extractColumn(2), // shooter velocity, m/s
+                    extractColumn(3) // time of flight, seconds
+                    );
 
-    public static final record ShootingParams(double hoodReference, double shooterReference, double tofSeconds) {}
+    public static final record ShootingParams(
+            double hoodReference, double shooterReference, double tofSeconds) {}
 
-    public static final ShootingParams getShootingParams(double distanceMeters){
-        //linear regressions calculated from desmos
+    public static final ShootingParams getShootingParams(double distanceMeters) {
+        // linear regressions calculated from desmos
         double hoodAngle = (0.123023 * distanceMeters) - 0.18125;
         double shooterVelRad = (44.19548 * distanceMeters) + 186.99956;
         shooterVelRad = MathUtil.clamp(shooterVelRad, 350, 450);
 
-        //11m/s^2 gravity to match maple sim
+        // 11m/s^2 gravity to match maple sim
         double g = 11;
         double targetHeightM = Units.feetToMeters(6.0);
 
-        //convert shooter flywheel angular speed in rad/s to linear speed meter/s, with a roughly 43.5% speed transfer to projectile
+        // convert shooter flywheel angular speed in rad/s to linear speed meter/s, with a roughly
+        // 43.5% speed transfer to projectile
         double projVelMps = shooterVelRad * Units.inchesToMeters(2) * 0.435;
-        //convert from 0 = 90 degress from horizontal to 0 = parralel to floor
-        double launchAngleRad = HoodConstants.kMaxHoodAngle - (HoodConstants.kHoodAngleDelta * hoodAngle);
-        //hood angle is 1 rotation of the motor = 45 degrees of hood travel
+        // convert from 0 = 90 degress from horizontal to 0 = parralel to floor
+        double launchAngleRad =
+                HoodConstants.kMaxHoodAngle - (HoodConstants.kHoodAngleDelta * hoodAngle);
+        // hood angle is 1 rotation of the motor = 45 degrees of hood travel
         double vy = (projVelMps) * Math.sin(launchAngleRad);
-        //shooter is mounted 21 inches from the floor, target height is 6 feet off the floor
+        // shooter is mounted 21 inches from the floor, target height is 6 feet off the floor
         double dy = Units.inchesToMeters(21) - targetHeightM;
 
         double tofSeconds = (vy + Math.sqrt(vy * vy + 2 * g * dy)) / g;

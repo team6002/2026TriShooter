@@ -5,17 +5,17 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 
-public class CMD_Stow extends Command{
+public class CMD_Stow extends Command {
     private final Intake intake;
 
-    public CMD_Stow(Intake intake){
+    public CMD_Stow(Intake intake) {
         this.intake = intake;
 
         addRequirements(intake);
     }
 
     @Override
-    public void initialize(){
+    public void initialize() {
         intake.setVoltage(IntakeConstants.kOff);
 
         intake.setExtenderLowCurrentMode(false);
@@ -23,14 +23,14 @@ public class CMD_Stow extends Command{
     }
 
     @Override
-    public boolean isFinished(){
+    public boolean isFinished() {
         return intake.getExtenderInPosition();
     }
 
     @Override
-    public void end(boolean interrupted){
-        if(interrupted) return;
-        
+    public void end(boolean interrupted) {
+        if (interrupted) return;
+
         intake.setExtenderLowCurrentMode(true);
     }
 }
