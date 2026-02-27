@@ -204,6 +204,31 @@ public class RobotContainer {
 
             autoChooser.addDefaultOption("IntakePath", new AUTO_IntakePath().getAutoCommand(this, false));
 
+            autoChooser.addOption(
+                    "Auto Middle Trench Trench Left (half middle) #T",
+                    new AUTO_MiddleTrenchTrench().getAutoCommand(this, true));
+            autoChooser.addOption(
+                    "Auto Middle Trench Trench Right (half middle) #T",
+                    new AUTO_MiddleTrenchTrench().getAutoCommand(this, false));
+            autoChooser.addOption(
+                    "Auto Middle Trench Bump Left (half middle) #T",
+                    new AUTO_MiddleBumpTrench().getAutoCommand(this, true));
+            autoChooser.addOption(
+                    "Auto Middle Trench Bump Right (half middle) #T",
+                    new AUTO_MiddleBumpTrench().getAutoCommand(this, false));
+            autoChooser.addOption(
+                    "Auto Middle Bump Trench Left (half middle) #T",
+                    new AUTO_MiddleTrenchBump().getAutoCommand(this, true));
+            autoChooser.addOption(
+                    "Auto Middle Bump Trench Right (half middle) #T",
+                    new AUTO_MiddleTrenchBump().getAutoCommand(this, false));
+            autoChooser.addOption(
+                    "Auto Middle Bump Bump Left (half middle) #T",
+                    new AUTO_MiddleBumpBump().getAutoCommand(this, true));
+            autoChooser.addOption(
+                    "Auto Middle Bump Bump Right (half middle) #T",
+                    new AUTO_MiddleBumpBump().getAutoCommand(this, false));
+
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
         } catch (Exception e) {
