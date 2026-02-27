@@ -223,7 +223,11 @@ public class RobotContainer {
 
         //default commands
         shooter.setDefaultCommand(shooter.setTargetVelolcity(0));
-        hood.setDefaultCommand(hood.setTargetPos(HoodConstants.kMinPos));
+        hood.setDefaultCommand(hood.setTargetPos(
+            Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
+            HoodConstants.kMinPos 
+            : HoodConstants.kMinHoodAngle
+        )); // sim uses radians, real uses rotations
         kicker.setDefaultCommand(kicker.runVoltage(KickerConstants.kOff));
         conveyor.setDefaultCommand(conveyor.runVoltage(ConveyorConstants.kOff));
 

@@ -12,7 +12,7 @@ public class HoodIOSim implements HoodIO {
     private final PIDController hoodPIDController =
         new PIDController(HoodConstants.kPSim, 0.0, HoodConstants.kDSim);
 
-    private double reference = 0;
+    private double reference = HoodConstants.kMinHoodAngle;
 
     public HoodIOSim() {
         hoodSim = new SingleJointedArmSim(
@@ -33,14 +33,14 @@ public class HoodIOSim implements HoodIO {
     public void updateInputs(HoodIOInputs inputs) {
         inputs.hoodCurrent = getCurrent();
         inputs.hoodVoltage = getVoltage();
-        inputs.hoodReference = getReference();
+        inputs.hoodReference = Units.radiansToDegrees(getReference());
         inputs.hoodVelocity = Units.radiansToDegrees(getVelocity());
         inputs.hoodPos = Units.radiansToDegrees(hoodSim.getAngleRads());
     }
 
     @Override
     public void setReference(double reference) {
-        this.reference = Math.toRadians(85 - (reference * 45));
+        this.reference = reference;
     }
 
     @Override
