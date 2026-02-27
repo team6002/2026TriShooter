@@ -94,17 +94,15 @@ public class ShooterConstants {
         return result;
     }
 
-    public static final MapleShooterOptimization kShooterOptimization =
-            new MapleShooterOptimization(
-                    "shooterOptimization",
-                    extractColumn(0), // distance, meters
-                    extractColumn(1), // hood angle, degrees
-                    extractColumn(2), // shooter velocity, m/s
-                    extractColumn(3) // time of flight, seconds
-                    );
+    public static final MapleShooterOptimization kShooterOptimization = new MapleShooterOptimization(
+            "shooterOptimization",
+            extractColumn(0), // distance, meters
+            extractColumn(1), // hood angle, degrees
+            extractColumn(2), // shooter velocity, m/s
+            extractColumn(3) // time of flight, seconds
+            );
 
-    public static final record ShootingParams(
-            double hoodReference, double shooterReference, double tofSeconds) {}
+    public static final record ShootingParams(double hoodReference, double shooterReference, double tofSeconds) {}
 
     public static final ShootingParams getShootingParams(double distanceMeters) {
         // linear regressions calculated from desmos
@@ -120,8 +118,7 @@ public class ShooterConstants {
         // 43.5% speed transfer to projectile
         double projVelMps = shooterVelRad * Units.inchesToMeters(2) * 0.435;
         // convert from 0 = 90 degress from horizontal to 0 = parralel to floor
-        double launchAngleRad =
-                HoodConstants.kMaxHoodAngle - (HoodConstants.kHoodAngleDelta * hoodAngle);
+        double launchAngleRad = HoodConstants.kMaxHoodAngle - (HoodConstants.kHoodAngleDelta * hoodAngle);
         // hood angle is 1 rotation of the motor = 45 degrees of hood travel
         double vy = (projVelMps) * Math.sin(launchAngleRad);
         // shooter is mounted 21 inches from the floor, target height is 6 feet off the floor

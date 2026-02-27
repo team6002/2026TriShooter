@@ -81,14 +81,13 @@ public class RobotContainer {
         switch (Robot.CURRENT_ROBOT_MODE) {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
-                drive =
-                        new Drive(
-                                new GyroIONavX(),
-                                new ModuleIOSpark(0),
-                                new ModuleIOSpark(1),
-                                new ModuleIOSpark(2),
-                                new ModuleIOSpark(3),
-                                (pose) -> {});
+                drive = new Drive(
+                        new GyroIONavX(),
+                        new ModuleIOSpark(0),
+                        new ModuleIOSpark(1),
+                        new ModuleIOSpark(2),
+                        new ModuleIOSpark(3),
+                        (pose) -> {});
 
                 shooter = new Shooter(new ShooterIOSpark());
                 intake = new Intake(new IntakeIOSpark());
@@ -96,34 +95,26 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIOSpark());
                 hood = new Hood(new HoodIOSpark());
 
-                this.vision =
-                        new Vision(
-                                drive,
-                                new VisionIOPhotonVision(
-                                        Vision_Constants.camera0Name,
-                                        Vision_Constants.robotToCamera0),
-                                new VisionIOPhotonVision(
-                                        Vision_Constants.camera1Name,
-                                        Vision_Constants.robotToCamera1));
+                this.vision = new Vision(
+                        drive,
+                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
+                        new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
 
                 break;
             case SIM:
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
-                        new SwerveDriveSimulation(
-                                DriveConstants.mapleSimConfig,
-                                new Pose2d(3.5, 4, new Rotation2d()));
+                        new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3.5, 4, new Rotation2d()));
                 // add the simulated drivetrain to the simulation field
                 SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
                 // Sim robot, instantiate physics sim IO implementations
-                drive =
-                        new Drive(
-                                new GyroIOSim(driveSimulation.getGyroSimulation()),
-                                new ModuleIOSim(driveSimulation.getModules()[0]),
-                                new ModuleIOSim(driveSimulation.getModules()[1]),
-                                new ModuleIOSim(driveSimulation.getModules()[2]),
-                                new ModuleIOSim(driveSimulation.getModules()[3]),
-                                driveSimulation::setSimulationWorldPose);
+                drive = new Drive(
+                        new GyroIOSim(driveSimulation.getGyroSimulation()),
+                        new ModuleIOSim(driveSimulation.getModules()[0]),
+                        new ModuleIOSim(driveSimulation.getModules()[1]),
+                        new ModuleIOSim(driveSimulation.getModules()[2]),
+                        new ModuleIOSim(driveSimulation.getModules()[3]),
+                        driveSimulation::setSimulationWorldPose);
 
                 shooter = new Shooter(new ShooterIOSim());
                 intake = new Intake(new IntakeIOSim(driveSimulation));
@@ -131,29 +122,27 @@ public class RobotContainer {
                 kicker = new Kicker(new KickerIOSim());
                 hood = new Hood(new HoodIOSim());
 
-                vision =
-                        new Vision(
-                                drive,
-                                new VisionIOPhotonVisionSim(
-                                        Vision_Constants.camera0Name,
-                                        Vision_Constants.robotToCamera0,
-                                        driveSimulation::getSimulatedDriveTrainPose),
-                                new VisionIOPhotonVisionSim(
-                                        Vision_Constants.camera1Name,
-                                        Vision_Constants.robotToCamera1,
-                                        driveSimulation::getSimulatedDriveTrainPose));
+                vision = new Vision(
+                        drive,
+                        new VisionIOPhotonVisionSim(
+                                Vision_Constants.camera0Name,
+                                Vision_Constants.robotToCamera0,
+                                driveSimulation::getSimulatedDriveTrainPose),
+                        new VisionIOPhotonVisionSim(
+                                Vision_Constants.camera1Name,
+                                Vision_Constants.robotToCamera1,
+                                driveSimulation::getSimulatedDriveTrainPose));
 
                 break;
             default:
                 // Replayed robot, disable IO implementations
-                drive =
-                        new Drive(
-                                new GyroIO() {},
-                                new ModuleIO() {},
-                                new ModuleIO() {},
-                                new ModuleIO() {},
-                                new ModuleIO() {},
-                                (pose) -> {});
+                drive = new Drive(
+                        new GyroIO() {},
+                        new ModuleIO() {},
+                        new ModuleIO() {},
+                        new ModuleIO() {},
+                        new ModuleIO() {},
+                        (pose) -> {});
 
                 shooter = new Shooter(new ShooterIO() {});
                 intake = new Intake(new IntakeIO() {});
@@ -213,33 +202,24 @@ public class RobotContainer {
                     "Outpost + Depot (Start intake facing driver station wall in the middle of right trench, run to outpost, wait for balls to drop, shoot, run over to depot, shoot)",
                     new AUTO_OutpostAndDepot().getAutoCommand(this, false));
 
+            autoChooser.addDefaultOption("IntakePath", new AUTO_IntakePath().getAutoCommand(this, false));
+
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
         } catch (Exception e) {
-            AlertsManager.create(
-                    "Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
+            AlertsManager.create("Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
             e.printStackTrace();
         }
 
         // Set up SysId routines
+        autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
+        autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
         autoChooser.addOption(
-                "Drive Wheel Radius Characterization",
-                DriveCommands.wheelRadiusCharacterization(drive));
+                "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption(
-                "Drive Simple FF Characterization",
-                DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)",
-                drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Forward)",
-                drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Dynamic Reverse)",
-                drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+                "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -262,37 +242,29 @@ public class RobotContainer {
 
         // default commands
         shooter.setDefaultCommand(shooter.setTargetVelolcity(0));
-        hood.setDefaultCommand(
-                hood.setTargetPos(
-                        Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
-                                ? HoodConstants.kMinPos
-                                : HoodConstants
-                                        .kMinHoodAngle)); // sim uses radians, real uses rotations
+        hood.setDefaultCommand(hood.setTargetPos(
+                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
+                        ? HoodConstants.kMinPos
+                        : HoodConstants.kMinHoodAngle)); // sim uses radians, real uses rotations
         kicker.setDefaultCommand(kicker.runVoltage(KickerConstants.kOff));
         conveyor.setDefaultCommand(conveyor.runVoltage(ConveyorConstants.kOff));
 
         // Reset gyro / odometry
-        final Runnable resetGyro =
-                Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
-                        ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
-                        // reset odometry to actual robot pose during simulation
-                        : () ->
-                                drive.resetOdometry(
-                                        new Pose2d(
-                                                drive.getPose().getTranslation(),
-                                                new Rotation2d())); // zero gyro
-        driver.resetOdometryButton()
-                .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+        final Runnable resetGyro = Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
+                ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
+                // reset odometry to actual robot pose during simulation
+                : () -> drive.resetOdometry(
+                        new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+        driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
         driver.autoAlignmentButton()
-                .whileTrue(
-                        JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-                                driveInput,
-                                drive,
-                                () -> FieldConstants.getHubPose(),
-                                ShooterConstants.kShooterOptimization,
-                                0.5,
-                                false));
+                .whileTrue(JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                        driveInput,
+                        drive,
+                        () -> FieldConstants.getHubPose(),
+                        ShooterConstants.kShooterOptimization,
+                        0.5,
+                        false));
 
         driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
 
@@ -302,25 +274,9 @@ public class RobotContainer {
             driver.aButton().onTrue(new CMD_Home(intake));
 
             driver.scoreButton()
-                    .whileTrue(
-                            new CMD_Shoot(
-                                    conveyor,
-                                    hood,
-                                    intake,
-                                    kicker,
-                                    shooter,
-                                    0.35,
-                                    Math.toRadians(21000)));
+                    .whileTrue(new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.35, Math.toRadians(21000)));
             driver.rightBumper()
-                    .whileTrue(
-                            new CMD_Shoot(
-                                    conveyor,
-                                    hood,
-                                    intake,
-                                    kicker,
-                                    shooter,
-                                    0.2,
-                                    Math.toRadians(18000)));
+                    .whileTrue(new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.2, Math.toRadians(18000)));
         } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
             driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation, hood, shooter));
         }
@@ -355,12 +311,10 @@ public class RobotContainer {
 
         SimulatedArena.getInstance().simulationPeriodic();
 
+        Logger.recordOutput("FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
+        Logger.recordOutput("FieldSimulation/Fuel", SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
         Logger.recordOutput(
-                "FieldSimulation/RobotPosition", driveSimulation.getSimulatedDriveTrainPose());
-        Logger.recordOutput(
-                "FieldSimulation/Fuel",
-                SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel"));
-        Logger.recordOutput("FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
+                "FieldSimulation/Alliance", FieldConstants.getAlliance().toString());
 
         Logger.recordOutput(
                 "FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
@@ -408,10 +362,7 @@ public class RobotContainer {
             if (gameData.isEmpty()) return true; // Default to active if data hasn't arrived
 
             redInactiveFirst = gameData.charAt(0) == 'R';
-            weAreInactiveFirst =
-                    (myAlliance == DriverStation.Alliance.Red)
-                            ? redInactiveFirst
-                            : !redInactiveFirst;
+            weAreInactiveFirst = (myAlliance == DriverStation.Alliance.Red) ? redInactiveFirst : !redInactiveFirst;
         } else {
             weAreInactiveFirst = true;
         }

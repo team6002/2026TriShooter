@@ -31,10 +31,7 @@ public class ClimbIOSpark implements ClimbIO {
         climbEncoder = climbMotor.getEncoder();
 
         // apply config
-        climbMotor.configure(
-                ClimbConfig.climbConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+        climbMotor.configure(ClimbConfig.climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         climbReference = 0;

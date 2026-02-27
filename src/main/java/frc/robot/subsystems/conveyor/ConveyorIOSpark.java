@@ -31,9 +31,7 @@ public class ConveyorIOSpark implements ConveyorIO {
 
         // apply config
         conveyorMotor.configure(
-                ConveyorConfig.conveyorConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                ConveyorConfig.conveyorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         conveyorReference = 0;

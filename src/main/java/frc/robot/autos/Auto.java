@@ -15,8 +15,7 @@ import org.ironmaple.utils.FieldMirroringUtils;
 import org.json.simple.parser.ParseException;
 
 public interface Auto {
-    Command getAutoCommand(RobotContainer robot, boolean mirrored)
-            throws IOException, ParseException;
+    Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException;
 
     static Auto none() {
         return new Auto() {
@@ -39,8 +38,7 @@ public interface Auto {
             }
 
             // Handle Alliance flipping
-            if (DriverStation.getAlliance().isPresent()
-                    && FieldConstants.getAlliance() == Alliance.Red) {
+            if (DriverStation.getAlliance().isPresent() && FieldConstants.getAlliance() == Alliance.Red) {
                 loadedPath = loadedPath.flipPath();
             }
 

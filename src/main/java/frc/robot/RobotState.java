@@ -34,8 +34,7 @@ import java.util.OptionalDouble;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotState {
-    private final Alert visionNoResultAlert =
-            AlertsManager.create("Vision No Result", Alert.AlertType.kInfo);
+    private final Alert visionNoResultAlert = AlertsManager.create("Vision No Result", Alert.AlertType.kInfo);
     private double previousVisionResultTimeStamp = 0;
     public double visionObservationRate = 0.0;
 
@@ -44,13 +43,9 @@ public class RobotState {
     private final Matrix<N3, N1> visionSensitiveEstimatorOdometryStdDevs;
 
     // Odometry
-    private SwerveModulePosition[] lastWheelPositions =
-            new SwerveModulePosition[] {
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition(),
-                new SwerveModulePosition()
-            };
+    private SwerveModulePosition[] lastWheelPositions = new SwerveModulePosition[] {
+        new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition()
+    };
     // Assume gyro starts at zero
     private Rotation2d gyroOffset = new Rotation2d();
     private Pose2d odometryPoseSensorLess = new Pose2d();
@@ -73,12 +68,9 @@ public class RobotState {
         this.poseBuffer = TimeInterpolatableBuffer.createBuffer(POSE_BUFFER_DURATION.in(Seconds));
 
         this.primaryEstimatorOdometryStdDevs = new Matrix<>(Nat.N3(), Nat.N1());
-        primaryEstimatorOdometryStdDevs.set(
-                0, 0, PRIMARY_ESTIMATOR_ODOMETRY_TRANSLATIONAL_STANDARD_ERROR.in(Meters));
-        primaryEstimatorOdometryStdDevs.set(
-                1, 0, PRIMARY_ESTIMATOR_ODOMETRY_TRANSLATIONAL_STANDARD_ERROR.in(Meters));
-        primaryEstimatorOdometryStdDevs.set(
-                2, 0, PRIMARY_ESTIMATOR_GYRO_ROTATIONAL_STANDARD_ERROR.in(Radians));
+        primaryEstimatorOdometryStdDevs.set(0, 0, PRIMARY_ESTIMATOR_ODOMETRY_TRANSLATIONAL_STANDARD_ERROR.in(Meters));
+        primaryEstimatorOdometryStdDevs.set(1, 0, PRIMARY_ESTIMATOR_ODOMETRY_TRANSLATIONAL_STANDARD_ERROR.in(Meters));
+        primaryEstimatorOdometryStdDevs.set(2, 0, PRIMARY_ESTIMATOR_GYRO_ROTATIONAL_STANDARD_ERROR.in(Radians));
 
         this.visionSensitiveEstimatorOdometryStdDevs = new Matrix<>(Nat.N3(), Nat.N1());
         visionSensitiveEstimatorOdometryStdDevs.set(
@@ -102,29 +94,22 @@ public class RobotState {
     public void addChassisSpeedsObservation(
             SwerveModuleState[] measuredModuleStates, OptionalDouble gyroYawVelocityRadPerSec) {
         ChassisSpeeds wheelSpeeds = DRIVE_KINEMATICS.toChassisSpeeds(measuredModuleStates);
-        double angularVelocityRadPerSec =
-                gyroYawVelocityRadPerSec.orElse(wheelSpeeds.omegaRadiansPerSecond);
-        this.measuredSpeedsRobotRelative =
-                new ChassisSpeeds(
-                        wheelSpeeds.vxMetersPerSecond,
-                        wheelSpeeds.vyMetersPerSecond,
-                        angularVelocityRadPerSec);
+        double angularVelocityRadPerSec = gyroYawVelocityRadPerSec.orElse(wheelSpeeds.omegaRadiansPerSecond);
+        this.measuredSpeedsRobotRelative = new ChassisSpeeds(
+                wheelSpeeds.vxMetersPerSecond, wheelSpeeds.vyMetersPerSecond, angularVelocityRadPerSec);
     }
 
     public void addOdometryObservation(OdometryObservation observation) {
-        Twist2d twist =
-                DRIVE_KINEMATICS.toTwist2d(lastWheelPositions, observation.wheelPositions());
+        Twist2d twist = DRIVE_KINEMATICS.toTwist2d(lastWheelPositions, observation.wheelPositions());
         lastWheelPositions = observation.wheelPositions();
         Pose2d lastOdometryPose = odometryPoseSensorLess;
         odometryPoseSensorLess = odometryPoseSensorLess.exp(twist);
         // Use gyro if connected
-        observation.gyroAngle.ifPresent(
-                gyroAngle -> {
-                    // Add offset to measured angle
-                    Rotation2d angle = gyroAngle.plus(gyroOffset);
-                    odometryPoseSensorLess =
-                            new Pose2d(odometryPoseSensorLess.getTranslation(), angle);
-                });
+        observation.gyroAngle.ifPresent(gyroAngle -> {
+            // Add offset to measured angle
+            Rotation2d angle = gyroAngle.plus(gyroOffset);
+            odometryPoseSensorLess = new Pose2d(odometryPoseSensorLess.getTranslation(), angle);
+        });
         // Add pose to buffer at timestamp
         poseBuffer.addSample(observation.timestamp(), odometryPoseSensorLess);
         // Calculate diff from last odometry pose and add onto pose estimate
@@ -136,8 +121,8 @@ public class RobotState {
     public void addVisionObservation(MapleMultiTagPoseEstimator.VisionObservation observation) {
         // If measurement is old enough to be outside the pose buffer's time-span, skip.
         try {
-            if (poseBuffer.getInternalBuffer().lastKey() - POSE_BUFFER_DURATION.in(Seconds)
-                    > observation.timestamp()) return;
+            if (poseBuffer.getInternalBuffer().lastKey() - POSE_BUFFER_DURATION.in(Seconds) > observation.timestamp())
+                return;
         } catch (NoSuchElementException ex) {
             return;
         }
@@ -146,18 +131,10 @@ public class RobotState {
         var sample = poseBuffer.getSample(observation.timestamp());
         if (sample.isEmpty()) return;
 
-        primaryEstimatorPose =
-                addVisionObservationToEstimator(
-                        observation,
-                        sample.get(),
-                        primaryEstimatorPose,
-                        primaryEstimatorOdometryStdDevs);
-        visionSensitivePose =
-                addVisionObservationToEstimator(
-                        observation,
-                        sample.get(),
-                        visionSensitivePose,
-                        visionSensitiveEstimatorOdometryStdDevs);
+        primaryEstimatorPose = addVisionObservationToEstimator(
+                observation, sample.get(), primaryEstimatorPose, primaryEstimatorOdometryStdDevs);
+        visionSensitivePose = addVisionObservationToEstimator(
+                observation, sample.get(), visionSensitivePose, visionSensitiveEstimatorOdometryStdDevs);
 
         previousVisionResultTimeStamp = Timer.getTimestamp();
     }
@@ -189,17 +166,12 @@ public class RobotState {
         // difference between estimate and vision pose
         Transform2d transform = new Transform2d(estimateAtTime, observation.visionPose());
         // scale transform by visionK
-        var kTimesTransform =
-                visionK.times(
-                        VecBuilder.fill(
-                                transform.getX(),
-                                transform.getY(),
-                                transform.getRotation().getRadians()));
-        Transform2d scaledTransform =
-                new Transform2d(
-                        kTimesTransform.get(0, 0),
-                        kTimesTransform.get(1, 0),
-                        Rotation2d.fromRadians(kTimesTransform.get(2, 0)));
+        var kTimesTransform = visionK.times(VecBuilder.fill(
+                transform.getX(), transform.getY(), transform.getRotation().getRadians()));
+        Transform2d scaledTransform = new Transform2d(
+                kTimesTransform.get(0, 0),
+                kTimesTransform.get(1, 0),
+                Rotation2d.fromRadians(kTimesTransform.get(2, 0)));
 
         // Recalculate current estimate by applying scaled transform to old estimate
         // then replaying odometry data
@@ -235,8 +207,7 @@ public class RobotState {
     }
 
     public ChassisSpeeds getFieldRelativeSpeeds() {
-        return ChassisSpeeds.fromRobotRelativeSpeeds(
-                getRobotRelativeSpeeds(), primaryEstimatorPose.getRotation());
+        return ChassisSpeeds.fromRobotRelativeSpeeds(getRobotRelativeSpeeds(), primaryEstimatorPose.getRotation());
     }
 
     public Pose2d getPoseWithLookAhead() {
@@ -244,22 +215,18 @@ public class RobotState {
         ChassisSpeeds speeds = getRobotRelativeSpeeds();
         double translationalLookaheadTimeSeconds =
                 switch (navigationMode) {
-                    case SENSOR_LESS_ODOMETRY -> TRANSLATIONAL_LOOKAHEAD_TIME_SENSOR_LESS.in(
-                            Seconds);
-                    case VISION_FUSED_ODOMETRY, VISION_GUIDED -> TRANSLATIONAL_LOOKAHEAD_TIME_VISION
-                            .in(Seconds);
+                    case SENSOR_LESS_ODOMETRY -> TRANSLATIONAL_LOOKAHEAD_TIME_SENSOR_LESS.in(Seconds);
+                    case VISION_FUSED_ODOMETRY, VISION_GUIDED -> TRANSLATIONAL_LOOKAHEAD_TIME_VISION.in(Seconds);
                 };
         double rotationalLookaheadTimeSeconds =
                 switch (navigationMode) {
                     case SENSOR_LESS_ODOMETRY -> ROTATIONAL_LOOKAHEAD_TIME_SENSOR_LESS.in(Seconds);
-                    case VISION_FUSED_ODOMETRY, VISION_GUIDED -> ROTATIONAL_LOOKAHEAD_TIME_VISION
-                            .in(Seconds);
+                    case VISION_FUSED_ODOMETRY, VISION_GUIDED -> ROTATIONAL_LOOKAHEAD_TIME_VISION.in(Seconds);
                 };
-        Twist2d lookAhead =
-                new Twist2d(
-                        speeds.vxMetersPerSecond * translationalLookaheadTimeSeconds,
-                        speeds.vyMetersPerSecond * translationalLookaheadTimeSeconds,
-                        speeds.omegaRadiansPerSecond * rotationalLookaheadTimeSeconds);
+        Twist2d lookAhead = new Twist2d(
+                speeds.vxMetersPerSecond * translationalLookaheadTimeSeconds,
+                speeds.vyMetersPerSecond * translationalLookaheadTimeSeconds,
+                speeds.omegaRadiansPerSecond * rotationalLookaheadTimeSeconds);
 
         return currentPose.exp(lookAhead);
     }
@@ -290,9 +257,7 @@ public class RobotState {
         visionNoResultAlert.set(timeNotVisionResultSeconds > 10);
         if (visionNoResultAlert.get())
             visionNoResultAlert.setText(
-                    String.format(
-                            "No vision pose estimation for %.2f Seconds",
-                            timeNotVisionResultSeconds));
+                    String.format("No vision pose estimation for %.2f Seconds", timeNotVisionResultSeconds));
         Logger.recordOutput("Vision Observation Rate", visionObservationRate);
     }
 
@@ -301,9 +266,7 @@ public class RobotState {
     }
 
     public record OdometryObservation(
-            SwerveModulePosition[] wheelPositions,
-            Optional<Rotation2d> gyroAngle,
-            double timestamp) {}
+            SwerveModulePosition[] wheelPositions, Optional<Rotation2d> gyroAngle, double timestamp) {}
 
     private static RobotState instance;
 

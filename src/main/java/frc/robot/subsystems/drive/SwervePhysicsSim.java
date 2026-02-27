@@ -32,13 +32,12 @@ public class SwervePhysicsSim {
     private static final double MAX_SPEED = 4.0; // m/s
 
     // Module positions in robot frame (x forward, y left)
-    private final double[][] modulePositions =
-            new double[][] {
-                {ROBOT_LENGTH / 2.0, ROBOT_WIDTH / 2.0}, // FL
-                {ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0}, // FR
-                {-ROBOT_LENGTH / 2.0, ROBOT_WIDTH / 2.0}, // BL
-                {-ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0} // BR
-            };
+    private final double[][] modulePositions = new double[][] {
+        {ROBOT_LENGTH / 2.0, ROBOT_WIDTH / 2.0}, // FL
+        {ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0}, // FR
+        {-ROBOT_LENGTH / 2.0, ROBOT_WIDTH / 2.0}, // BL
+        {-ROBOT_LENGTH / 2.0, -ROBOT_WIDTH / 2.0} // BR
+    };
 
     public SwervePhysicsSim() {
         initODE2(0);
@@ -229,36 +228,34 @@ public class SwervePhysicsSim {
         applyModuleForces(moduleStates);
 
         // Collisions
-        space.collide(
-                null,
-                new DGeom.DNearCallback() {
-                    @Override
-                    public void call(Object data, DGeom o1, DGeom o2) {
+        space.collide(null, new DGeom.DNearCallback() {
+            @Override
+            public void call(Object data, DGeom o1, DGeom o2) {
 
-                        DContactBuffer contacts = new DContactBuffer(8);
-                        int n = OdeHelper.collide(o1, o2, 8, contacts.getGeomBuffer());
+                DContactBuffer contacts = new DContactBuffer(8);
+                int n = OdeHelper.collide(o1, o2, 8, contacts.getGeomBuffer());
 
-                        // System.out.println(n);
+                // System.out.println(n);
 
-                        for (int i = 0; i < n; i++) {
-                            DContact contact = contacts.get(i);
+                for (int i = 0; i < n; i++) {
+                    DContact contact = contacts.get(i);
 
-                            // No special flags in your ODE version
-                            contact.surface.mode = 0;
+                    // No special flags in your ODE version
+                    contact.surface.mode = 0;
 
-                            // THIS is friction
-                            contact.surface.mu = 2.5; // strong carpet friction
+                    // THIS is friction
+                    contact.surface.mu = 2.5; // strong carpet friction
 
-                            // No bounce
-                            contact.surface.bounce = 0.0;
-                            contact.surface.bounce_vel = 0.0;
+                    // No bounce
+                    contact.surface.bounce = 0.0;
+                    contact.surface.bounce_vel = 0.0;
 
-                            // Attach the contact joint
-                            DJoint c = OdeHelper.createContactJoint(world, contactGroup, contact);
-                            c.attach(o1.getBody(), o2.getBody());
-                        }
-                    }
-                });
+                    // Attach the contact joint
+                    DJoint c = OdeHelper.createContactJoint(world, contactGroup, contact);
+                    c.attach(o1.getBody(), o2.getBody());
+                }
+            }
+        });
 
         world.quickStep(dt);
         contactGroup.empty();
@@ -346,10 +343,7 @@ public class SwervePhysicsSim {
         DMatrix3C R = chassisBody.getRotation();
 
         double roll = Math.atan2(R.get(2, 1), R.get(2, 2));
-        double pitch =
-                Math.atan2(
-                        -R.get(2, 0),
-                        Math.sqrt(R.get(2, 1) * R.get(2, 1) + R.get(2, 2) * R.get(2, 2)));
+        double pitch = Math.atan2(-R.get(2, 0), Math.sqrt(R.get(2, 1) * R.get(2, 1) + R.get(2, 2) * R.get(2, 2)));
 
         DQuaternion qNew = rpyToQuat(roll, pitch, yawReal);
 
@@ -394,10 +388,7 @@ public class SwervePhysicsSim {
         DMatrix3C R = chassisBody.getRotation();
 
         double roll = Math.atan2(R.get(2, 1), R.get(2, 2));
-        double pitch =
-                Math.atan2(
-                        -R.get(2, 0),
-                        Math.sqrt(R.get(2, 1) * R.get(2, 1) + R.get(2, 2) * R.get(2, 2)));
+        double pitch = Math.atan2(-R.get(2, 0), Math.sqrt(R.get(2, 1) * R.get(2, 1) + R.get(2, 2) * R.get(2, 2)));
         double yaw = Math.atan2(R.get(1, 0), R.get(0, 0));
 
         return new Pose3d(pos.get0(), pos.get1(), pos.get2(), new Rotation3d(roll, pitch, yaw));

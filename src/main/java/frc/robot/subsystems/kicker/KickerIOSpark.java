@@ -39,9 +39,7 @@ public class KickerIOSpark implements KickerIO {
 
         // apply config
         kickerMotor.configure(
-                KickerConfig.kickerConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         kickerReference = 0;
@@ -112,16 +110,14 @@ public class KickerIOSpark implements KickerIO {
             newConfig.apply(KickerConfig.kickerConfig);
             newConfig.closedLoop.pid(p, 0, 0, ClosedLoopSlot.kSlot0);
 
-            kickerMotor.configure(
-                    newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            kickerMotor.configure(newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
             lastP = p;
         }
 
         // Bypass velocity control at 0 RPM to prevent chatter and allow a smooth coast-down
         if (kickerReference > 0) {
-            kickerController.setSetpoint(
-                    kickerReference, kickerType, ClosedLoopSlot.kSlot0, kickerFF);
+            kickerController.setSetpoint(kickerReference, kickerType, ClosedLoopSlot.kSlot0, kickerFF);
         } else {
             kickerController.setSetpoint(0, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
         }

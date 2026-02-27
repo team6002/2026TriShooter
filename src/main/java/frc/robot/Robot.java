@@ -87,36 +87,33 @@ public class Robot extends LoggedRobot {
                 setUseTiming(false); // Run as fast as possible
                 String logPath = LogFileUtil.findReplayLog();
                 Logger.setReplaySource(new WPILOGReader(logPath));
-                Logger.addDataReceiver(
-                        new WPILOGWriter(
-                                LogFileUtil.addPathSuffix(logPath, "_replayed"),
-                                WPILOGWriter.AdvantageScopeOpenBehavior.ALWAYS));
+                Logger.addDataReceiver(new WPILOGWriter(
+                        LogFileUtil.addPathSuffix(logPath, "_replayed"),
+                        WPILOGWriter.AdvantageScopeOpenBehavior.ALWAYS));
             }
         }
         // Initialize URCL for external devices
-        Logger.registerURCL(
-                URCL.startExternal(
-                        new HashMap<Integer, String>() {
-                            {
-                                put(DriveConstants.frontLeftDriveCanId, "front Left Drive");
-                                put(DriveConstants.frontRightDriveCanId, "front Right Drive");
-                                put(DriveConstants.backLeftDriveCanId, "back Left Drive");
-                                put(DriveConstants.backRightDriveCanId, "back right Drive");
-                                put(DriveConstants.frontLeftTurnCanId, "front Left Turn");
-                                put(DriveConstants.frontRightTurnCanId, "front Right Turn");
-                                put(DriveConstants.backLeftTurnCanId, "back Left Turn");
-                                put(DriveConstants.backRightTurnCanId, "back right Turn");
-                                put(IntakeConstants.kIntakeCanId, "intake leader");
-                                put(IntakeConstants.kIntakeFollowerCanId, "intake follower");
-                                put(ExtenderConstants.kIntakeExtenderCanId, "intake extender");
-                                put(ShooterConstants.kLeftShooterCanId, "left shooter");
-                                put(ShooterConstants.kMiddleShooterCanId, "middle shooter");
-                                put(ShooterConstants.kRightShooterCanId, "right shooter");
-                                put(ConveyorConstants.kConveyorCanId, "conveyor");
-                                put(KickerConstants.kKickerCanId, "kicker");
-                                put(HoodConstants.kHoodCanId, "hood");
-                            }
-                        }));
+        Logger.registerURCL(URCL.startExternal(new HashMap<Integer, String>() {
+            {
+                put(DriveConstants.frontLeftDriveCanId, "front Left Drive");
+                put(DriveConstants.frontRightDriveCanId, "front Right Drive");
+                put(DriveConstants.backLeftDriveCanId, "back Left Drive");
+                put(DriveConstants.backRightDriveCanId, "back right Drive");
+                put(DriveConstants.frontLeftTurnCanId, "front Left Turn");
+                put(DriveConstants.frontRightTurnCanId, "front Right Turn");
+                put(DriveConstants.backLeftTurnCanId, "back Left Turn");
+                put(DriveConstants.backRightTurnCanId, "back right Turn");
+                put(IntakeConstants.kIntakeCanId, "intake leader");
+                put(IntakeConstants.kIntakeFollowerCanId, "intake follower");
+                put(ExtenderConstants.kIntakeExtenderCanId, "intake extender");
+                put(ShooterConstants.kLeftShooterCanId, "left shooter");
+                put(ShooterConstants.kMiddleShooterCanId, "middle shooter");
+                put(ShooterConstants.kRightShooterCanId, "right shooter");
+                put(ConveyorConstants.kConveyorCanId, "conveyor");
+                put(KickerConstants.kKickerCanId, "kicker");
+                put(HoodConstants.kHoodCanId, "hood");
+            }
+        }));
         // allow the drivetrain to pass over the bump in simulation mode
         SimulatedArena.overrideInstance(new Arena2026Rebuilt(false));
         // Instantiate our RobotContainer. This will perform all our button bindings,

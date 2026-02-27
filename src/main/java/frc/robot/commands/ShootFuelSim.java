@@ -24,8 +24,7 @@ public class ShootFuelSim extends Command {
     private final Hood hood;
     private final Shooter shooter;
 
-    private static final Translation2d CENTER_SHOOTER_OFFSET =
-            new Translation2d(Units.inchesToMeters(7), 0);
+    private static final Translation2d CENTER_SHOOTER_OFFSET = new Translation2d(Units.inchesToMeters(7), 0);
     private static final Translation2d LEFT_SHOOTER_OFFSET =
             new Translation2d(Units.inchesToMeters(7), Units.inchesToMeters(6));
     private static final Translation2d RIGHT_SHOOTER_OFFSET =
@@ -51,8 +50,7 @@ public class ShootFuelSim extends Command {
     @Override
     public void execute() {
         Pose2d robotPose = driveSim.getSimulatedDriveTrainPose();
-        double distToHubMeters =
-                robotPose.getTranslation().getDistance(FieldConstants.getHubPose());
+        double distToHubMeters = robotPose.getTranslation().getDistance(FieldConstants.getHubPose());
         ShootingParams shootingParams = ShooterConstants.getShootingParams(distToHubMeters);
 
         shooter.setReference(shootingParams.shooterReference());
@@ -71,15 +69,14 @@ public class ShootFuelSim extends Command {
             double exitVelocityMps = wheelSurfaceSpeed / 2;
 
             SimulatedArena.getInstance()
-                    .addGamePieceProjectile(
-                            new RebuiltFuelOnFly(
-                                    robotPose.getTranslation(),
-                                    shooterOffset,
-                                    driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
-                                    robotPose.getRotation(),
-                                    Inches.of(21),
-                                    MetersPerSecond.of(exitVelocityMps),
-                                    Radians.of(hood.getPosition())));
+                    .addGamePieceProjectile(new RebuiltFuelOnFly(
+                            robotPose.getTranslation(),
+                            shooterOffset,
+                            driveSim.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                            robotPose.getRotation(),
+                            Inches.of(21),
+                            MetersPerSecond.of(exitVelocityMps),
+                            Radians.of(hood.getPosition())));
 
             IntakeIOSim.obtainFuelFromHopper();
             shooterIndex = (shooterIndex + 1) % 3;

@@ -14,9 +14,9 @@ java {
 spotless {
     java {
         target 'src/**/*.java'
-        indentWithSpaces(4) // Your 4-space indent requirement
+        palantirJavaFormat()
+        formatAnnotations()
         removeUnusedImports()
-        googleJavaFormat('1.17.0').aosp() // AOSP style uses 4-space instead of Google's 2-space
         endWithNewline()
     }
 }

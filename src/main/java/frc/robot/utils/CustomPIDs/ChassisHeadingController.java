@@ -65,8 +65,7 @@ public class ChassisHeadingController {
          * @param shooterOptimization optional; used to calculate shooter time-of-flight for
          *     shooting-on-the-move functionality; if not used, pass null
          */
-        public FaceToTargetRequest(
-                Supplier<Translation2d> target, MapleShooterOptimization shooterOptimization) {
+        public FaceToTargetRequest(Supplier<Translation2d> target, MapleShooterOptimization shooterOptimization) {
             this.target = target;
             this.shooterOptimization = shooterOptimization;
         }
@@ -106,8 +105,7 @@ public class ChassisHeadingController {
         this.chassisRotationCloseLoop = new MaplePIDController(chassisRotationCloseLoopConfig);
         this.headingRequest = new NullRequest();
         this.maxAngularVelocityRadPerSec = chassisRotationConstraints.maxVelocity;
-        this.chassisRotationState =
-                new TrapezoidProfile.State(chassisInitialFacing.getRadians(), 0);
+        this.chassisRotationState = new TrapezoidProfile.State(chassisInitialFacing.getRadians(), 0);
     }
 
     /**
@@ -131,22 +129,18 @@ public class ChassisHeadingController {
      */
     public OptionalDouble calculate(ChassisSpeeds measuredSpeedsFieldRelative, Pose2d robotPose) {
         if (headingRequest instanceof FaceToRotationRequest faceToRotationRequest) {
-            return OptionalDouble.of(
-                    calculateFaceToRotation(robotPose, faceToRotationRequest.rotationTarget, 0));
+            return OptionalDouble.of(calculateFaceToRotation(robotPose, faceToRotationRequest.rotationTarget, 0));
         }
 
         if (headingRequest instanceof FaceToTargetRequest faceToTargetRequest)
-            return OptionalDouble.of(
-                    calculateFaceToTarget(
-                            measuredSpeedsFieldRelative,
-                            robotPose,
-                            faceToTargetRequest.target.get(),
-                            faceToTargetRequest.shooterOptimization));
+            return OptionalDouble.of(calculateFaceToTarget(
+                    measuredSpeedsFieldRelative,
+                    robotPose,
+                    faceToTargetRequest.target.get(),
+                    faceToTargetRequest.shooterOptimization));
 
-        chassisRotationState =
-                new TrapezoidProfile.State(
-                        robotPose.getRotation().getRadians(),
-                        measuredSpeedsFieldRelative.omegaRadiansPerSecond);
+        chassisRotationState = new TrapezoidProfile.State(
+                robotPose.getRotation().getRadians(), measuredSpeedsFieldRelative.omegaRadiansPerSecond);
 
         log(robotPose, robotPose.getRotation());
         atSetPoint = false;
@@ -175,30 +169,22 @@ public class ChassisHeadingController {
             Translation2d targetPosition,
             MapleShooterOptimization shooterOptimization) {
         // Target velocity relative to the robot, in the field-origin frame
-        final Translation2d targetMovingSpeed =
-                new Translation2d(
-                        -measuredSpeedsFieldRelative.vxMetersPerSecond,
-                        -measuredSpeedsFieldRelative.vyMetersPerSecond);
+        final Translation2d targetMovingSpeed = new Translation2d(
+                -measuredSpeedsFieldRelative.vxMetersPerSecond, -measuredSpeedsFieldRelative.vyMetersPerSecond);
 
-        final Rotation2d targetedRotation =
-                shooterOptimization == null
-                        ? targetPosition.minus(robotPose.getTranslation()).getAngle()
-                        : shooterOptimization.getShooterFacing(
-                                targetPosition,
-                                robotPose.getTranslation(),
-                                measuredSpeedsFieldRelative);
+        final Rotation2d targetedRotation = shooterOptimization == null
+                ? targetPosition.minus(robotPose.getTranslation()).getAngle()
+                : shooterOptimization.getShooterFacing(
+                        targetPosition, robotPose.getTranslation(), measuredSpeedsFieldRelative);
         final Rotation2d targetMovingDirection = targetMovingSpeed.getAngle();
         final Rotation2d positiveRotationTangentDirection =
-                targetPosition
-                        .minus(robotPose.getTranslation())
-                        .getAngle()
-                        .rotateBy(Rotation2d.fromDegrees(90));
+                targetPosition.minus(robotPose.getTranslation()).getAngle().rotateBy(Rotation2d.fromDegrees(90));
 
         final double tangentVelocity =
-                targetMovingDirection.minus(positiveRotationTangentDirection).getCos()
-                        * targetMovingSpeed.getNorm();
+                targetMovingDirection.minus(positiveRotationTangentDirection).getCos() * targetMovingSpeed.getNorm();
 
-        final double distanceToTarget = targetPosition.minus(robotPose.getTranslation()).getNorm();
+        final double distanceToTarget =
+                targetPosition.minus(robotPose.getTranslation()).getNorm();
 
         final double feedforwardAngularVelocity = tangentVelocity / distanceToTarget;
 
@@ -214,15 +200,13 @@ public class ChassisHeadingController {
             Pose2d robotPose, Rotation2d targetedRotation, double desiredAngularVelocityRadPerSec) {
         TrapezoidProfile.State goalState = getGoalState(targetedRotation);
         chassisRotationState =
-                chassisRotationProfile.calculate(
-                        Robot.defaultPeriodSecs, chassisRotationState, goalState);
+                chassisRotationProfile.calculate(Robot.defaultPeriodSecs, chassisRotationState, goalState);
 
-        final double unwrappedCurrentRotation =
-                goalState.position - targetedRotation.minus(robotPose.getRotation()).getRadians();
+        final double unwrappedCurrentRotation = goalState.position
+                - targetedRotation.minus(robotPose.getRotation()).getRadians();
 
         final double feedBackSpeed =
-                chassisRotationCloseLoop.calculate(
-                        unwrappedCurrentRotation, chassisRotationState.position);
+                chassisRotationCloseLoop.calculate(unwrappedCurrentRotation, chassisRotationState.position);
 
         final double feedForwardSpeedRadPerSec =
                 Math.abs(targetedRotation.minus(robotPose.getRotation()).getDegrees()) < 15
@@ -248,8 +232,7 @@ public class ChassisHeadingController {
      *     target goal state
      */
     private TrapezoidProfile.State getGoalState(Rotation2d targetedRotation) {
-        final Rotation2d difference =
-                targetedRotation.minus(Rotation2d.fromRadians(chassisRotationState.position));
+        final Rotation2d difference = targetedRotation.minus(Rotation2d.fromRadians(chassisRotationState.position));
         final double goal = chassisRotationState.position + difference.getRadians();
         return new TrapezoidProfile.State(goal, 0);
     }
@@ -258,13 +241,10 @@ public class ChassisHeadingController {
 
     private void log(Pose2d robotPose, Rotation2d requestedRotation) {
         Logger.recordOutput(
-                "ChassisHeadingController/Requested",
-                new Pose2d(robotPose.getTranslation(), requestedRotation));
+                "ChassisHeadingController/Requested", new Pose2d(robotPose.getTranslation(), requestedRotation));
         Logger.recordOutput(
                 "ChassisHeadingController/CurrentState",
-                new Pose2d(
-                        robotPose.getTranslation(),
-                        Rotation2d.fromRadians(chassisRotationState.position)));
+                new Pose2d(robotPose.getTranslation(), Rotation2d.fromRadians(chassisRotationState.position)));
         final Rotation2d error = requestedRotation.minus(robotPose.getRotation());
         Logger.recordOutput("ChassisHeadingController/Error", error.getDegrees());
         atSetPoint = Math.abs(error.getRadians()) < chassisRotationCloseLoop.getErrorTolerance();
@@ -278,14 +258,12 @@ public class ChassisHeadingController {
 
     public static ChassisHeadingController getInstance() {
         if (instance == null)
-            instance =
-                    new ChassisHeadingController(
-                            new TrapezoidProfile.Constraints(
-                                    ANGULAR_VELOCITY_SOFT_CONSTRAIN.in(RadiansPerSecond),
-                                    ANGULAR_ACCELERATION_SOFT_CONSTRAIN.in(
-                                            RadiansPerSecondPerSecond)),
-                            DriveControlLoops.CHASSIS_ROTATION_CLOSE_LOOP,
-                            new Rotation2d());
+            instance = new ChassisHeadingController(
+                    new TrapezoidProfile.Constraints(
+                            ANGULAR_VELOCITY_SOFT_CONSTRAIN.in(RadiansPerSecond),
+                            ANGULAR_ACCELERATION_SOFT_CONSTRAIN.in(RadiansPerSecondPerSecond)),
+                    DriveControlLoops.CHASSIS_ROTATION_CLOSE_LOOP,
+                    new Rotation2d());
 
         return instance;
     }

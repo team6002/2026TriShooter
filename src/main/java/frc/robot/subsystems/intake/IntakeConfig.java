@@ -47,11 +47,7 @@ public class IntakeConfig {
                 .inverted(true);
         intakeExtenderConfig
                 .closedLoop
-                .pid(
-                        ExtenderConstants.kP,
-                        ExtenderConstants.kI,
-                        ExtenderConstants.kD,
-                        ClosedLoopSlot.kSlot0)
+                .pid(ExtenderConstants.kP, ExtenderConstants.kI, ExtenderConstants.kD, ClosedLoopSlot.kSlot0)
                 .outputRange(ExtenderConstants.kMinOutput, ExtenderConstants.kMaxOutput)
                 .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
         intakeExtenderConfig

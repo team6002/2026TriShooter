@@ -13,8 +13,7 @@ import org.json.simple.parser.ParseException;
 public class AUTO_OutpostAndDepot implements Auto {
 
     @Override
-    public Command getAutoCommand(RobotContainer robot, boolean mirrored)
-            throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
                 setAutoStartPose("IntakeOutpost", mirrored, robot.drive),
                 followPath("IntakeOutpost", mirrored),
@@ -32,9 +31,7 @@ public class AUTO_OutpostAndDepot implements Auto {
                                 .withTimeout(5)
                         : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter),
                 followPath("IntakeDepotFromOutpost", mirrored),
-                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
-                        ? new CMD_Intake(robot.intake)
-                        : Commands.none(),
+                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? new CMD_Intake(robot.intake) : Commands.none(),
                 followPath("ShootFromDepot", mirrored),
                 Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
                         ? new CMD_Shoot(

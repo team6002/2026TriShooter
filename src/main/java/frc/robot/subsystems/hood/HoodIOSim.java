@@ -9,25 +9,21 @@ import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 public class HoodIOSim implements HoodIO {
     private final SingleJointedArmSim hoodSim;
 
-    private final PIDController hoodPIDController =
-            new PIDController(HoodConstants.kPSim, 0.0, HoodConstants.kDSim);
+    private final PIDController hoodPIDController = new PIDController(HoodConstants.kPSim, 0.0, HoodConstants.kDSim);
 
     private double reference = HoodConstants.kMinHoodAngle;
 
     public HoodIOSim() {
-        hoodSim =
-                new SingleJointedArmSim(
-                        LinearSystemId.createSingleJointedArmSystem(
-                                DCMotor.getNeo550(1),
-                                HoodConstants.kHoodMOI,
-                                HoodConstants.kGearRatio),
-                        DCMotor.getNeo550(1),
-                        HoodConstants.kGearRatio,
-                        HoodConstants.kHoodRadius,
-                        HoodConstants.kMinHoodAngle,
-                        HoodConstants.kMaxHoodAngle,
-                        true,
-                        HoodConstants.kStartHoodAngle);
+        hoodSim = new SingleJointedArmSim(
+                LinearSystemId.createSingleJointedArmSystem(
+                        DCMotor.getNeo550(1), HoodConstants.kHoodMOI, HoodConstants.kGearRatio),
+                DCMotor.getNeo550(1),
+                HoodConstants.kGearRatio,
+                HoodConstants.kHoodRadius,
+                HoodConstants.kMinHoodAngle,
+                HoodConstants.kMaxHoodAngle,
+                true,
+                HoodConstants.kStartHoodAngle);
     }
 
     @Override

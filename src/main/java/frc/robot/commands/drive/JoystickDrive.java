@@ -45,8 +45,7 @@ public class JoystickDrive extends Command {
 
         super.addRequirements(driveSubsystem);
         resetSensitivity();
-        ChassisHeadingController.getInstance()
-                .setHeadingRequest(new ChassisHeadingController.NullRequest());
+        ChassisHeadingController.getInstance().setHeadingRequest(new ChassisHeadingController.NullRequest());
     }
 
     @Override
@@ -58,31 +57,25 @@ public class JoystickDrive extends Command {
 
     @Override
     public void execute() {
-        ChassisSpeeds pilotInputSpeeds =
-                input.getJoystickChassisSpeeds(
-                        driveSubsystem.getChassisMaxLinearVelocityMetersPerSec()
-                                * translationalSensitivity,
-                        driveSubsystem.getChassisMaxAngularVelocity() * rotationalSensitivity);
+        ChassisSpeeds pilotInputSpeeds = input.getJoystickChassisSpeeds(
+                driveSubsystem.getChassisMaxLinearVelocityMetersPerSec() * translationalSensitivity,
+                driveSubsystem.getChassisMaxAngularVelocity() * rotationalSensitivity);
 
         pilotInputSpeeds = applyDeadband(pilotInputSpeeds, 0.05);
 
-        if (Math.abs(pilotInputSpeeds.omegaRadiansPerSecond) > 0.05)
-            previousRotationalInputTimer.reset();
+        if (Math.abs(pilotInputSpeeds.omegaRadiansPerSecond) > 0.05) previousRotationalInputTimer.reset();
 
         if (povButtonSupplier.getAsInt() != -1)
-            this.currentRotationMaintenanceSetpoint =
-                    FieldMirroringUtils.getCurrentAllianceDriverStationFacing()
-                            .minus(Rotation2d.fromDegrees(povButtonSupplier.getAsInt()));
+            this.currentRotationMaintenanceSetpoint = FieldMirroringUtils.getCurrentAllianceDriverStationFacing()
+                    .minus(Rotation2d.fromDegrees(povButtonSupplier.getAsInt()));
 
         if (previousRotationalInputTimer.hasElapsed(
                 TIME_ACTIVATE_ROTATION_MAINTENANCE_AFTER_NO_ROTATIONAL_INPUT_SECONDS))
             ChassisHeadingController.getInstance()
                     .setHeadingRequest(
-                            new ChassisHeadingController.FaceToRotationRequest(
-                                    currentRotationMaintenanceSetpoint));
+                            new ChassisHeadingController.FaceToRotationRequest(currentRotationMaintenanceSetpoint));
         else {
-            ChassisHeadingController.getInstance()
-                    .setHeadingRequest(new ChassisHeadingController.NullRequest());
+            ChassisHeadingController.getInstance().setHeadingRequest(new ChassisHeadingController.NullRequest());
             currentRotationMaintenanceSetpoint = driveSubsystem.getFacing();
         }
 
@@ -97,13 +90,10 @@ public class JoystickDrive extends Command {
             driveSubsystem.runDriverStationCentricChassisSpeeds(pilotInputSpeeds, true);
         else driveSubsystem.runRobotCentricChassisSpeeds(pilotInputSpeeds);
 
-        Logger.recordOutput(
-                "JoystickDrive/previous rotational input time", previousRotationalInputTimer.get());
+        Logger.recordOutput("JoystickDrive/previous rotational input time", previousRotationalInputTimer.get());
         Logger.recordOutput(
                 "JoystickDrive/rotationMaintainSetPoint",
-                new Pose2d(
-                        driveSubsystem.getPose().getTranslation(),
-                        currentRotationMaintenanceSetpoint));
+                new Pose2d(driveSubsystem.getPose().getTranslation(), currentRotationMaintenanceSetpoint));
     }
 
     public void setSensitivity(double translationalSensitivity, double rotationalSensitivity) {
@@ -117,8 +107,7 @@ public class JoystickDrive extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        ChassisHeadingController.getInstance()
-                .setHeadingRequest(new ChassisHeadingController.NullRequest());
+        ChassisHeadingController.getInstance().setHeadingRequest(new ChassisHeadingController.NullRequest());
     }
 
     public void setRotationMaintenanceSetpoint(Rotation2d setpoint) {
@@ -131,8 +120,6 @@ public class JoystickDrive extends Command {
         return new ChassisSpeeds(
                 Math.abs(speeds.vxMetersPerSecond) > deadband ? speeds.vxMetersPerSecond : 0,
                 Math.abs(speeds.vyMetersPerSecond) > deadband ? speeds.vyMetersPerSecond : 0,
-                Math.abs(speeds.omegaRadiansPerSecond) > deadband
-                        ? speeds.omegaRadiansPerSecond
-                        : 0);
+                Math.abs(speeds.omegaRadiansPerSecond) > deadband ? speeds.omegaRadiansPerSecond : 0);
     }
 }

@@ -61,8 +61,7 @@ public class ClockDrive extends Command {
 
         ChassisSpeeds pilotInputSpeed = input.getJoystickChassisSpeeds(maxLinear, maxAngular);
 
-        double linMag =
-                Math.hypot(pilotInputSpeed.vxMetersPerSecond, pilotInputSpeed.vyMetersPerSecond);
+        double linMag = Math.hypot(pilotInputSpeed.vxMetersPerSecond, pilotInputSpeed.vyMetersPerSecond);
 
         if (linMag < LINEAR_DEADBAND * maxLinear) {
             pilotInputSpeed.vxMetersPerSecond = 0.0;
@@ -80,34 +79,26 @@ public class ClockDrive extends Command {
             Rotation2d continuousTarget = new Rotation2d(continuous);
 
             ChassisHeadingController.getInstance()
-                    .setHeadingRequest(
-                            new ChassisHeadingController.FaceToRotationRequest(continuousTarget));
+                    .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(continuousTarget));
 
             ChassisSpeeds robotSpeeds = driveSubsystem.getMeasuredChassisSpeedsRobotRelative();
 
-            ChassisSpeeds corrected =
-                    new ChassisSpeeds(0.0, 0.0, robotSpeeds.omegaRadiansPerSecond);
+            ChassisSpeeds corrected = new ChassisSpeeds(0.0, 0.0, robotSpeeds.omegaRadiansPerSecond);
 
-            pilotInputSpeed.omegaRadiansPerSecond =
-                    ChassisHeadingController.getInstance()
-                            .calculate(corrected, driveSubsystem.getPose())
-                            .orElse(0);
+            pilotInputSpeed.omegaRadiansPerSecond = ChassisHeadingController.getInstance()
+                    .calculate(corrected, driveSubsystem.getPose())
+                    .orElse(0);
         } else {
             Translation2d headingVector =
-                    applyRotationDeadband(
-                            rotationXSupplier.getAsDouble(), rotationYSupplier.getAsDouble());
+                    applyRotationDeadband(rotationXSupplier.getAsDouble(), rotationYSupplier.getAsDouble());
 
             if (headingVector.getNorm() > ROTATION_AXIS_THRESHOLD) {
                 currentDesiredFacing =
-                        headingVector
-                                .getAngle()
-                                .plus(FieldMirroringUtils.getCurrentAllianceDriverStationFacing());
+                        headingVector.getAngle().plus(FieldMirroringUtils.getCurrentAllianceDriverStationFacing());
             }
 
             ChassisHeadingController.getInstance()
-                    .setHeadingRequest(
-                            new ChassisHeadingController.FaceToRotationRequest(
-                                    currentDesiredFacing));
+                    .setHeadingRequest(new ChassisHeadingController.FaceToRotationRequest(currentDesiredFacing));
         }
 
         driveSubsystem.runDriverStationCentricChassisSpeeds(pilotInputSpeed, true);
@@ -115,7 +106,6 @@ public class ClockDrive extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        ChassisHeadingController.getInstance()
-                .setHeadingRequest(new ChassisHeadingController.NullRequest());
+        ChassisHeadingController.getInstance().setHeadingRequest(new ChassisHeadingController.NullRequest());
     }
 }

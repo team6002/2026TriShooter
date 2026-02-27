@@ -11,20 +11,16 @@ public class ConveyorIOSim implements ConveyorIO {
 
     private final DCMotorSim conveyorSim;
     private final PIDController conveyorPIDController =
-            new PIDController(
-                    ConveyorConstants.kPSim, ConveyorConstants.kISim, ConveyorConstants.kDSim);
+            new PIDController(ConveyorConstants.kPSim, ConveyorConstants.kISim, ConveyorConstants.kDSim);
     private final SimpleMotorFeedforward conveyorFeedforward =
-            new SimpleMotorFeedforward(
-                    ConveyorConstants.kSSim, ConveyorConstants.kVSim, ConveyorConstants.kASim);
+            new SimpleMotorFeedforward(ConveyorConstants.kSSim, ConveyorConstants.kVSim, ConveyorConstants.kASim);
     private double reference = 0;
     public static double objectsInHopper = 0;
 
     public ConveyorIOSim() {
-        conveyorSim =
-                new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(
-                                DCMotor.getNeo550(1), .178, ConveyorConstants.kGearRatio),
-                        DCMotor.getNeo550(1));
+        conveyorSim = new DCMotorSim(
+                LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, ConveyorConstants.kGearRatio),
+                DCMotor.getNeo550(1));
     }
 
     @Override
@@ -62,10 +58,8 @@ public class ConveyorIOSim implements ConveyorIO {
 
     @Override
     public void periodic() {
-        conveyorSim.setInput(
-                conveyorPIDController.calculate(
-                                conveyorSim.getAngularVelocityRadPerSec(), reference)
-                        + conveyorFeedforward.calculate(getVelocity(), reference));
+        conveyorSim.setInput(conveyorPIDController.calculate(conveyorSim.getAngularVelocityRadPerSec(), reference)
+                + conveyorFeedforward.calculate(getVelocity(), reference));
 
         conveyorSim.update(0.02);
     }

@@ -36,11 +36,9 @@ public class IntakeIOSpark implements IntakeIO {
     public IntakeIOSpark() {
         // initialize motor
         intakeMotor = new SparkFlex(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
-        intakeFollowerMotor =
-                new SparkFlex(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
+        intakeFollowerMotor = new SparkFlex(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
-        intakeExtenderMotor =
-                new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
+        intakeExtenderMotor = new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
 
         // initialize PID controller
         intakeController = intakeMotor.getClosedLoopController();
@@ -52,19 +50,13 @@ public class IntakeIOSpark implements IntakeIO {
 
         // apply config
         intakeMotor.configure(
-                IntakeConfig.intakeConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         intakeFollowerMotor.configure(
-                IntakeConfig.intakeFollowerConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                IntakeConfig.intakeFollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         intakeExtenderMotor.configure(
-                IntakeConfig.intakeExtenderConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+                IntakeConfig.intakeExtenderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // reset target speed in init
         intakeReference = 0;
@@ -83,8 +75,7 @@ public class IntakeIOSpark implements IntakeIO {
         inputs.intakePosition = getPosition();
         inputs.intakeTemp = Fahrenheit.convertFrom(intakeMotor.getMotorTemperature(), Celsius);
 
-        inputs.intakeFollowerTemp =
-                Fahrenheit.convertFrom(intakeFollowerMotor.getMotorTemperature(), Celsius);
+        inputs.intakeFollowerTemp = Fahrenheit.convertFrom(intakeFollowerMotor.getMotorTemperature(), Celsius);
 
         inputs.extenderReference = Units.radiansToDegrees(getExtenderReference());
         inputs.extenderCurrent = getExtenderCurrent();
@@ -92,8 +83,7 @@ public class IntakeIOSpark implements IntakeIO {
         inputs.extenderVelocity = getExtenderVelocity();
         inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
         inputs.extenderInPosition = getExtenderInPosition();
-        inputs.extenderTemp =
-                Fahrenheit.convertFrom(intakeExtenderMotor.getMotorTemperature(), Celsius);
+        inputs.extenderTemp = Fahrenheit.convertFrom(intakeExtenderMotor.getMotorTemperature(), Celsius);
     }
 
     @Override
@@ -172,8 +162,7 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public boolean getExtenderInPosition() {
-        double positionError =
-                Math.abs(intakeExtenderEncoder.getPosition() - intakeExtenderReference);
+        double positionError = Math.abs(intakeExtenderEncoder.getPosition() - intakeExtenderReference);
         return positionError < ExtenderConstants.kPositionTolerance;
     }
 
@@ -185,34 +174,26 @@ public class IntakeIOSpark implements IntakeIO {
             newLeadConfig.smartCurrentLimit(5);
 
             SparkFlexConfig newFollowerConfig = new SparkFlexConfig();
-            newFollowerConfig.apply(IntakeConfig.intakeConfig);
+            newFollowerConfig.apply(IntakeConfig.intakeFollowerConfig);
             newFollowerConfig.smartCurrentLimit(5);
 
             intakeMotor.configureAsync(
-                    newLeadConfig,
-                    ResetMode.kNoResetSafeParameters,
-                    PersistMode.kNoPersistParameters);
+                    newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
             intakeFollowerMotor.configureAsync(
-                    newFollowerConfig,
-                    ResetMode.kNoResetSafeParameters,
-                    PersistMode.kNoPersistParameters);
+                    newFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         } else {
             SparkFlexConfig newLeadConfig = new SparkFlexConfig();
             newLeadConfig.apply(IntakeConfig.intakeConfig);
             newLeadConfig.smartCurrentLimit(40);
 
             SparkFlexConfig newFollowerConfig = new SparkFlexConfig();
-            newFollowerConfig.apply(IntakeConfig.intakeConfig);
+            newFollowerConfig.apply(IntakeConfig.intakeFollowerConfig);
             newFollowerConfig.smartCurrentLimit(40);
 
             intakeMotor.configureAsync(
-                    newLeadConfig,
-                    ResetMode.kNoResetSafeParameters,
-                    PersistMode.kNoPersistParameters);
+                    newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
             intakeFollowerMotor.configureAsync(
-                    newFollowerConfig,
-                    ResetMode.kNoResetSafeParameters,
-                    PersistMode.kNoPersistParameters);
+                    newFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         }
     }
 
@@ -223,7 +204,6 @@ public class IntakeIOSpark implements IntakeIO {
         // horizontal is 270, offset to 0
 
         double ff = -ExtenderConstants.kG * (Math.cos(getExtenderPosition() - Math.toRadians(270)));
-        intakeExtenderController.setSetpoint(
-                intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
+        intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
     }
 }
