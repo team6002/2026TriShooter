@@ -10,13 +10,13 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.utils.constants.FieldConstants;
-
 import java.io.IOException;
 import org.ironmaple.utils.FieldMirroringUtils;
 import org.json.simple.parser.ParseException;
 
 public interface Auto {
-    Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException;
+    Command getAutoCommand(RobotContainer robot, boolean mirrored)
+            throws IOException, ParseException;
 
     static Auto none() {
         return new Auto() {
@@ -33,16 +33,17 @@ public interface Auto {
 
         try {
             PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
-            
+
             if (mirrored) {
                 loadedPath = loadedPath.mirrorPath();
             }
 
             // Handle Alliance flipping
-            if (DriverStation.getAlliance().isPresent() && FieldConstants.getAlliance() == Alliance.Red) {
+            if (DriverStation.getAlliance().isPresent()
+                    && FieldConstants.getAlliance() == Alliance.Red) {
                 loadedPath = loadedPath.flipPath();
             }
-            
+
             finalPath = loadedPath; // This is the only assignment to finalPath
         } catch (Exception e) {
             DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
@@ -50,7 +51,8 @@ public interface Auto {
         }
 
         // Now finalPath is effectively final and safe for the lambda
-        return Commands.runOnce(() -> drive.resetOdometry(finalPath.getStartingHolonomicPose().get()));
+        return Commands.runOnce(
+                () -> drive.resetOdometry(finalPath.getStartingHolonomicPose().get()));
     }
 
     static PathPlannerPath getPath(String name, boolean mirror) throws IOException, ParseException {
@@ -65,13 +67,13 @@ public interface Auto {
                 pose.getRotation().unaryMinus());
     }
 
-    default Command followPath(String pathName, boolean mirrored){
+    default Command followPath(String pathName, boolean mirrored) {
         PathPlannerPath path;
-        try{
+        try {
             path = getPath(pathName, mirrored);
-        }catch (Exception e) {
-           DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
-           return Commands.none();
+        } catch (Exception e) {
+            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+            return Commands.none();
         }
         return AutoBuilder.followPath(path);
     }

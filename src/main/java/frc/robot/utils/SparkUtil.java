@@ -39,7 +39,8 @@ public class SparkUtil {
     }
 
     /** Processes a value from a Spark only if the value is valid. */
-    public static void ifOk(SparkBase spark, DoubleSupplier[] suppliers, Consumer<double[]> consumer) {
+    public static void ifOk(
+            SparkBase spark, DoubleSupplier[] suppliers, Consumer<double[]> consumer) {
         double[] values = new double[suppliers.length];
         for (int i = 0; i < suppliers.length; i++) {
             values[i] = suppliers[i].getAsDouble();
@@ -64,11 +65,13 @@ public class SparkUtil {
     }
 
     public static double[] getSimulationOdometryTimeStamps() {
-        final double[] odometryTimeStamps = new double[SimulatedArena.getSimulationSubTicksIn1Period()];
+        final double[] odometryTimeStamps =
+                new double[SimulatedArena.getSimulationSubTicksIn1Period()];
         for (int i = 0; i < odometryTimeStamps.length; i++) {
-            odometryTimeStamps[i] = Timer.getFPGATimestamp()
-                    - 0.02
-                    + i * SimulatedArena.getSimulationDt().in(Seconds);
+            odometryTimeStamps[i] =
+                    Timer.getFPGATimestamp()
+                            - 0.02
+                            + i * SimulatedArena.getSimulationDt().in(Seconds);
         }
 
         return odometryTimeStamps;

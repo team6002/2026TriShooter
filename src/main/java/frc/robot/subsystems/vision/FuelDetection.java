@@ -1,7 +1,6 @@
 package frc.robot.subsystems.vision;
 
 import java.util.function.BiConsumer;
-
 import org.littletonrobotics.junction.Logger;
 
 public class FuelDetection {
@@ -21,12 +20,14 @@ public class FuelDetection {
     /** Whether this detection is considered “high confidence.” */
     public final boolean highConfidence;
 
-    public final BiConsumer<FuelDetection, Double> fuelConsumer = (detection, timestamp) -> {
-        Logger.recordOutput("Vision/Fuel/LatestDetection", detection.toString());
-        Logger.recordOutput("Vision/Fuel/LatestTimestamp", timestamp.toString());
-    };
+    public final BiConsumer<FuelDetection, Double> fuelConsumer =
+            (detection, timestamp) -> {
+                Logger.recordOutput("Vision/Fuel/LatestDetection", detection.toString());
+                Logger.recordOutput("Vision/Fuel/LatestTimestamp", timestamp.toString());
+            };
 
-    public FuelDetection(double x, double y, double size, double timestamp, boolean highConfidence) {
+    public FuelDetection(
+            double x, double y, double size, double timestamp, boolean highConfidence) {
         this.x = x;
         this.y = y;
         this.size = size;
@@ -37,8 +38,7 @@ public class FuelDetection {
     @Override
     public String toString() {
         return String.format(
-            "FuelDetection[x=%.3f, y=%.3f, size=%.3f, time=%.3f, highConf=%b]",
-            x, y, size, timestamp, highConfidence
-        );
+                "FuelDetection[x=%.3f, y=%.3f, size=%.3f, time=%.3f, highConf=%b]",
+                x, y, size, timestamp, highConfidence);
     }
 }

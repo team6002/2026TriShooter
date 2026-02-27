@@ -41,7 +41,7 @@ public interface HoodIO {
 
     public default void setReference(double pos) {}
 
-    public default boolean atReference(){
+    public default boolean atReference() {
         return false;
     }
 

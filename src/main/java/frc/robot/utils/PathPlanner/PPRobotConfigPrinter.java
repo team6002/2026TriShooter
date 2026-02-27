@@ -28,7 +28,8 @@ public class PPRobotConfigPrinter {
         System.out.println("\t\tMax Drive Velocity (m/s): " + ppModuleConfig.maxDriveVelocityMPS);
         System.out.println("\t\tWheel Coefficient of Friction: " + ppModuleConfig.wheelCOF);
         System.out.println("\t\tDrive Current Limit (A): " + ppModuleConfig.driveCurrentLimit);
-        System.out.println("\t\tMax Drive Velocity (rad/s): " + ppModuleConfig.maxDriveVelocityRadPerSec);
+        System.out.println(
+                "\t\tMax Drive Velocity (rad/s): " + ppModuleConfig.maxDriveVelocityRadPerSec);
         System.out.println("\t\tTorque Loss: " + ppModuleConfig.torqueLoss);
 
         // Print motor model

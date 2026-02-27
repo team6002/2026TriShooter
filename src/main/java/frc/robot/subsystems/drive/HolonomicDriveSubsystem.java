@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.PathPlanner.LocalADStarAK;
 import frc.robot.utils.PathPlanner.PPRobotConfigPrinter;
-
 import org.ironmaple.utils.FieldMirroringUtils;
 import org.littletonrobotics.junction.Logger;
 
@@ -39,7 +38,8 @@ public interface HolonomicDriveSubsystem extends Subsystem {
      *
      * @param speeds a discrete chassis speed, robot-centric
      */
-    void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards);
+    void runRobotCentricSpeedsWithFeedforwards(
+            ChassisSpeeds speeds, DriveFeedforwards feedforwards);
 
     /** Returns the current odometry Pose. */
     Pose2d getPose();
@@ -51,11 +51,14 @@ public interface HolonomicDriveSubsystem extends Subsystem {
     /** Resets the current odometry Pose to a given Pose */
     void setPose(Pose2d currentPose);
 
-    /** @return the measured(actual) velocities of the chassis, robot-relative */
+    /**
+     * @return the measured(actual) velocities of the chassis, robot-relative
+     */
     ChassisSpeeds getMeasuredChassisSpeedsRobotRelative();
 
     default ChassisSpeeds getMeasuredChassisSpeedsFieldRelative() {
-        return ChassisSpeeds.fromRobotRelativeSpeeds(getMeasuredChassisSpeedsRobotRelative(), getFacing());
+        return ChassisSpeeds.fromRobotRelativeSpeeds(
+                getMeasuredChassisSpeedsRobotRelative(), getFacing());
     }
 
     double getChassisMaxLinearVelocityMetersPerSec();
@@ -77,26 +80,36 @@ public interface HolonomicDriveSubsystem extends Subsystem {
     /**
      * runs a driverstation-centric ChassisSpeeds
      *
-     * @param driverStationCentricSpeeds a continuous chassis speeds, driverstation-centric, normally from a gamepad
+     * @param driverStationCentricSpeeds a continuous chassis speeds, driverstation-centric,
+     *     normally from a gamepad
      */
-    default void runDriverStationCentricChassisSpeeds(ChassisSpeeds driverStationCentricSpeeds, boolean discretize) {
+    default void runDriverStationCentricChassisSpeeds(
+            ChassisSpeeds driverStationCentricSpeeds, boolean discretize) {
         if (discretize)
             driverStationCentricSpeeds =
-                    ChassisSpeeds.discretize(driverStationCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
-        final Rotation2d driverStationFacing = FieldMirroringUtils.getCurrentAllianceDriverStationFacing();
-        runRobotCentricChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
-                driverStationCentricSpeeds, getPose().getRotation().minus(driverStationFacing)));
+                    ChassisSpeeds.discretize(
+                            driverStationCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
+        final Rotation2d driverStationFacing =
+                FieldMirroringUtils.getCurrentAllianceDriverStationFacing();
+        runRobotCentricChassisSpeeds(
+                ChassisSpeeds.fromFieldRelativeSpeeds(
+                        driverStationCentricSpeeds,
+                        getPose().getRotation().minus(driverStationFacing)));
     }
 
     /**
      * runs a field-centric ChassisSpeeds
      *
-     * @param fieldCentricSpeeds a continuous chassis speeds, field-centric, normally from a pid position controller
+     * @param fieldCentricSpeeds a continuous chassis speeds, field-centric, normally from a pid
+     *     position controller
      */
-    default void runFieldCentricChassisSpeeds(ChassisSpeeds fieldCentricSpeeds, boolean discretize) {
-        if (discretize) fieldCentricSpeeds = ChassisSpeeds.discretize(fieldCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
-        runRobotCentricChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
-                fieldCentricSpeeds, getPose().getRotation()));
+    default void runFieldCentricChassisSpeeds(
+            ChassisSpeeds fieldCentricSpeeds, boolean discretize) {
+        if (discretize)
+            fieldCentricSpeeds =
+                    ChassisSpeeds.discretize(fieldCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
+        runRobotCentricChassisSpeeds(
+                ChassisSpeeds.fromFieldRelativeSpeeds(fieldCentricSpeeds, getPose().getRotation()));
     }
 
     default void stop() {
@@ -111,7 +124,8 @@ public interface HolonomicDriveSubsystem extends Subsystem {
                         DriveConstants.WHEEL_RADIUS,
                         DriveConstants.CHASSIS_MAX_VELOCITY,
                         DriveConstants.WHEEL_COEFFICIENT_OF_FRICTION,
-                        DriveConstants.DRIVE_MOTOR_MODEL.withReduction(DriveConstants.DRIVE_GEAR_RATIO),
+                        DriveConstants.DRIVE_MOTOR_MODEL.withReduction(
+                                DriveConstants.DRIVE_GEAR_RATIO),
                         DriveConstants.DRIVE_ANTI_SLIP_TORQUE_CURRENT_LIMIT,
                         1),
                 DriveConstants.MODULE_TRANSLATIONS);
@@ -140,20 +154,23 @@ public interface HolonomicDriveSubsystem extends Subsystem {
                 FieldMirroringUtils::isSidePresentedAsRed,
                 this);
         Pathfinding.setPathfinder(new LocalADStarAK());
-        PathPlannerLogging.setLogActivePathCallback((activePath) -> {
-            final Pose2d[] trajectory = activePath.toArray(new Pose2d[0]);
-            Logger.recordOutput("RobotState/Trajectory", trajectory);
-            field.getObject("ActivateTrajectory").setPoses(trajectory);
-        });
+        PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                    final Pose2d[] trajectory = activePath.toArray(new Pose2d[0]);
+                    Logger.recordOutput("RobotState/Trajectory", trajectory);
+                    field.getObject("ActivateTrajectory").setPoses(trajectory);
+                });
         PathPlannerLogging.setLogTargetPoseCallback(
                 (targetPose) -> Logger.recordOutput("RobotState/TrajectorySetpoint", targetPose));
 
         Alert pathPlannerWarmUpInProgressAlert =
                 AlertsManager.create("PathPlanner Warm-Up in progress", Alert.AlertType.kWarning);
         pathPlannerWarmUpInProgressAlert.set(true);
-        CommandScheduler.getInstance().schedule(PathfindingCommand.warmupCommand()
-                .finallyDo(() -> pathPlannerWarmUpInProgressAlert.set(false))
-                .until(DriverStation::isEnabled));
+        CommandScheduler.getInstance()
+                .schedule(
+                        PathfindingCommand.warmupCommand()
+                                .finallyDo(() -> pathPlannerWarmUpInProgressAlert.set(false))
+                                .until(DriverStation::isEnabled));
     }
 
     static boolean isZero(ChassisSpeeds chassisSpeeds) {

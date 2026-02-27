@@ -1,14 +1,13 @@
 package frc.robot.subsystems.climb;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Fahrenheit;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -33,7 +32,9 @@ public class ClimbIOSpark implements ClimbIO {
 
         // apply config
         climbMotor.configure(
-                ClimbConfig.climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                ClimbConfig.climbConfig,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
         // reset target speed in init
         climbReference = 0;

@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Shooter extends SubsystemBase {
@@ -14,15 +13,19 @@ public class Shooter extends SubsystemBase {
 
     public Shooter(ShooterIO io) {
         this.io = io;
-        this.sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, null, null, 
-                (state) -> Logger.recordOutput("/Shooter/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                null,
-                this
-            )
-        );
+        this.sysIdRoutine =
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                null,
+                                null,
+                                null,
+                                (state) ->
+                                        Logger.recordOutput(
+                                                "/Shooter/SysIdState", state.toString())),
+                        new SysIdRoutine.Mechanism(
+                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
+                                null,
+                                this));
     }
 
     public SysIdRoutine getSysIdRoutine() {
@@ -77,23 +80,23 @@ public class Shooter extends SubsystemBase {
         io.setReference(velocity);
     }
 
-    public Command setTargetVelolcity(double velocity){
-        return Commands.runOnce(()-> setReference(velocity), this);
+    public Command setTargetVelolcity(double velocity) {
+        return Commands.runOnce(() -> setReference(velocity), this);
     }
 
     public boolean isReady() {
         return io.isReady();
     }
 
-    public void startShooting(){
+    public void startShooting() {
         io.startShooting();
     }
 
-    public void stopShooting(){
+    public void stopShooting() {
         io.stopShooting();
     }
 
-    public double getVelocityRadPerSec(int index){
+    public double getVelocityRadPerSec(int index) {
         return switch (index) {
             case 0 -> io.getLeftVelocity();
             case 1 -> io.getMiddleVelocity();
@@ -102,7 +105,7 @@ public class Shooter extends SubsystemBase {
         };
     }
 
-    public void spawnSimulatedBall(int index){
+    public void spawnSimulatedBall(int index) {
         io.spawnSimulatedBall(index);
     }
 

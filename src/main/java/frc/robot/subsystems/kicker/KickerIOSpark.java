@@ -1,23 +1,19 @@
 package frc.robot.subsystems.kicker;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Fahrenheit;
 
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
-
-import edu.wpi.first.math.util.Units;
-
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.util.Units;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class KickerIOSpark implements KickerIO {
     private final SparkMax kickerMotor;
@@ -27,7 +23,7 @@ public class KickerIOSpark implements KickerIO {
     private double kickerReference;
     private ControlType kickerType;
 
-    //tuning
+    // tuning
     private final LoggedNetworkNumber kS, kV, kP;
     private double lastP = Double.NaN;
 
@@ -43,13 +39,15 @@ public class KickerIOSpark implements KickerIO {
 
         // apply config
         kickerMotor.configure(
-            KickerConfig.kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                KickerConfig.kickerConfig,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
         // reset target speed in init
         kickerReference = 0;
         kickerType = ControlType.kVoltage;
 
-        //tuning
+        // tuning
         kS = new LoggedNetworkNumber("/Tuning/Kicker/kS", KickerConstants.kS);
         kV = new LoggedNetworkNumber("/Tuning/Kicker/kV", KickerConstants.kV);
         kP = new LoggedNetworkNumber("/Tuning/Kicker/kP", KickerConstants.kP);
@@ -98,31 +96,33 @@ public class KickerIOSpark implements KickerIO {
     }
 
     @Override
-    public boolean atVelocity(){
+    public boolean atVelocity() {
         return Math.abs(getReference() - getVelocity()) <= KickerConstants.kTolerance;
     }
 
     @Override
     public void periodic() {
-        //tuning
+        // tuning
         // setReference(reference.get());
         double kickerFF = kS.get() + (kV.get() * getReference());
 
         double p = kP.get();
-        if(lastP != p){
+        if (lastP != p) {
             SparkMaxConfig newConfig = new SparkMaxConfig();
             newConfig.apply(KickerConfig.kickerConfig);
             newConfig.closedLoop.pid(p, 0, 0, ClosedLoopSlot.kSlot0);
 
-            kickerMotor.configure(newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            kickerMotor.configure(
+                    newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
             lastP = p;
         }
 
         // Bypass velocity control at 0 RPM to prevent chatter and allow a smooth coast-down
-        if(kickerReference > 0){
-            kickerController.setSetpoint(kickerReference, kickerType, ClosedLoopSlot.kSlot0, kickerFF);
-        }else{
+        if (kickerReference > 0) {
+            kickerController.setSetpoint(
+                    kickerReference, kickerType, ClosedLoopSlot.kSlot0, kickerFF);
+        } else {
             kickerController.setSetpoint(0, ControlType.kVoltage, ClosedLoopSlot.kSlot0);
         }
     }

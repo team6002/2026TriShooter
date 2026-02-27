@@ -23,7 +23,6 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.DriveFeedforwards;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.pathplanner.lib.util.swerve.SwerveSetpoint;
-
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -56,13 +55,11 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.utils.CustomPIDs.ChassisHeadingController;
 import frc.robot.utils.PathPlanner.LocalADStarAK;
 import frc.robot.utils.constants.RobotMode;
-
 import java.util.OptionalDouble;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -85,7 +82,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                 new SwerveModulePosition()
             };
     private final SwerveDrivePoseEstimator poseEstimator =
-            new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+            new SwerveDrivePoseEstimator(
+                    kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
     private SwerveSetpoint setpoint;
@@ -106,7 +104,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         modules[3] = new Module(brModuleIO, 3);
 
         // Usage reporting for swerve template
-        HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
+        HAL.report(
+                tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
         // Start odometry thread
         SparkOdometryThread.getInstance().start();
@@ -117,28 +116,34 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
                 this::resetOdometry,
                 this::getChassisSpeeds,
                 this::runVelocity,
-                new PPHolonomicDriveController(new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+                new PPHolonomicDriveController(
+                        new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
                 ppConfig,
                 () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
                 this);
         Pathfinding.setPathfinder(new LocalADStarAK());
-        PathPlannerLogging.setLogActivePathCallback((activePath) -> {
-            Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-        });
-        PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
-            Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-        });
+        PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                    Logger.recordOutput(
+                            "Odometry/Trajectory",
+                            activePath.toArray(new Pose2d[activePath.size()]));
+                });
+        PathPlannerLogging.setLogTargetPoseCallback(
+                (targetPose) -> {
+                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
 
         // Configure SysId
         sysId =
-            new SysIdRoutine(
-                new SysIdRoutine.Config(
-                    null,
-                    null,
-                    null,
-                    (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
-                new SysIdRoutine.Mechanism(
-                    (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                null,
+                                null,
+                                null,
+                                (state) ->
+                                        Logger.recordOutput("Drive/SysIdState", state.toString())),
+                        new SysIdRoutine.Mechanism(
+                                (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
     }
 
     @Override
@@ -165,7 +170,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         }
 
         // Update odometry
-        double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
+        double[] sampleTimestamps =
+                modules[0].getOdometryTimestamps(); // All signals are sampled together
         int sampleCount = sampleTimestamps.length;
         for (int i = 0; i < sampleCount; i++) {
             // Read wheel positions and deltas from each module
@@ -173,9 +179,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
             for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
                 modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
-                moduleDeltas[moduleIndex] = new SwerveModulePosition(
-                        modulePositions[moduleIndex].distanceMeters - lastModulePositions[moduleIndex].distanceMeters,
-                        modulePositions[moduleIndex].angle);
+                moduleDeltas[moduleIndex] =
+                        new SwerveModulePosition(
+                                modulePositions[moduleIndex].distanceMeters
+                                        - lastModulePositions[moduleIndex].distanceMeters,
+                                modulePositions[moduleIndex].angle);
                 lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
             }
 
@@ -196,7 +204,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         staticRobotPose = getPose();
 
         // Update gyro alert
-        gyroDisconnectedAlert.set(!gyroInputs.connected && Robot.CURRENT_ROBOT_MODE != RobotMode.SIM);
+        gyroDisconnectedAlert.set(
+                !gyroInputs.connected && Robot.CURRENT_ROBOT_MODE != RobotMode.SIM);
     }
 
     /**
@@ -236,8 +245,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     /**
-     * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will return to their
-     * normal orientations the next time a nonzero velocity is requested.
+     * Stops the drive and turns the modules to an X arrangement to resist movement. The modules
+     * will return to their normal orientations the next time a nonzero velocity is requested.
      */
     public void stopWithX() {
         Rotation2d[] headings = new Rotation2d[4];
@@ -250,12 +259,16 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     /** Returns a command to run a quasistatic test in the specified direction. */
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return run(() -> runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.quasistatic(direction));
+        return run(() -> runCharacterization(0.0))
+                .withTimeout(1.0)
+                .andThen(sysId.quasistatic(direction));
     }
 
     /** Returns a command to run a dynamic test in the specified direction. */
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return run(() -> runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
+        return run(() -> runCharacterization(0.0))
+                .withTimeout(1.0)
+                .andThen(sysId.dynamic(direction));
     }
 
     /** Returns the module states (turn angles and drive velocities) for all of the modules. */
@@ -320,8 +333,12 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     /** Adds a new timestamped vision measurement. */
     @Override
-    public void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs) {
-        poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+    public void accept(
+            Pose2d visionRobotPoseMeters,
+            double timestampSeconds,
+            Matrix<N3, N1> visionMeasurementStdDevs) {
+        poseEstimator.addVisionMeasurement(
+                visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
     }
 
     /** Returns the maximum linear speed in meters per sec. */
@@ -341,19 +358,24 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     }
 
     @Override
-    public void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
+    public void runRobotCentricSpeedsWithFeedforwards(
+            ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
         this.setpoint = new SwerveSetpoint(speeds, getModuleStates(), feedforwards);
         executeSetpoint();
     }
 
     private void executeSetpoint() {
         OptionalDouble angularVelocityOverride =
-                ChassisHeadingController.getInstance().calculate(getMeasuredChassisSpeedsFieldRelative(), getPose());
+                ChassisHeadingController.getInstance()
+                        .calculate(getMeasuredChassisSpeedsFieldRelative(), getPose());
         ChassisSpeeds speeds = setpoint.robotRelativeSpeeds();
 
         if (angularVelocityOverride.isPresent()) {
-            speeds = new ChassisSpeeds(
-                    speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, angularVelocityOverride.getAsDouble());
+            speeds =
+                    new ChassisSpeeds(
+                            speeds.vxMetersPerSecond,
+                            speeds.vyMetersPerSecond,
+                            angularVelocityOverride.getAsDouble());
             speeds = ChassisSpeeds.discretize(speeds, Robot.defaultPeriodSecs);
         }
 
@@ -422,83 +444,81 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
 
     public Command alignToTarget(Supplier<Translation2d> targetSupplier) {
         return new FunctionalCommand(
-            // onInit
-            () -> ChassisHeadingController.getInstance().setHeadingRequest(
-                    new ChassisHeadingController.FaceToTargetRequest(targetSupplier, null)
-            ),
+                // onInit
+                () ->
+                        ChassisHeadingController.getInstance()
+                                .setHeadingRequest(
+                                        new ChassisHeadingController.FaceToTargetRequest(
+                                                targetSupplier, null)),
 
-            // onExecute
-            () -> {
-                ChassisSpeeds measured = getMeasuredChassisSpeedsFieldRelative();
-                Pose2d pose = getPose();
+                // onExecute
+                () -> {
+                    ChassisSpeeds measured = getMeasuredChassisSpeedsFieldRelative();
+                    Pose2d pose = getPose();
 
-                OptionalDouble omegaOpt =
-                    ChassisHeadingController.getInstance().calculate(measured, pose);
+                    OptionalDouble omegaOpt =
+                            ChassisHeadingController.getInstance().calculate(measured, pose);
 
-                double omega = omegaOpt.orElse(0.0);
+                    double omega = omegaOpt.orElse(0.0);
 
-                runRobotCentricChassisSpeeds(new ChassisSpeeds(0, 0, omega));
-            },
+                    runRobotCentricChassisSpeeds(new ChassisSpeeds(0, 0, omega));
+                },
 
-            // onEnd
-            interrupted -> ChassisHeadingController.getInstance()
-                    .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+                // onEnd
+                interrupted ->
+                        ChassisHeadingController.getInstance()
+                                .setHeadingRequest(new ChassisHeadingController.NullRequest()),
 
-            // isFinished — custom tolerance check
-            () -> {
-                Translation2d target = targetSupplier.get();
-                Pose2d robotPose = getPose();
+                // isFinished — custom tolerance check
+                () -> {
+                    Translation2d target = targetSupplier.get();
+                    Pose2d robotPose = getPose();
 
-                Translation2d delta = target.minus(robotPose.getTranslation());
-                Rotation2d desiredHeading = delta.getAngle();
-                Rotation2d currentHeading = robotPose.getRotation();
+                    Translation2d delta = target.minus(robotPose.getTranslation());
+                    Rotation2d desiredHeading = delta.getAngle();
+                    Rotation2d currentHeading = robotPose.getRotation();
 
-                double error = Math.abs(
-                    MathUtil.angleModulus(currentHeading.minus(desiredHeading).getRadians())
-                );
+                    double error =
+                            Math.abs(
+                                    MathUtil.angleModulus(
+                                            currentHeading.minus(desiredHeading).getRadians()));
 
-                return error < Math.toRadians(5);
-            },
-
-            this
-        );
+                    return error < Math.toRadians(5);
+                },
+                this);
     }
 
     public Command alignToAngle(Rotation2d angle, double toleranceRadians) {
         return new FunctionalCommand(
-            () -> ChassisHeadingController.getInstance().setHeadingRequest(
-                    new ChassisHeadingController.FaceToRotationRequest(angle)
-            ),
-
-            () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
-
-            interrupted -> ChassisHeadingController.getInstance()
-                    .setHeadingRequest(new ChassisHeadingController.NullRequest()),
-
-            () -> {
-                Rotation2d current = getRotation();
-                double error = Math.abs(current.minus(angle).getRadians());
-                return error < toleranceRadians;
-            },
-
-            this
-        );
+                () ->
+                        ChassisHeadingController.getInstance()
+                                .setHeadingRequest(
+                                        new ChassisHeadingController.FaceToRotationRequest(angle)),
+                () -> runRobotCentricChassisSpeeds(new ChassisSpeeds()),
+                interrupted ->
+                        ChassisHeadingController.getInstance()
+                                .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+                () -> {
+                    Rotation2d current = getRotation();
+                    double error = Math.abs(current.minus(angle).getRadians());
+                    return error < toleranceRadians;
+                },
+                this);
     }
 
     public void applySimPose(Pose2d simPose) {
-      odometryLock.lock();
-      try {
-          // Update internal gyro angle to match the sim
-          rawGyroRotation = simPose.getRotation();
+        odometryLock.lock();
+        try {
+            // Update internal gyro angle to match the sim
+            rawGyroRotation = simPose.getRotation();
 
-          // Reset the pose estimator to the sim pose
-          poseEstimator.resetPosition(
-              rawGyroRotation,
-              getModulePositions(),   // your real module positions
-              simPose
-          );
-      } finally {
-          odometryLock.unlock();
-      }
+            // Reset the pose estimator to the sim pose
+            poseEstimator.resetPosition(
+                    rawGyroRotation,
+                    getModulePositions(), // your real module positions
+                    simPose);
+        } finally {
+            odometryLock.unlock();
+        }
     }
 }

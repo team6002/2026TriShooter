@@ -40,18 +40,29 @@ public class AprilTagVision extends SubsystemBase {
         this.camerasNoResultAlerts = new Alert[camerasProperties.size()];
         this.camerasNoResultDebouncer = new Debouncer[camerasProperties.size()];
         for (int i = 0; i < camerasProperties.size(); i++) {
-            this.camerasDisconnectedAlerts[i] = AlertsManager.create(
-                    "Photon Camera " + i + " '" + camerasProperties.get(i).name + "' disconnected",
-                    Alert.AlertType.kError);
-            this.camerasNoResultAlerts[i] = AlertsManager.create(
-                    "Photon Camera " + i + " '" + camerasProperties.get(i).name + "' no result",
-                    Alert.AlertType.kWarning);
+            this.camerasDisconnectedAlerts[i] =
+                    AlertsManager.create(
+                            "Photon Camera "
+                                    + i
+                                    + " '"
+                                    + camerasProperties.get(i).name
+                                    + "' disconnected",
+                            Alert.AlertType.kError);
+            this.camerasNoResultAlerts[i] =
+                    AlertsManager.create(
+                            "Photon Camera "
+                                    + i
+                                    + " '"
+                                    + camerasProperties.get(i).name
+                                    + "' no result",
+                            Alert.AlertType.kWarning);
             this.camerasNoResultDebouncer[i] = new Debouncer(0.5);
             this.camerasDisconnectedAlerts[i].set(false);
         }
 
-        this.multiTagPoseEstimator = new MapleMultiTagPoseEstimator(
-                fieldLayout, new CameraHeightAndPitchRollAngleFilter(), camerasProperties);
+        this.multiTagPoseEstimator =
+                new MapleMultiTagPoseEstimator(
+                        fieldLayout, new CameraHeightAndPitchRollAngleFilter(), camerasProperties);
     }
 
     private Optional<MapleMultiTagPoseEstimator.VisionObservation> result = Optional.empty();
@@ -59,12 +70,15 @@ public class AprilTagVision extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        for (int i = 0; i < inputs.length; i++) Logger.processInputs(APRIL_TAGS_VISION_PATH + "Camera_" + i, inputs[i]);
+        for (int i = 0; i < inputs.length; i++)
+            Logger.processInputs(APRIL_TAGS_VISION_PATH + "Camera_" + i, inputs[i]);
 
         for (int i = 0; i < inputs.length; i++) {
             this.camerasDisconnectedAlerts[i].set(!inputs[i].cameraConnected);
-            this.camerasNoResultAlerts[i].set((!camerasDisconnectedAlerts[i].get())
-                    && camerasNoResultDebouncer[i].calculate(!inputs[i].newPipeLineResultAvailable));
+            this.camerasNoResultAlerts[i].set(
+                    (!camerasDisconnectedAlerts[i].get())
+                            && camerasNoResultDebouncer[i].calculate(
+                                    !inputs[i].newPipeLineResultAvailable));
         }
 
         result = multiTagPoseEstimator.estimateRobotPose(inputs, getResultsTimeStamp());
@@ -73,23 +87,30 @@ public class AprilTagVision extends SubsystemBase {
                 visionHasResultAverage.calculate(result.isPresent() ? 1.0 : 0.0);
 
         Logger.recordOutput(
-                APRIL_TAGS_VISION_PATH + "Results/Estimated Pose", displayVisionPointEstimateResult(result));
+                APRIL_TAGS_VISION_PATH + "Results/Estimated Pose",
+                displayVisionPointEstimateResult(result));
         SmartDashboard.putBoolean("Vision Result Trustable", resultPresent);
         Logger.recordOutput(APRIL_TAGS_VISION_PATH + "Results/Presented", resultPresent);
     }
 
     private static final Pose2d EMPTY_DISPLAY = new Pose2d(-114514, -114514, new Rotation2d());
-    private Optional<MapleMultiTagPoseEstimator.VisionObservation> previousResult = Optional.empty();
-    private final Debouncer resultPresentDebouncer = new Debouncer(0.1, Debouncer.DebounceType.kFalling);
+    private Optional<MapleMultiTagPoseEstimator.VisionObservation> previousResult =
+            Optional.empty();
+    private final Debouncer resultPresentDebouncer =
+            new Debouncer(0.1, Debouncer.DebounceType.kFalling);
     private boolean resultPresent = false;
 
-    private Pose2d displayVisionPointEstimateResult(Optional<MapleMultiTagPoseEstimator.VisionObservation> result) {
+    private Pose2d displayVisionPointEstimateResult(
+            Optional<MapleMultiTagPoseEstimator.VisionObservation> result) {
         resultPresent = resultPresentDebouncer.calculate(result.isPresent());
         if (!resultPresent) return EMPTY_DISPLAY;
 
-        Pose2d toReturn = result.orElse(
-                        previousResult.orElse(new MapleMultiTagPoseEstimator.VisionObservation(EMPTY_DISPLAY, null, 0)))
-                .visionPose();
+        Pose2d toReturn =
+                result.orElse(
+                                previousResult.orElse(
+                                        new MapleMultiTagPoseEstimator.VisionObservation(
+                                                EMPTY_DISPLAY, null, 0)))
+                        .visionPose();
         result.ifPresent(newResult -> previousResult = Optional.of(newResult));
         return toReturn;
     }
@@ -118,9 +139,12 @@ public class AprilTagVision extends SubsystemBase {
                 multiTagPoseEstimator::disableFocusMode);
     }
 
-    public final Trigger cameraDisconnected = new Trigger(() -> {
-        // for (AprilTagVisionIO.CameraInputs input : AprilTagVision.this.inputs) if (!input.cameraConnected) return
-        // true;
-        return false;
-    });
+    public final Trigger cameraDisconnected =
+            new Trigger(
+                    () -> {
+                        // for (AprilTagVisionIO.CameraInputs input : AprilTagVision.this.inputs) if
+                        // (!input.cameraConnected) return
+                        // true;
+                        return false;
+                    });
 }

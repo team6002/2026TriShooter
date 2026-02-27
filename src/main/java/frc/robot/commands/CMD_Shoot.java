@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.conveyor.Conveyor;
@@ -11,6 +10,7 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
+import java.util.function.DoubleSupplier;
 
 public class CMD_Shoot extends Command {
     private final Conveyor conveyor;
@@ -23,12 +23,25 @@ public class CMD_Shoot extends Command {
     private final Timer timer = new Timer();
     private final DoubleSupplier hoodSupplier, shooterSupplier;
 
-    public CMD_Shoot(Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter, double hoodAng, double shooterVel) {
+    public CMD_Shoot(
+            Conveyor conveyor,
+            Hood hood,
+            Intake intake,
+            Kicker kicker,
+            Shooter shooter,
+            double hoodAng,
+            double shooterVel) {
         this(conveyor, hood, intake, kicker, shooter, () -> hoodAng, () -> shooterVel);
     }
 
-    public CMD_Shoot(Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter, 
-                     DoubleSupplier hoodSupplier, DoubleSupplier shooterSupplier) {
+    public CMD_Shoot(
+            Conveyor conveyor,
+            Hood hood,
+            Intake intake,
+            Kicker kicker,
+            Shooter shooter,
+            DoubleSupplier hoodSupplier,
+            DoubleSupplier shooterSupplier) {
         this.conveyor = conveyor;
         this.hood = hood;
         this.intake = intake;
@@ -62,7 +75,7 @@ public class CMD_Shoot extends Command {
             timer.start();
         }
 
-        if(timer.get() > 3 && !shooting){
+        if (timer.get() > 3 && !shooting) {
             shooting = true;
             timer.reset();
         }
@@ -70,7 +83,8 @@ public class CMD_Shoot extends Command {
         if (shooting) {
             // Toggles state every 0.5 seconds
             boolean shouldBeStowed = ((int) (timer.get() / 1) % 2 == 0);
-            intake.setExtenderReference(shouldBeStowed ? ExtenderConstants.kHome : ExtenderConstants.kStow);
+            intake.setExtenderReference(
+                    shouldBeStowed ? ExtenderConstants.kHome : ExtenderConstants.kStow);
         }
     }
 }

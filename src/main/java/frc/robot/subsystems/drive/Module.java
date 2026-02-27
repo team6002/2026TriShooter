@@ -44,14 +44,21 @@ public class Module {
     public Module(ModuleIO io, int index) {
         this.io = io;
         this.index = index;
-        this.configurationFailed = AlertsManager.create(
-                "Module-" + this.index + " configuration failed. Reboot robot after fixing connection.",
-                Alert.AlertType.kError);
+        this.configurationFailed =
+                AlertsManager.create(
+                        "Module-"
+                                + this.index
+                                + " configuration failed. Reboot robot after fixing connection.",
+                        Alert.AlertType.kError);
 
         driveDisconnectedAlert =
-                new Alert("Disconnected drive motor on module " + Integer.toString(index) + ".", AlertType.kError);
+                new Alert(
+                        "Disconnected drive motor on module " + Integer.toString(index) + ".",
+                        AlertType.kError);
         turnDisconnectedAlert =
-                new Alert("Disconnected turn motor on module " + Integer.toString(index) + ".", AlertType.kError);
+                new Alert(
+                        "Disconnected turn motor on module " + Integer.toString(index) + ".",
+                        AlertType.kError);
 
         setPoint = new SwerveModuleState();
     }
@@ -144,30 +151,40 @@ public class Module {
     }
 
     public SwerveModuleState runSetPoint(
-            SwerveModuleState newSetpoint, Force robotRelativeFeedforwardForceX, Force robotRelativeFeedforwardForceY) {
-        if (Math.abs(newSetpoint.speedMetersPerSecond) < SWERVE_VELOCITY_DEADBAND.in(MetersPerSecond)) {
+            SwerveModuleState newSetpoint,
+            Force robotRelativeFeedforwardForceX,
+            Force robotRelativeFeedforwardForceY) {
+        if (Math.abs(newSetpoint.speedMetersPerSecond)
+                < SWERVE_VELOCITY_DEADBAND.in(MetersPerSecond)) {
             stop();
             return this.setPoint = new SwerveModuleState(0, setPoint.angle);
         }
 
-        return forceRunSetPoint(newSetpoint, robotRelativeFeedforwardForceX, robotRelativeFeedforwardForceY);
+        return forceRunSetPoint(
+                newSetpoint, robotRelativeFeedforwardForceX, robotRelativeFeedforwardForceY);
     }
 
     /** Runs the module with the specified setpoint state. Returns the optimized state. */
     public SwerveModuleState forceRunSetPoint(
-            SwerveModuleState newSetpoint, Force robotRelativeFeedforwardForceX, Force robotRelativeFeedforwardForceY) {
+            SwerveModuleState newSetpoint,
+            Force robotRelativeFeedforwardForceX,
+            Force robotRelativeFeedforwardForceY) {
         newSetpoint.optimize(backLeftZeroRotation);
 
         double desiredMotorVelocityRadPerSec =
                 newSetpoint.speedMetersPerSecond / WHEEL_RADIUS.in(Meters) * DRIVE_GEAR_RATIO;
-        Translation2d force2d = new Translation2d(
-                robotRelativeFeedforwardForceX.in(Newtons), robotRelativeFeedforwardForceY.in(Newtons));
+        Translation2d force2d =
+                new Translation2d(
+                        robotRelativeFeedforwardForceX.in(Newtons),
+                        robotRelativeFeedforwardForceY.in(Newtons));
         // project force to swerve heading
         double moduleFeedforwardForceNewtons =
                 force2d.getNorm() * force2d.getAngle().minus(getSteerFacing()).getCos();
         double wheelFeedforwardTorque = moduleFeedforwardForceNewtons * WHEEL_RADIUS.in(Meters);
-        io.setDriveVelocity(desiredMotorVelocityRadPerSec); // , NewtonMeters.of(motorFeedforwardTorque));
-        Logger.recordOutput("ModuleFeedforwards/" + index + "/Wheel FF Torque (N*M)", wheelFeedforwardTorque);
+        io.setDriveVelocity(
+                desiredMotorVelocityRadPerSec); // , NewtonMeters.of(motorFeedforwardTorque));
+        Logger.recordOutput(
+                "ModuleFeedforwards/" + index + "/Wheel FF Torque (N*M)", wheelFeedforwardTorque);
         io.setTurnPosition(newSetpoint.angle);
 
         return this.setPoint = newSetpoint;

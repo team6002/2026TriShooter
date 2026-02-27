@@ -28,8 +28,11 @@ public sealed interface LEDAnimation {
         public void play(Color[] colors, double t) {
             final double brightness = oscillate(t + 0.25);
             for (int i = 0; i < colors.length; i++)
-                colors[i] = new Color(
-                        color.get().red * brightness, color.get().green * brightness, color.get().blue * brightness);
+                colors[i] =
+                        new Color(
+                                color.get().red * brightness,
+                                color.get().green * brightness,
+                                color.get().blue * brightness);
         }
     }
 
@@ -94,9 +97,13 @@ public sealed interface LEDAnimation {
         public void play(Color[] colors, double t) {
             for (int i = 0; i < colors.length; i++) {
                 double brightness = 0.5 + 0.5 * t;
-                colors[i] = i < t * colors.length
-                        ? new Color(color.red * brightness, color.green * brightness, color.blue * brightness)
-                        : new Color();
+                colors[i] =
+                        i < t * colors.length
+                                ? new Color(
+                                        color.red * brightness,
+                                        color.green * brightness,
+                                        color.blue * brightness)
+                                : new Color();
             }
         }
     }

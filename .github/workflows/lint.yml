@@ -1,0 +1,21 @@
+name: Lint and Format
+
+# This triggers the check on every push and pull request
+on: [push, pull_request]
+
+jobs:
+  spotless:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Run Spotless Check
+        # This will fail the "build" if the code isn't formatted correctly
+        run: ./gradlew spotlessCheck

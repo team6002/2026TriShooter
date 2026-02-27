@@ -4,7 +4,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 import org.littletonrobotics.junction.Logger;
 
 public class Kicker extends SubsystemBase {
@@ -15,15 +14,19 @@ public class Kicker extends SubsystemBase {
 
     public Kicker(KickerIO io) {
         this.io = io;
-        this.sysIdRoutine = new SysIdRoutine(
-            new SysIdRoutine.Config(null, null, null, 
-                (state) -> Logger.recordOutput("/Kicker/SysIdState", state.toString())),
-            new SysIdRoutine.Mechanism(
-                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
-                null,
-                this
-            )
-        );
+        this.sysIdRoutine =
+                new SysIdRoutine(
+                        new SysIdRoutine.Config(
+                                null,
+                                null,
+                                null,
+                                (state) ->
+                                        Logger.recordOutput(
+                                                "/Kicker/SysIdState", state.toString())),
+                        new SysIdRoutine.Mechanism(
+                                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()),
+                                null,
+                                this));
     }
 
     public SysIdRoutine getSysIdRoutine() {
@@ -51,18 +54,18 @@ public class Kicker extends SubsystemBase {
     }
 
     public Command runVoltage(double voltage) {
-        return Commands.runOnce(()-> setVoltage(voltage), this);
+        return Commands.runOnce(() -> setVoltage(voltage), this);
     }
 
     public void setReference(double velocity) {
         io.setReference(velocity);
     }
 
-    public Command setTargetVel(double vel){
-        return Commands.runOnce(()-> setReference(vel), this);
+    public Command setTargetVel(double vel) {
+        return Commands.runOnce(() -> setReference(vel), this);
     }
 
-    public boolean atVelocity(){
+    public boolean atVelocity() {
         return io.atVelocity();
     }
 

@@ -1,20 +1,17 @@
 package frc.robot.subsystems.hood;
 
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Fahrenheit;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-
-import edu.wpi.first.math.MathUtil;
-
 import com.revrobotics.spark.SparkMax;
+import edu.wpi.first.math.MathUtil;
 
 public class HoodIOSpark implements HoodIO {
     private final SparkMax hoodMotor;
@@ -36,7 +33,9 @@ public class HoodIOSpark implements HoodIO {
 
         // apply config
         hoodMotor.configure(
-                HoodConfig.hoodConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                HoodConfig.hoodConfig,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
         // reset target speed in init
         hoodReference = HoodConstants.kMinPos;
@@ -59,7 +58,7 @@ public class HoodIOSpark implements HoodIO {
     }
 
     @Override
-    public double getPosition(){
+    public double getPosition() {
         return hoodEncoder.getPosition();
     }
 
@@ -91,7 +90,7 @@ public class HoodIOSpark implements HoodIO {
     }
 
     @Override
-    public boolean atReference(){
+    public boolean atReference() {
         return Math.abs(getReference() - getPosition()) < HoodConstants.kTolerance;
     }
 

@@ -13,7 +13,8 @@ public final class Statistics {
     }
 
     public static double getMedian(double[] dataSet) {
-        if (dataSet.length % 2 == 0) return (dataSet[dataSet.length / 2 - 1] + dataSet[dataSet.length / 2]) / 2;
+        if (dataSet.length % 2 == 0)
+            return (dataSet[dataSet.length / 2 - 1] + dataSet[dataSet.length / 2]) / 2;
 
         return dataSet[dataSet.length / 2];
     }
@@ -30,33 +31,40 @@ public final class Statistics {
         final double[] standardizedScores = new double[dataSet.length];
         final double mean = getMean(dataSet);
         final double standardDeviation = getStandardDeviation(dataSet);
-        for (int i = 0; i < dataSet.length; i++) standardizedScores[i] = (dataSet[i] - mean) / standardDeviation;
+        for (int i = 0; i < dataSet.length; i++)
+            standardizedScores[i] = (dataSet[i] - mean) / standardDeviation;
         return standardizedScores;
     }
 
     public static double getCorrelationCoefficient(double[] dataSet1, double[] dataSet2) {
-        if (dataSet1.length != dataSet2.length) throw new IllegalArgumentException("data set length unmatched");
+        if (dataSet1.length != dataSet2.length)
+            throw new IllegalArgumentException("data set length unmatched");
         final double[] standardizedScores1 = getStandardizedScores(dataSet1),
                 standardizedScores2 = getStandardizedScores(dataSet2);
         double productSum = 0;
-        for (int i = 0; i < dataSet2.length; i++) productSum += standardizedScores1[i] * standardizedScores2[i];
+        for (int i = 0; i < dataSet2.length; i++)
+            productSum += standardizedScores1[i] * standardizedScores2[i];
         return productSum / (dataSet1.length - 1);
     }
 
     public static double getBestFitLineSlope(double[] dataSetX, double[] dataSetY) {
         final double standardizedDeviationX = getStandardDeviation(dataSetX),
                 standardizedDeviationY = getStandardDeviation(dataSetY);
-        return getCorrelationCoefficient(dataSetX, dataSetY) * standardizedDeviationY / standardizedDeviationX;
+        return getCorrelationCoefficient(dataSetX, dataSetY)
+                * standardizedDeviationY
+                / standardizedDeviationX;
     }
 
     public static double getBestFitLineIntersect(double[] dataSetX, double[] dataSetY) {
         final double slope = getBestFitLineSlope(dataSetX, dataSetY);
         return getMean(dataSetY) - slope * getMean(dataSetX);
     }
+
     /**
      *
      *
-     * <h2>Stores a numerical estimation of something known to be coming from a normal distribution.</h2>
+     * <h2>Stores a numerical estimation of something known to be coming from a normal distribution.
+     * </h2>
      *
      * @param center the center of the estimation
      * @param standardDeviation the standard deviation of the estimation
@@ -108,7 +116,8 @@ public final class Statistics {
     /**
      *
      *
-     * <h2>Stores a rotational estimation of something known to be coming from a normal distribution.</h2>
+     * <h2>Stores a rotational estimation of something known to be coming from a normal
+     * distribution.</h2>
      *
      * @param center the center of the estimation
      * @param standardDeviationRad the standard deviation of the estimation, in radians
@@ -118,7 +127,8 @@ public final class Statistics {
     /**
      *
      *
-     * <h2>Apply a rotational filter to find the best estimation over a list of rotational estimations.</h2>
+     * <h2>Apply a rotational filter to find the best estimation over a list of rotational
+     * estimations.</h2>
      *
      * @see #rotationFilter(RotationEstimation...)
      * @return the overall best rotational estimation according to all the given estimations
@@ -130,7 +140,8 @@ public final class Statistics {
     /**
      *
      *
-     * <h2>Apply a rotational filter to find the best estimation over a few rotational estimations.</h2>
+     * <h2>Apply a rotational filter to find the best estimation over a few rotational estimations.
+     * </h2>
      *
      * <p>The estimations with less standard deviation get trusted more.
      *
@@ -143,23 +154,35 @@ public final class Statistics {
         if (rotationEstimations.length == 1) return rotationEstimations[0];
 
         // Transform the rotation estimations into Estimation objects for cosines
-        List<Estimation> cosEstimations = Arrays.stream(rotationEstimations)
-                .map(est -> new Estimation(Math.cos(est.center().getRadians()), est.standardDeviationRad()))
-                .collect(Collectors.toList());
+        List<Estimation> cosEstimations =
+                Arrays.stream(rotationEstimations)
+                        .map(
+                                est ->
+                                        new Estimation(
+                                                Math.cos(est.center().getRadians()),
+                                                est.standardDeviationRad()))
+                        .collect(Collectors.toList());
 
         // Apply linearFilter to compute the weighted mean of cosines
         Estimation cosEstimation = linearFilter(cosEstimations);
 
         // Transform the rotation estimations into Estimation objects for sines
-        List<Estimation> sinEstimations = Arrays.stream(rotationEstimations)
-                .map(est -> new Estimation(Math.sin(est.center().getRadians()), est.standardDeviationRad()))
-                .collect(Collectors.toList());
+        List<Estimation> sinEstimations =
+                Arrays.stream(rotationEstimations)
+                        .map(
+                                est ->
+                                        new Estimation(
+                                                Math.sin(est.center().getRadians()),
+                                                est.standardDeviationRad()))
+                        .collect(Collectors.toList());
 
         // Apply linearFilter to compute the weighted mean of sines
         Estimation sinEstimation = linearFilter(sinEstimations);
 
         // Compute the resultant length R
-        double R = Math.sqrt(Math.pow(cosEstimation.center(), 2) + Math.pow(sinEstimation.center(), 2));
+        double R =
+                Math.sqrt(
+                        Math.pow(cosEstimation.center(), 2) + Math.pow(sinEstimation.center(), 2));
 
         // Compute the circular standard deviation
         double circularStdDev;

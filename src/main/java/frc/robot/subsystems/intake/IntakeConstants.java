@@ -32,7 +32,7 @@ public class IntakeConstants {
 
     public static final double kGearRatio = 1;
 
-    public static final class ExtenderConstants{
+    public static final class ExtenderConstants {
         public static final int kIntakeExtenderCanId = 7;
 
         public static final double kP = 5;

@@ -13,15 +13,16 @@ public class KickerIOSim implements KickerIO {
     private final PIDController kickerPIDController =
             new PIDController(KickerConstants.kPSim, KickerConstants.kISim, KickerConstants.kDSim);
     private final SimpleMotorFeedforward kickerFeedforward =
-            new SimpleMotorFeedforward(KickerConstants.kS, KickerConstants.kV,
-                    KickerConstants.kA);
+            new SimpleMotorFeedforward(KickerConstants.kS, KickerConstants.kV, KickerConstants.kA);
     private double reference = 0;
     public static double objectsInHopper = 0;
 
     public KickerIOSim() {
-        kickerSim = new DCMotorSim(
-                LinearSystemId.createDCMotorSystem(DCMotor.getNeo550(1), .178, KickerConstants.kGearRatio),
-                DCMotor.getNeo550(2));
+        kickerSim =
+                new DCMotorSim(
+                        LinearSystemId.createDCMotorSystem(
+                                DCMotor.getNeo550(1), .178, KickerConstants.kGearRatio),
+                        DCMotor.getNeo550(2));
     }
 
     @Override
@@ -38,7 +39,7 @@ public class KickerIOSim implements KickerIO {
     }
 
     @Override
-    public double getReference(){
+    public double getReference() {
         return reference;
     }
 
@@ -60,9 +61,8 @@ public class KickerIOSim implements KickerIO {
     @Override
     public void periodic() {
         kickerSim.setInput(
-            kickerPIDController.calculate(kickerSim.getAngularVelocityRadPerSec(), reference)
-            + kickerFeedforward.calculateWithVelocities(getVelocity(), reference)
-        );
+                kickerPIDController.calculate(kickerSim.getAngularVelocityRadPerSec(), reference)
+                        + kickerFeedforward.calculateWithVelocities(getVelocity(), reference));
 
         kickerSim.update(0.02);
     }

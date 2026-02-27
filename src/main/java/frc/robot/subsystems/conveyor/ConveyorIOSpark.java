@@ -1,13 +1,12 @@
 package frc.robot.subsystems.conveyor;
 
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkBase.ControlType;
-
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Fahrenheit;
 
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -32,7 +31,9 @@ public class ConveyorIOSpark implements ConveyorIO {
 
         // apply config
         conveyorMotor.configure(
-                ConveyorConfig.conveyorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+                ConveyorConfig.conveyorConfig,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
         // reset target speed in init
         conveyorReference = 0;

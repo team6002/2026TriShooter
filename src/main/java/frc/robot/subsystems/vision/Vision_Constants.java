@@ -22,7 +22,8 @@ import edu.wpi.first.math.util.Units;
 
 public class Vision_Constants {
     // AprilTag layout
-    public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    public static AprilTagFieldLayout aprilTagLayout =
+            AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
     // Camera names, must match names configured on coprocessor
     public static String camera0Name = "MidLeftCamera";
@@ -32,14 +33,21 @@ public class Vision_Constants {
 
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
-    public static final Transform3d robotToCamera0 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(8), Units.inchesToMeters(12)),
-            new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
-    
-    public static final Transform3d robotToCamera1 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(-8), Units.inchesToMeters(12)),
-            new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
+    public static final Transform3d robotToCamera0 =
+            new Transform3d(
+                    new Translation3d(
+                            Units.inchesToMeters(12),
+                            Units.inchesToMeters(8),
+                            Units.inchesToMeters(12)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
 
+    public static final Transform3d robotToCamera1 =
+            new Transform3d(
+                    new Translation3d(
+                            Units.inchesToMeters(12),
+                            Units.inchesToMeters(-8),
+                            Units.inchesToMeters(12)),
+                    new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
 
     // Basic filtering thresholds
     public static double maxAmbiguity = 0.3;
@@ -52,12 +60,14 @@ public class Vision_Constants {
 
     // Standard deviation multipliers for each camera
     // (Adjust to trust some cameras more than others)
-    public static double[] cameraStdDevFactors = new double[] {
-        1.0, // Camera 0
-        1.0 // Camera 1
-    };
+    public static double[] cameraStdDevFactors =
+            new double[] {
+                1.0, // Camera 0
+                1.0 // Camera 1
+            };
 
     // Multipliers to apply for MegaTag 2 observations
     public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
-    public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY; // No rotation data available
+    public static double angularStdDevMegatag2Factor =
+            Double.POSITIVE_INFINITY; // No rotation data available
 }
