@@ -26,7 +26,7 @@ public class ShooterConfig {
         middleShooterConfig.closedLoop
             .pid(
                 ShooterConstants.kMiddleShooterP, 
-                ShooterConstants.kI, 
+                0.0, 
                 ShooterConstants.kMiddleShooterD, 
                 ClosedLoopSlot.kSlot0)
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -47,7 +47,7 @@ public class ShooterConfig {
         leftShooterConfig.closedLoop
             .pid(
                 ShooterConstants.kLeftShooterP, 
-                ShooterConstants.kI, 
+                0.0, 
                 ShooterConstants.kLeftShooterD, 
                 ClosedLoopSlot.kSlot0)
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
@@ -68,7 +68,7 @@ public class ShooterConfig {
         rightShooterConfig.closedLoop
             .pid(
                 ShooterConstants.kRightShooterP, 
-                ShooterConstants.kI, 
+                0.0, 
                 ShooterConstants.kRightShooterD, 
                 ClosedLoopSlot.kSlot0)
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)

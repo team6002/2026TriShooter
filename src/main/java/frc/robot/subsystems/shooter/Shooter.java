@@ -33,15 +33,39 @@ public class Shooter extends SubsystemBase {
         return io.getReference();
     }
 
-    public double getVelocity() {
+    public double getMiddleVelocity() {
         return io.getMiddleVelocity();
     }
 
-    public double getCurrent() {
+    public double getMiddleCurrent() {
         return io.getMiddleCurrent();
     }
 
-    public double getVoltage() {
+    public double getMiddleVoltage() {
+        return io.getMiddleVoltage();
+    }
+
+    public double getLeftVelocity() {
+        return io.getLeftVelocity();
+    }
+
+    public double getLeftCurrent() {
+        return io.getMiddleCurrent();
+    }
+
+    public double getLeftVoltage() {
+        return io.getMiddleVoltage();
+    }
+
+    public double getRightVelocity() {
+        return io.getRightVelocity();
+    }
+
+    public double getRightCurrent() {
+        return io.getMiddleCurrent();
+    }
+
+    public double getRightVoltage() {
         return io.getMiddleVoltage();
     }
 
@@ -67,6 +91,19 @@ public class Shooter extends SubsystemBase {
 
     public void stopShooting(){
         io.stopShooting();
+    }
+
+    public double getVelocityRadPerSec(int index){
+        return switch (index) {
+            case 0 -> io.getLeftVelocity();
+            case 1 -> io.getMiddleVelocity();
+            case 2 -> io.getRightVelocity();
+            default -> io.getMiddleVelocity();
+        };
+    }
+
+    public void spawnSimulatedBall(int index){
+        io.spawnSimulatedBall(index);
     }
 
     @Override

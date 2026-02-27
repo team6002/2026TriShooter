@@ -256,7 +256,7 @@ public class RobotContainer {
            driver.scoreButton().whileTrue(new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.35, Math.toRadians(21000)));
            driver.rightBumper().whileTrue(new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.2, Math.toRadians(18000)));
         }else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM){
-            driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation));
+            driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation, hood, shooter));
         }
     }
 

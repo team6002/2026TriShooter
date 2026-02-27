@@ -19,7 +19,7 @@ public class AUTO_TrenchShootFirst implements Auto{
             setAutoStartPose("TrenchShootThenSwipeHalfMiddle", mirrored, robot.drive)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.2, Math.toRadians(18000)).withTimeout(5)
-                : new ShootFuelSim(robot.driveSimulation)
+                : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Intake(robot.intake)
                 : Commands.none()
@@ -29,7 +29,7 @@ public class AUTO_TrenchShootFirst implements Auto{
             //shoot fuel
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.2, Math.toRadians(18000)).withTimeout(5)
-                : new ShootFuelSim(robot.driveSimulation)
+                : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter)
             //put intake down and swipe the second half of our side of the field
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Intake(robot.intake)
@@ -39,7 +39,7 @@ public class AUTO_TrenchShootFirst implements Auto{
             //shoot fuel
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.2, Math.toRadians(18000)).withTimeout(5)
-                : new ShootFuelSim(robot.driveSimulation)
+                : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter)
         );
     }
 }

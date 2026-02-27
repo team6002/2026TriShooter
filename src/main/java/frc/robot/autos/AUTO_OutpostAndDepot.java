@@ -23,7 +23,7 @@ public class AUTO_OutpostAndDepot implements Auto{
             ,followPath("ShootOutpost", mirrored)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.35, Math.toRadians(21000)).withTimeout(5)
-                : new ShootFuelSim(robot.driveSimulation)
+                : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter)
             ,followPath("IntakeDepotFromOutpost", mirrored)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Intake(robot.intake)
@@ -31,7 +31,7 @@ public class AUTO_OutpostAndDepot implements Auto{
             ,followPath("ShootFromDepot", mirrored)
             ,Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? 
                 new CMD_Shoot(robot.conveyor, robot.hood, robot.intake, robot.kicker, robot.shooter, 0.35, Math.toRadians(21000)).withTimeout(5)
-                : new ShootFuelSim(robot.driveSimulation)
+                : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter)
         );
     }
 }

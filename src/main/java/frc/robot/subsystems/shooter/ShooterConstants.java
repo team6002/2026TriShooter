@@ -1,5 +1,8 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Kilograms;
+import static edu.wpi.first.units.Units.Pounds;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.util.Units;
 import frc.robot.utils.CustomPIDs.MapleShooterOptimization;
@@ -17,7 +20,7 @@ public class ShooterConstants {
     public static final double kMiddleShooterV = 0.019;
     public static final double kRightShooterV = 0.0202;
 
-    public static final double kLeftShooterP = 0.0165; // .015
+    public static final double kLeftShooterP = 0.0165;
     public static final double kMiddleShooterP = 0.0165;
     public static final double kRightShooterP = 0.0165;
 
@@ -25,27 +28,45 @@ public class ShooterConstants {
     public static final double kMiddleShooterD = 0.00075;
     public static final double kRightShooterD = 0.00075;
 
-    public static final double kI = 0.0;
-
-    public static final double kPSim = 0.0;
-    public static final double kISim = 0.0;
-    public static final double kDSim = 0.0;
-
-    public static final double kFFSim = 0.0;
+    public static final double kPSim = 0.0165;
+    public static final double kDSim = 0.00075;
 
     public static final double kSSim = 0.0;
-    public static final double kVSim = 0.0;
-    public static final double kGSim = 0.0;
-    public static final double kASim = 0.0;
+    public static final double kVSim = 0.0198425;
 
     public static final boolean kInverted = true;
+
     public static final double kMinOutput = -1;
-    public
-     static final double kMaxOutput = 1;
+    public static final double kMaxOutput = 1;
 
-    public static final double kHolding = 2;
-
+    // sim
     public static final double kGearRatio = 1;
+    public static final double kFuelMassKg = Kilograms.convertFrom(0.5, Pounds);
+    public static final double kFuelDiameterMeters = Units.inchesToMeters(5.91);
+    public static final double kShooterMOI = 0.00176;
+    public static final double kFlywheelRadiusMeters = Units.inchesToMeters(2);
+    //distance between hood and flywheel
+    public static final double kGapMeters = Units.inchesToMeters(5.0);
+    //rough COF between polyurethane foam game piece and TPU
+    public static final double kWheelCOF = .75;
+    public static final double kNormalForceNewtons = 130;
+
+    public static double getExitDistMeters(double hoodRotations){
+        // Current exit angle in degrees
+        double exitAngle = 85.0 - (40.0 * hoodRotations);
+        
+        // Assuming entry is fixed at the "bottom" of the arc (e.g., 135 degrees)
+        // You'll need to check your CAD for the actual entry transition point
+        double entryAngle = -90; 
+        
+        double deltaThetaDegrees = exitAngle - entryAngle;
+        double deltaThetaRadians = Math.toRadians(deltaThetaDegrees);
+        
+        // Path radius (Wheel radius + half ball thickness)
+        double rPath = kFlywheelRadiusMeters + kGapMeters / 2; 
+        
+        return rPath * deltaThetaRadians;
+    }
 
     public static final double kStartOnTargetVel = Math.toRadians(720); // radians
 
