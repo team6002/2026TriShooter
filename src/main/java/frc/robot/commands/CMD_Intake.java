@@ -16,15 +16,15 @@ public class CMD_Intake extends Command{
 
     @Override
     public void initialize(){
-        intake.setVoltage(IntakeConstants.kOn);
-
         intake.setExtenderLowCurrentMode(false);
         intake.setExtenderReference(ExtenderConstants.kExtended);
     }
 
     @Override
-    public boolean isFinished(){
-        return intake.getExtenderInPosition();
+    public void execute(){
+        if(intake.getExtenderInPosition()){
+            intake.setVoltage(IntakeConstants.kOn);
+        }
     }
 
     @Override

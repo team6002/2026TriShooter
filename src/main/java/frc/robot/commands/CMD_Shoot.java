@@ -59,14 +59,18 @@ public class CMD_Shoot extends Command {
             intake.setExtenderLowCurrentMode(false);
             intake.setExtenderReference(ExtenderConstants.kStow);
 
-            shooting = true;
             timer.start();
+        }
+
+        if(timer.get() > 3 && !shooting){
+            shooting = true;
+            timer.reset();
         }
 
         if (shooting) {
             // Toggles state every 0.5 seconds
-            boolean shouldBeStowed = ((int) (timer.get() / 0.5) % 2 == 0);
-            intake.setExtenderReference(shouldBeStowed ? ExtenderConstants.kStow : ExtenderConstants.kExtended);
+            boolean shouldBeStowed = ((int) (timer.get() / 1) % 2 == 0);
+            intake.setExtenderReference(shouldBeStowed ? ExtenderConstants.kHome : ExtenderConstants.kStow);
         }
     }
 }

@@ -60,9 +60,9 @@ public class IntakeConstants {
         public static final double kMinOutput = -1;
         public static final double kMaxOutput = 1;
 
-        public static final double kHome = Math.toRadians(135);
+        public static final double kHome = Math.toRadians(40);
         public static final double kStow = Math.toRadians(165);
-        public static final double kExtended = Math.toRadians(265);
+        public static final double kExtended = Math.toRadians(235);
 
         public static final double kMaxVel = Math.toRadians(36000);
         public static final double kMaxAccel = Math.toRadians(72000);
