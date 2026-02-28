@@ -3,6 +3,7 @@ package frc.robot.autos;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ShootCommand;
 // import frc.robot.commands.drive.AutoAlignToMiddle;
@@ -17,8 +18,9 @@ public class AUTO_MiddleRightSafe implements Auto {
         return Commands.sequence(
                 setAutoStartPose("gotoHPMRS", false, robot.drive),
                 followPath("gotoHPMRS", false),
-                new InstantCommand(() -> IntakeIOSim.putFuelInHopperSim(24)),
-                new ShootCommand(robot)
+                new WaitCommand(2)
+                ,followPath("shootMLS", mirrored)
+                ,new ShootCommand(robot)
                 // ,new AutoAlignToMiddle(robot.drive)
                 );
     }
