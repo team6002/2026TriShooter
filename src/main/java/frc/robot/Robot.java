@@ -6,7 +6,6 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -130,17 +129,17 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateTelemetryAndLED();
-        if (!(robotContainer.vision.lastResult(robotContainer.drive, 0) == null
-                || robotContainer.vision.lastResult(robotContainer.drive, 1) == null)) {
-            Logger.recordOutput(
-                    "Vision/Camera0/DistanceFromClosestTag",
-                    Units.metersToInches(
-                            robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
-            Logger.recordOutput(
-                    "Vision/Camera1/DistanceFromClosestTag",
-                    Units.metersToInches(
-                            robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
-        }
+        // if (!(robotContainer.vision.lastResult(robotContainer.drive, 0) == null
+        //         || robotContainer.vision.lastResult(robotContainer.drive, 1) == null)) {
+        //     Logger.recordOutput(
+        //             "Vision/Camera0/DistanceFromClosestTag",
+        //             Units.metersToInches(
+        //                     robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
+        //     Logger.recordOutput(
+        //             "Vision/Camera1/DistanceFromClosestTag",
+        //             Units.metersToInches(
+        //                     robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
+        // }
     }
 
     /** This function is called once when the robot is disabled. */

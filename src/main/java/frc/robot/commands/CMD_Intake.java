@@ -10,8 +10,6 @@ public class CMD_Intake extends Command {
 
     public CMD_Intake(Intake intake) {
         this.intake = intake;
-
-        addRequirements(intake);
     }
 
     @Override
@@ -21,20 +19,18 @@ public class CMD_Intake extends Command {
     }
 
     @Override
-    public void execute() {
-        if (intake.getExtenderInPosition()) {
-            intake.setVoltage(IntakeConstants.kOn);
-        }
+    public boolean isFinished() {
+        return intake.getExtenderInPosition();
     }
 
     @Override
     public void end(boolean interrupted) {
         if (interrupted) {
             intake.setExtenderLowCurrentMode(false);
-            intake.setVoltage(IntakeConstants.kOff);
             return;
         }
 
+        intake.setVoltage(IntakeConstants.kOn);
         intake.setExtenderLowCurrentMode(true);
     }
 }

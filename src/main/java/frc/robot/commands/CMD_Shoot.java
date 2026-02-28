@@ -6,6 +6,7 @@ import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.kicker.KickerConstants;
@@ -61,6 +62,8 @@ public class CMD_Shoot extends Command {
 
         shooter.setReference(shooterSupplier.getAsDouble());
         hood.setReference(hoodSupplier.getAsDouble());
+
+        intake.setVoltage(IntakeConstants.kOff);
     }
 
     @Override
@@ -75,7 +78,7 @@ public class CMD_Shoot extends Command {
             timer.start();
         }
 
-        if (timer.get() > 3 && !shooting) {
+        if (timer.get() > 0.25 && !shooting) {
             shooting = true;
             timer.reset();
         }
@@ -83,7 +86,7 @@ public class CMD_Shoot extends Command {
         if (shooting) {
             // Toggles state every 0.5 seconds
             boolean shouldBeStowed = ((int) (timer.get() / 1) % 2 == 0);
-            intake.setExtenderReference(shouldBeStowed ? ExtenderConstants.kHome : ExtenderConstants.kStow);
+            intake.setExtenderReference(shouldBeStowed ? ExtenderConstants.kStow : ExtenderConstants.kHome);
         }
     }
 }
