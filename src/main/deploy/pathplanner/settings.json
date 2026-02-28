@@ -1,6 +1,6 @@
 {
-  "robotWidth": 0.85,
-  "robotLength": 0.85,
+  "robotWidth": 0.8382,
+  "robotLength": 0.838,
   "holonomicMode": true,
   "pathFolders": [
     "2877Auto",
@@ -21,8 +21,8 @@
     "Trench"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.0,
-  "defaultMaxAccel": 4.0,
+  "defaultMaxVel": 1.0,
+  "defaultMaxAccel": 1.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "defaultNominalVoltage": 12.0,

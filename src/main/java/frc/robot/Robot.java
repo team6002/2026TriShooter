@@ -130,8 +130,11 @@ public class Robot extends LoggedRobot {
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
         robotContainer.updateTelemetryAndLED();
-        if (!(robotContainer.vision.lastResult(robotContainer.drive, 0) == null
-                || robotContainer.vision.lastResult(robotContainer.drive, 1) == null)) {
+
+        var r0 = robotContainer.vision.lastResult(robotContainer.drive, 0);
+        var r1 = robotContainer.vision.lastResult(robotContainer.drive, 1);
+
+        if (r0 != null || r1 != null) {
             Logger.recordOutput(
                     "Vision/Camera0/DistanceFromClosestTag",
                     Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));

@@ -37,4 +37,9 @@ public class CMD_Intake extends Command {
 
         intake.setExtenderLowCurrentMode(true);
     }
+
+    @Override
+    public boolean isFinished() {
+        return intake.getExtenderInPosition();
+    }
 }

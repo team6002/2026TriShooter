@@ -16,28 +16,44 @@
     },
     {
       "anchor": {
-        "x": 5.177660485021397,
-        "y": 0.418644793152639
+        "x": 6.445649072753208,
+        "y": 3.5
       },
       "prevControl": {
-        "x": 6.859686162624821,
-        "y": 0.4962767475035661
+        "x": 6.820870185449357,
+        "y": 4.274365192582025
       },
       "nextControl": {
-        "x": 2.4394722533280984,
-        "y": 0.2922668747667954
+        "x": 6.207230869753851,
+        "y": 3.0079627679955103
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0039657631954344,
-        "y": 2.5405848787446508
+        "x": 5.34586305278174,
+        "y": 0.5609700427960058
       },
       "prevControl": {
-        "x": 2.9392724679029953,
-        "y": 2.2429957203994295
+        "x": 6.393906249750721,
+        "y": 0.5729135550121764
+      },
+      "nextControl": {
+        "x": 0.8043937232524963,
+        "y": 0.5092154065620551
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.4087874465049923,
+        "y": 2.372382310984309
+      },
+      "prevControl": {
+        "x": 2.5244289481787474,
+        "y": 2.5940285225256723
       },
       "nextControl": null,
       "isLocked": false,
@@ -47,15 +63,19 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.8272921108742011,
-      "rotationDegrees": 0.0
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.9957356076759052,
+      "rotationDegrees": 90.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -63,7 +83,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 37.23483398157455
   },
   "reversed": false,
   "folder": "Middle HF",

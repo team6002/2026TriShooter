@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -97,6 +99,7 @@ public class RobotContainer {
 
                 this.vision = new Vision(
                         drive,
+                        // drive,
                         new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
                         new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
 
@@ -124,6 +127,7 @@ public class RobotContainer {
 
                 vision = new Vision(
                         drive,
+                        // drive,
                         new VisionIOPhotonVisionSim(
                                 Vision_Constants.camera0Name,
                                 Vision_Constants.robotToCamera0,
@@ -203,31 +207,6 @@ public class RobotContainer {
                     new AUTO_OutpostAndDepot().getAutoCommand(this, false));
 
             autoChooser.addDefaultOption("IntakePath", new AUTO_IntakePath().getAutoCommand(this, false));
-
-            autoChooser.addOption(
-                    "Auto Middle Trench Trench Left (half middle) #T",
-                    new AUTO_MiddleTrenchTrench().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Trench Trench Right (half middle) #T",
-                    new AUTO_MiddleTrenchTrench().getAutoCommand(this, false));
-            autoChooser.addOption(
-                    "Auto Middle Trench Bump Left (half middle) #T",
-                    new AUTO_MiddleBumpTrench().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Trench Bump Right (half middle) #T",
-                    new AUTO_MiddleBumpTrench().getAutoCommand(this, false));
-            autoChooser.addOption(
-                    "Auto Middle Bump Trench Left (half middle) #T",
-                    new AUTO_MiddleTrenchBump().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Bump Trench Right (half middle) #T",
-                    new AUTO_MiddleTrenchBump().getAutoCommand(this, false));
-            autoChooser.addOption(
-                    "Auto Middle Bump Bump Left (half middle) #T",
-                    new AUTO_MiddleBumpBump().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Bump Bump Right (half middle) #T",
-                    new AUTO_MiddleBumpBump().getAutoCommand(this, false));
 
             autoChooser.addOption(
                     "Auto Middle Left Safe (half middle) #T", new AUTO_MiddleLeftSafe().getAutoCommand(this, false));
@@ -351,6 +330,12 @@ public class RobotContainer {
                 "FieldSimulation/BlueScore", SimulatedArena.getInstance().getScore(true));
         Logger.recordOutput(
                 "FieldSimulation/RedScore", SimulatedArena.getInstance().getScore(false));
+
+        Logger.recordOutput(
+                "ID 29",
+                AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark)
+                        .getTagPose(29)
+                        .get());
     }
 
     public static boolean motorBrakeEnabled = false;

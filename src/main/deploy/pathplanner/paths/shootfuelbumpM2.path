@@ -16,12 +16,12 @@
     },
     {
       "anchor": {
-        "x": 3.1592296718972896,
-        "y": 2.462952924393724
+        "x": 2.3958487874465044,
+        "y": 2.5535235378031382
       },
       "prevControl": {
-        "x": 3.3003977728297653,
-        "y": 2.2566241399764295
+        "x": 2.4993580599144076,
+        "y": 2.035977175463623
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,16 +30,16 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.6567164179104417,
-      "rotationDegrees": -45.0
+      "waypointRelativePos": 0.5501066098081008,
+      "rotationDegrees": 45.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -47,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 33.690067525979785
   },
   "reversed": false,
   "folder": "Middle HF",

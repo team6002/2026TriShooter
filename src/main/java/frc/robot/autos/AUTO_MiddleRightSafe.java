@@ -15,8 +15,8 @@ public class AUTO_MiddleRightSafe implements Auto {
         return Commands.sequence(
                 setAutoStartPose("gotoHPMRS", false, robot.drive),
                 followPath("gotoHPMRS", false),
-                new WaitCommand(2),
-                followPath("shootMLS", mirrored),
+                new WaitCommand(1),
+                followPath("shootMRS", mirrored),
                 new ShootCommand(robot)
                 // ,new AutoAlignToMiddle(robot.drive)
                 );

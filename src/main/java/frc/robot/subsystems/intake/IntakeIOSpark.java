@@ -7,7 +7,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -163,7 +162,8 @@ public class IntakeIOSpark implements IntakeIO {
     @Override
     public boolean getExtenderInPosition() {
         double positionError = Math.abs(intakeExtenderEncoder.getPosition() - intakeExtenderReference);
-        return positionError < ExtenderConstants.kPositionTolerance;
+        // return positionError < ExtenderConstants.kPositionTolerance;
+        return true;
     }
 
     @Override
@@ -204,6 +204,7 @@ public class IntakeIOSpark implements IntakeIO {
         // horizontal is 270, offset to 0
 
         double ff = -ExtenderConstants.kG * (Math.cos(getExtenderPosition() - Math.toRadians(270)));
-        intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
+        // intakeExtenderController.setSetpoint(intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
+        intakeExtenderController.setSetpoint(0, ControlType.kVoltage);
     }
 }
