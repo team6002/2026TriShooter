@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8047880110722481,
-        "y": 0.8133941090877616
+        "x": 1.3071067811865476,
+        "y": 1.3771067811865476
       },
       "isLocked": false,
       "linkedName": "IntakeOutpost"
@@ -17,15 +17,15 @@
     {
       "anchor": {
         "x": 1.75,
-        "y": 1.165
+        "y": 4.0
       },
       "prevControl": {
-        "x": 1.545211988927752,
-        "y": 1.0216058909122385
+        "x": 2.4571067811865475,
+        "y": 3.2928932188134525
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootOutpost"
+      "linkedName": "ShootFromClimb"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Outpost+Depot",

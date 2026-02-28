@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
@@ -96,9 +95,10 @@ public class RobotContainer {
                 hood = new Hood(new HoodIOSpark());
 
                 this.vision = new Vision(
-                        drive,
-                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
-                        new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
+                        drive
+                        // new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
+                        // new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1)
+                        );
 
                 break;
             case SIM:
@@ -199,35 +199,12 @@ public class RobotContainer {
                     new AUTO_TrenchDepot().getAutoCommand(this, false));
 
             autoChooser.addOption(
-                    "Outpost + Depot (Start intake facing driver station wall in the middle of right trench, run to outpost, wait for balls to drop, shoot, run over to depot, shoot)",
-                    new AUTO_OutpostAndDepot().getAutoCommand(this, false));
+                    "Outpost (Start intake facing outpost on depot side, drive in front of outpost, shoot)",
+                    new AUTO_Outpost().getAutoCommand(this, false));
 
-            autoChooser.addDefaultOption("IntakePath", new AUTO_IntakePath().getAutoCommand(this, false));
+            autoChooser.addOption("Outpost + Depot", new AUTO_OutpostAndDepot().getAutoCommand(this, false));
 
-            autoChooser.addOption(
-                    "Auto Middle Trench Trench Left (half middle) #T",
-                    new AUTO_MiddleTrenchTrench().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Trench Trench Right (half middle) #T",
-                    new AUTO_MiddleTrenchTrench().getAutoCommand(this, false));
-            autoChooser.addOption(
-                    "Auto Middle Trench Bump Left (half middle) #T",
-                    new AUTO_MiddleBumpTrench().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Trench Bump Right (half middle) #T",
-                    new AUTO_MiddleBumpTrench().getAutoCommand(this, false));
-            autoChooser.addOption(
-                    "Auto Middle Bump Trench Left (half middle) #T",
-                    new AUTO_MiddleTrenchBump().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Bump Trench Right (half middle) #T",
-                    new AUTO_MiddleTrenchBump().getAutoCommand(this, false));
-            autoChooser.addOption(
-                    "Auto Middle Bump Bump Left (half middle) #T",
-                    new AUTO_MiddleBumpBump().getAutoCommand(this, true));
-            autoChooser.addOption(
-                    "Auto Middle Bump Bump Right (half middle) #T",
-                    new AUTO_MiddleBumpBump().getAutoCommand(this, false));
+            autoChooser.addOption("IntakePath", new AUTO_IntakePath().getAutoCommand(this, false));
 
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
@@ -237,14 +214,15 @@ public class RobotContainer {
         }
 
         // Set up SysId routines
-        autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-        autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption(
-                "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-        autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-        autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption("Drive Wheel Radius Characterization",
+        // DriveCommands.wheelRadiusCharacterization(drive));
+        // autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
+        // autoChooser.addOption(
+        //         "Drive SysId (Quasistatic Forward)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption(
+        //         "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+        // autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+        // autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
         // Configure the button bindings
         configureButtonBindings();
@@ -294,7 +272,8 @@ public class RobotContainer {
         driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
 
         if (Robot.CURRENT_ROBOT_MODE == RobotMode.REAL) {
-            driver.intakeButton().whileTrue(new CMD_Intake(intake));
+            driver.intakeButton().whileTrue(new CMD_Intake(intake)).onFalse(intake.runVoltage(IntakeConstants.kOff));
+
             driver.yButton().onTrue(new CMD_Stow(intake));
             driver.aButton().onTrue(new CMD_Home(intake));
 

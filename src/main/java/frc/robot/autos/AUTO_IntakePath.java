@@ -2,7 +2,6 @@ package frc.robot.autos;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.commands.*;
@@ -16,9 +15,8 @@ public class AUTO_IntakePath implements Auto {
         return Commands.sequence(
                 // reset odometry and put intake down
                 setAutoStartPose("IntakePath", mirrored, robot.drive),
-                new ParallelCommandGroup(
-                        Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? new CMD_Intake(robot.intake) : Commands.none(),
-                        // run out and intake half of our side of the field
-                        followPath("IntakePath", mirrored)));
+                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? new CMD_Intake(robot.intake) : Commands.none(),
+                // run out and intake half of our side of the field
+                followPath("IntakePath", mirrored));
     }
 }

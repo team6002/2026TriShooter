@@ -170,30 +170,18 @@ public class IntakeIOSpark implements IntakeIO {
     public void setExtenderLowCurrentMode(boolean lowCurrentMode) {
         if (lowCurrentMode) {
             SparkFlexConfig newLeadConfig = new SparkFlexConfig();
-            newLeadConfig.apply(IntakeConfig.intakeConfig);
+            newLeadConfig.apply(IntakeConfig.intakeExtenderConfig);
             newLeadConfig.smartCurrentLimit(5);
 
-            SparkFlexConfig newFollowerConfig = new SparkFlexConfig();
-            newFollowerConfig.apply(IntakeConfig.intakeFollowerConfig);
-            newFollowerConfig.smartCurrentLimit(5);
-
-            intakeMotor.configureAsync(
+            intakeExtenderMotor.configureAsync(
                     newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-            intakeFollowerMotor.configureAsync(
-                    newFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         } else {
             SparkFlexConfig newLeadConfig = new SparkFlexConfig();
-            newLeadConfig.apply(IntakeConfig.intakeConfig);
+            newLeadConfig.apply(IntakeConfig.intakeExtenderConfig);
             newLeadConfig.smartCurrentLimit(40);
 
-            SparkFlexConfig newFollowerConfig = new SparkFlexConfig();
-            newFollowerConfig.apply(IntakeConfig.intakeFollowerConfig);
-            newFollowerConfig.smartCurrentLimit(40);
-
-            intakeMotor.configureAsync(
+            intakeExtenderMotor.configureAsync(
                     newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-            intakeFollowerMotor.configureAsync(
-                    newFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         }
     }
 
