@@ -230,12 +230,10 @@ public class RobotContainer {
                     new AUTO_MiddleBumpBump().getAutoCommand(this, false));
 
             autoChooser.addOption(
-                    "Auto Middle Left Safe (half middle) #T",
-                    new AUTO_MiddleLeftSafe().getAutoCommand(this, false));
+                    "Auto Middle Left Safe (half middle) #T", new AUTO_MiddleLeftSafe().getAutoCommand(this, false));
 
             autoChooser.addOption(
-                    "Auto Middle Right Safe (half middle) #T",
-                    new AUTO_MiddleRightSafe().getAutoCommand(this, false));
+                    "Auto Middle Right Safe (half middle) #T", new AUTO_MiddleRightSafe().getAutoCommand(this, false));
 
             autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
             autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));

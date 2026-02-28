@@ -134,12 +134,10 @@ public class Robot extends LoggedRobot {
                 || robotContainer.vision.lastResult(robotContainer.drive, 1) == null)) {
             Logger.recordOutput(
                     "Vision/Camera0/DistanceFromClosestTag",
-                    Units.metersToInches(
-                            robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
+                    Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
             Logger.recordOutput(
                     "Vision/Camera1/DistanceFromClosestTag",
-                    Units.metersToInches(
-                            robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
+                    Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
         }
     }
 

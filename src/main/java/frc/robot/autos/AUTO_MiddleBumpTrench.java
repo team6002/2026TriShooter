@@ -10,8 +10,7 @@ import org.json.simple.parser.ParseException;
 
 public class AUTO_MiddleBumpTrench implements Auto {
     @Override
-    public Command getAutoCommand(RobotContainer robot, boolean mirrored)
-            throws IOException, ParseException {
+    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
         return Commands.sequence(
                 setAutoStartPose("swipehalfbumpM2", mirrored, robot.drive),
                 followPath("swipehalfbumpM2", mirrored),
