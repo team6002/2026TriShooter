@@ -199,7 +199,7 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public void periodic() {
-        intakeController.setSetpoint(intakeReference, intakeType);
+        // intakeController.setSetpoint(intakeReference, intakeType);
 
         // horizontal is 270, offset to 0
 

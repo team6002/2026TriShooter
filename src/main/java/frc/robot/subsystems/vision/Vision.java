@@ -103,12 +103,14 @@ public class Vision extends SubsystemBase {
             }
 
             // Loop over pose observations
+
             for (var observation : inputs[cameraIndex].poseObservations) {
                 // Check whether to reject pose
                 boolean rejectPose = observation.tagCount() == 0 // Must have at least one tag
                         || (observation.tagCount() == 1
                                 && observation.ambiguity() > maxAmbiguity) // Cannot be high ambiguity
                         || Math.abs(observation.pose().getZ()) > maxZError // Must have realistic Z coordinate
+                        || observation.averageTagDistance() > 4
 
                         // Must be within the field boundaries
                         || observation.pose().getX() < 0.0
