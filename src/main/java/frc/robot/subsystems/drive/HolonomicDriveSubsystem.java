@@ -26,143 +26,151 @@ import org.ironmaple.utils.FieldMirroringUtils;
 import org.littletonrobotics.junction.Logger;
 
 public interface HolonomicDriveSubsystem extends Subsystem {
-    /**
-     * runs a ChassisSpeeds without doing any pre-processing
-     *
-     * @param speeds a discrete chassis speed, robot-centric
-     */
-    void runRobotCentricChassisSpeeds(ChassisSpeeds speeds);
+  /**
+   * runs a ChassisSpeeds without doing any pre-processing
+   *
+   * @param speeds a discrete chassis speed, robot-centric
+   */
+  void runRobotCentricChassisSpeeds(ChassisSpeeds speeds);
 
-    /**
-     * runs a ChassisSpeeds without doing any pre-processing
-     *
-     * @param speeds a discrete chassis speed, robot-centric
-     */
-    void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards);
+  /**
+   * runs a ChassisSpeeds without doing any pre-processing
+   *
+   * @param speeds a discrete chassis speed, robot-centric
+   */
+  void runRobotCentricSpeedsWithFeedforwards(ChassisSpeeds speeds, DriveFeedforwards feedforwards);
 
-    /** Returns the current odometry Pose. */
-    Pose2d getPose();
+  /** Returns the current odometry Pose. */
+  Pose2d getPose();
 
-    default Rotation2d getFacing() {
-        return getPose().getRotation();
+  default Rotation2d getFacing() {
+    return getPose().getRotation();
+  }
+
+  /** Resets the current odometry Pose to a given Pose */
+  void setPose(Pose2d currentPose);
+
+  /**
+   * @return the measured(actual) velocities of the chassis, robot-relative
+   */
+  ChassisSpeeds getMeasuredChassisSpeedsRobotRelative();
+
+  default ChassisSpeeds getMeasuredChassisSpeedsFieldRelative() {
+    return ChassisSpeeds.fromRobotRelativeSpeeds(
+        getMeasuredChassisSpeedsRobotRelative(), getFacing());
+  }
+
+  double getChassisMaxLinearVelocityMetersPerSec();
+
+  double getChassisMaxAccelerationMetersPerSecSq();
+
+  double getChassisMaxAngularVelocity();
+
+  double getChassisMaxAngularAccelerationRadPerSecSq();
+
+  default PathConstraints getChassisConstrains(double speedMultiplier) {
+    return new PathConstraints(
+        getChassisMaxLinearVelocityMetersPerSec() * speedMultiplier,
+        getChassisMaxAccelerationMetersPerSecSq() * speedMultiplier * speedMultiplier,
+        getChassisMaxAngularVelocity() * speedMultiplier,
+        getChassisMaxAngularAccelerationRadPerSecSq() * speedMultiplier * speedMultiplier);
+  }
+
+  /**
+   * runs a driverstation-centric ChassisSpeeds
+   *
+   * @param driverStationCentricSpeeds a continuous chassis speeds, driverstation-centric, normally
+   *     from a gamepad
+   */
+  default void runDriverStationCentricChassisSpeeds(
+      ChassisSpeeds driverStationCentricSpeeds, boolean discretize) {
+    if (discretize)
+      driverStationCentricSpeeds =
+          ChassisSpeeds.discretize(driverStationCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
+    final Rotation2d driverStationFacing =
+        FieldMirroringUtils.getCurrentAllianceDriverStationFacing();
+    runRobotCentricChassisSpeeds(
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            driverStationCentricSpeeds, getPose().getRotation().minus(driverStationFacing)));
+  }
+
+  /**
+   * runs a field-centric ChassisSpeeds
+   *
+   * @param fieldCentricSpeeds a continuous chassis speeds, field-centric, normally from a pid
+   *     position controller
+   */
+  default void runFieldCentricChassisSpeeds(ChassisSpeeds fieldCentricSpeeds, boolean discretize) {
+    if (discretize)
+      fieldCentricSpeeds =
+          ChassisSpeeds.discretize(fieldCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
+    runRobotCentricChassisSpeeds(
+        ChassisSpeeds.fromFieldRelativeSpeeds(fieldCentricSpeeds, getPose().getRotation()));
+  }
+
+  default void stop() {
+    runRobotCentricChassisSpeeds(new ChassisSpeeds());
+  }
+
+  default RobotConfig defaultPathPlannerRobotConfig() {
+    return new RobotConfig(
+        DriveConstants.ROBOT_MASS,
+        DriveConstants.ROBOT_MOI,
+        new ModuleConfig(
+            DriveConstants.WHEEL_RADIUS,
+            DriveConstants.CHASSIS_MAX_VELOCITY,
+            DriveConstants.WHEEL_COEFFICIENT_OF_FRICTION,
+            DriveConstants.DRIVE_MOTOR_MODEL.withReduction(DriveConstants.DRIVE_GEAR_RATIO),
+            DriveConstants.DRIVE_ANTI_SLIP_TORQUE_CURRENT_LIMIT,
+            1),
+        DriveConstants.MODULE_TRANSLATIONS);
+  }
+
+  default void configHolonomicPathPlannerAutoBuilder(Field2d field) {
+    RobotConfig robotConfig = defaultPathPlannerRobotConfig();
+    System.out.println("Generated pathplanner robot config with drive constants: ");
+    PPRobotConfigPrinter.printConfig(robotConfig);
+    try {
+      robotConfig = RobotConfig.fromGUISettings();
+      System.out.println("GUI robot config detected in deploy directory, switching: ");
+      PPRobotConfigPrinter.printConfig(robotConfig);
+    } catch (Exception e) {
+      DriverStation.reportError(e.getMessage(), false);
     }
-
-    /** Resets the current odometry Pose to a given Pose */
-    void setPose(Pose2d currentPose);
-
-    /**
-     * @return the measured(actual) velocities of the chassis, robot-relative
-     */
-    ChassisSpeeds getMeasuredChassisSpeedsRobotRelative();
-
-    default ChassisSpeeds getMeasuredChassisSpeedsFieldRelative() {
-        return ChassisSpeeds.fromRobotRelativeSpeeds(getMeasuredChassisSpeedsRobotRelative(), getFacing());
-    }
-
-    double getChassisMaxLinearVelocityMetersPerSec();
-
-    double getChassisMaxAccelerationMetersPerSecSq();
-
-    double getChassisMaxAngularVelocity();
-
-    double getChassisMaxAngularAccelerationRadPerSecSq();
-
-    default PathConstraints getChassisConstrains(double speedMultiplier) {
-        return new PathConstraints(
-                getChassisMaxLinearVelocityMetersPerSec() * speedMultiplier,
-                getChassisMaxAccelerationMetersPerSecSq() * speedMultiplier * speedMultiplier,
-                getChassisMaxAngularVelocity() * speedMultiplier,
-                getChassisMaxAngularAccelerationRadPerSecSq() * speedMultiplier * speedMultiplier);
-    }
-
-    /**
-     * runs a driverstation-centric ChassisSpeeds
-     *
-     * @param driverStationCentricSpeeds a continuous chassis speeds, driverstation-centric,
-     *     normally from a gamepad
-     */
-    default void runDriverStationCentricChassisSpeeds(ChassisSpeeds driverStationCentricSpeeds, boolean discretize) {
-        if (discretize)
-            driverStationCentricSpeeds =
-                    ChassisSpeeds.discretize(driverStationCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
-        final Rotation2d driverStationFacing = FieldMirroringUtils.getCurrentAllianceDriverStationFacing();
-        runRobotCentricChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
-                driverStationCentricSpeeds, getPose().getRotation().minus(driverStationFacing)));
-    }
-
-    /**
-     * runs a field-centric ChassisSpeeds
-     *
-     * @param fieldCentricSpeeds a continuous chassis speeds, field-centric, normally from a pid
-     *     position controller
-     */
-    default void runFieldCentricChassisSpeeds(ChassisSpeeds fieldCentricSpeeds, boolean discretize) {
-        if (discretize) fieldCentricSpeeds = ChassisSpeeds.discretize(fieldCentricSpeeds, DISCRETIZE_TIME.in(Seconds));
-        runRobotCentricChassisSpeeds(ChassisSpeeds.fromFieldRelativeSpeeds(
-                fieldCentricSpeeds, getPose().getRotation()));
-    }
-
-    default void stop() {
-        runRobotCentricChassisSpeeds(new ChassisSpeeds());
-    }
-
-    default RobotConfig defaultPathPlannerRobotConfig() {
-        return new RobotConfig(
-                DriveConstants.ROBOT_MASS,
-                DriveConstants.ROBOT_MOI,
-                new ModuleConfig(
-                        DriveConstants.WHEEL_RADIUS,
-                        DriveConstants.CHASSIS_MAX_VELOCITY,
-                        DriveConstants.WHEEL_COEFFICIENT_OF_FRICTION,
-                        DriveConstants.DRIVE_MOTOR_MODEL.withReduction(DriveConstants.DRIVE_GEAR_RATIO),
-                        DriveConstants.DRIVE_ANTI_SLIP_TORQUE_CURRENT_LIMIT,
-                        1),
-                DriveConstants.MODULE_TRANSLATIONS);
-    }
-
-    default void configHolonomicPathPlannerAutoBuilder(Field2d field) {
-        RobotConfig robotConfig = defaultPathPlannerRobotConfig();
-        System.out.println("Generated pathplanner robot config with drive constants: ");
-        PPRobotConfigPrinter.printConfig(robotConfig);
-        try {
-            robotConfig = RobotConfig.fromGUISettings();
-            System.out.println("GUI robot config detected in deploy directory, switching: ");
-            PPRobotConfigPrinter.printConfig(robotConfig);
-        } catch (Exception e) {
-            DriverStation.reportError(e.getMessage(), false);
-        }
-        AutoBuilder.configure(
-                this::getPose,
-                this::setPose,
-                this::getMeasuredChassisSpeedsRobotRelative,
-                this::runRobotCentricSpeedsWithFeedforwards,
-                new PPHolonomicDriveController(
-                        CHASSIS_TRANSLATION_CLOSE_LOOP.toPathPlannerPIDConstants(),
-                        CHASSIS_ROTATION_CLOSE_LOOP.toPathPlannerPIDConstants()),
-                robotConfig,
-                FieldMirroringUtils::isSidePresentedAsRed,
-                this);
-        Pathfinding.setPathfinder(new LocalADStarAK());
-        PathPlannerLogging.setLogActivePathCallback((activePath) -> {
-            final Pose2d[] trajectory = activePath.toArray(new Pose2d[0]);
-            Logger.recordOutput("RobotState/Trajectory", trajectory);
-            field.getObject("ActivateTrajectory").setPoses(trajectory);
+    AutoBuilder.configure(
+        this::getPose,
+        this::setPose,
+        this::getMeasuredChassisSpeedsRobotRelative,
+        this::runRobotCentricSpeedsWithFeedforwards,
+        new PPHolonomicDriveController(
+            CHASSIS_TRANSLATION_CLOSE_LOOP.toPathPlannerPIDConstants(),
+            CHASSIS_ROTATION_CLOSE_LOOP.toPathPlannerPIDConstants()),
+        robotConfig,
+        FieldMirroringUtils::isSidePresentedAsRed,
+        this);
+    Pathfinding.setPathfinder(new LocalADStarAK());
+    PathPlannerLogging.setLogActivePathCallback(
+        (activePath) -> {
+          final Pose2d[] trajectory = activePath.toArray(new Pose2d[0]);
+          Logger.recordOutput("RobotState/Trajectory", trajectory);
+          field.getObject("ActivateTrajectory").setPoses(trajectory);
         });
-        PathPlannerLogging.setLogTargetPoseCallback(
-                (targetPose) -> Logger.recordOutput("RobotState/TrajectorySetpoint", targetPose));
+    PathPlannerLogging.setLogTargetPoseCallback(
+        (targetPose) -> Logger.recordOutput("RobotState/TrajectorySetpoint", targetPose));
 
-        Alert pathPlannerWarmUpInProgressAlert =
-                AlertsManager.create("PathPlanner Warm-Up in progress", Alert.AlertType.kWarning);
-        pathPlannerWarmUpInProgressAlert.set(true);
-        CommandScheduler.getInstance()
-                .schedule(PathfindingCommand.warmupCommand()
-                        .finallyDo(() -> pathPlannerWarmUpInProgressAlert.set(false))
-                        .until(DriverStation::isEnabled));
-    }
+    Alert pathPlannerWarmUpInProgressAlert =
+        AlertsManager.create("PathPlanner Warm-Up in progress", Alert.AlertType.kWarning);
+    pathPlannerWarmUpInProgressAlert.set(true);
+    CommandScheduler.getInstance()
+        .schedule(
+            PathfindingCommand.warmupCommand()
+                .finallyDo(() -> pathPlannerWarmUpInProgressAlert.set(false))
+                .until(DriverStation::isEnabled));
+  }
 
-    static boolean isZero(ChassisSpeeds chassisSpeeds) {
-        return Math.abs(chassisSpeeds.omegaRadiansPerSecond) < Math.toRadians(5)
-                && Math.abs(chassisSpeeds.vxMetersPerSecond) < 0.05
-                && Math.abs(chassisSpeeds.vyMetersPerSecond) < 0.05;
-    }
+  static boolean isZero(ChassisSpeeds chassisSpeeds) {
+    return Math.abs(chassisSpeeds.omegaRadiansPerSecond) < Math.toRadians(5)
+        && Math.abs(chassisSpeeds.vxMetersPerSecond) < 0.05
+        && Math.abs(chassisSpeeds.vyMetersPerSecond) < 0.05;
+  }
 }

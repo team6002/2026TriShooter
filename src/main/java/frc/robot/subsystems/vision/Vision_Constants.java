@@ -21,42 +21,49 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public class Vision_Constants {
-    // AprilTag layout
-    public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  // AprilTag layout
+  public static AprilTagFieldLayout aprilTagLayout =
+      AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-    // Camera names, must match names configured on coprocessor
-    public static String camera0Name = "MidLeftCamera";
-    public static String camera1Name = "MidRightCamera";
+  // Camera names, must match names configured on coprocessor
+  public static String camera0Name = "MidLeftCamera";
+  public static String camera1Name = "MidRightCamera";
 
-    public static final double stdDevFactor = 1;
+  public static final double stdDevFactor = 1;
 
-    // Robot to camera transforms
-    // (Not used by Limelight, configure in web UI instead)
-    public static final Transform3d robotToCamera0 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(8), Units.inchesToMeters(12)),
-            new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
+  // Robot to camera transforms
+  // (Not used by Limelight, configure in web UI instead)
+  public static final Transform3d robotToCamera0 =
+      new Transform3d(
+          new Translation3d(
+              Units.inchesToMeters(12), Units.inchesToMeters(8), Units.inchesToMeters(12)),
+          new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
 
-    public static final Transform3d robotToCamera1 = new Transform3d(
-            new Translation3d(Units.inchesToMeters(12), Units.inchesToMeters(-8), Units.inchesToMeters(12)),
-            new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
+  public static final Transform3d robotToCamera1 =
+      new Transform3d(
+          new Translation3d(
+              Units.inchesToMeters(12), Units.inchesToMeters(-8), Units.inchesToMeters(12)),
+          new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
 
-    // Basic filtering thresholds
-    public static double maxAmbiguity = 0.3;
-    public static double maxZError = 0.75;
+  // Basic filtering thresholds
+  public static double maxAmbiguity = 0.3;
+  public static double maxZError = 0.75;
 
-    // Standard deviation baselines, for 1 meter distance and 1 tag
-    // (Adjusted automatically based on distance and # of tags)
-    public static double linearStdDevBaseline = 0.02; // Meters
-    public static double angularStdDevBaseline = 0.06; // Radians
+  // Standard deviation baselines, for 1 meter distance and 1 tag
+  // (Adjusted automatically based on distance and # of tags)
+  public static double linearStdDevBaseline = 0.02; // Meters
+  public static double angularStdDevBaseline = 0.06; // Radians
 
-    // Standard deviation multipliers for each camera
-    // (Adjust to trust some cameras more than others)
-    public static double[] cameraStdDevFactors = new double[] {
+  // Standard deviation multipliers for each camera
+  // (Adjust to trust some cameras more than others)
+  public static double[] cameraStdDevFactors =
+      new double[] {
         1.0, // Camera 0
         1.0 // Camera 1
-    };
+      };
 
-    // Multipliers to apply for MegaTag 2 observations
-    public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
-    public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY; // No rotation data available
+  // Multipliers to apply for MegaTag 2 observations
+  public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
+  public static double angularStdDevMegatag2Factor =
+      Double.POSITIVE_INFINITY; // No rotation data available
 }

@@ -12,7 +12,7 @@ java {
 spotless {
     java {
         target 'src/**/*.java'
-        palantirJavaFormat()
+        googleJavaFormat()
         formatAnnotations()
         removeUnusedImports()
         endWithNewline()

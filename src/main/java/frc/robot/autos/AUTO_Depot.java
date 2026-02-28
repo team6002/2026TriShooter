@@ -12,23 +12,24 @@ import org.json.simple.parser.ParseException;
 
 public class AUTO_Depot implements Auto {
 
-    @Override
-    public Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException {
-        return Commands.sequence(
-                setAutoStartPose("IntakeDepotFromTrench", mirrored, robot.drive),
-                followPath("IntakeDepotFromTrench", mirrored),
-                new WaitCommand(3),
-                followPath("ShootFromDepot", mirrored),
-                Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
-                        ? new CMD_Shoot(
-                                        robot.conveyor,
-                                        robot.hood,
-                                        robot.intake,
-                                        robot.kicker,
-                                        robot.shooter,
-                                        0.35,
-                                        Math.toRadians(21000))
-                                .withTimeout(5)
-                        : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter));
-    }
+  @Override
+  public Command getAutoCommand(RobotContainer robot, boolean mirrored)
+      throws IOException, ParseException {
+    return Commands.sequence(
+        setAutoStartPose("IntakeDepotFromTrench", mirrored, robot.drive),
+        followPath("IntakeDepotFromTrench", mirrored),
+        new WaitCommand(3),
+        followPath("ShootFromDepot", mirrored),
+        Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
+            ? new CMD_Shoot(
+                    robot.conveyor,
+                    robot.hood,
+                    robot.intake,
+                    robot.kicker,
+                    robot.shooter,
+                    0.35,
+                    Math.toRadians(21000))
+                .withTimeout(5)
+            : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter));
+  }
 }
