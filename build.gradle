@@ -2,7 +2,6 @@ plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
     id "com.diffplug.spotless" version "6.25.0"
-    id "com.github.jakemarsden.git-hooks" version "0.0.2"
 }
 
 java {
@@ -20,8 +19,16 @@ spotless {
     }
 }
 
-gitHooks{
-    hooks = ['pre-commit': 'spotlessApply']
+tasks.register('installGitHooks') {
+    doLast {
+        def hookFile = file('.git/hooks/pre-commit')
+        hookFile.text = '#!/bin/sh\ncmd.exe /c "gradlew.bat spotlessApply"\n'
+        hookFile.setExecutable(true)
+    }
+}
+
+tasks.named('build') {
+    dependsOn 'installGitHooks'
 }
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
