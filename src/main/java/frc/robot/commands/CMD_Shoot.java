@@ -62,8 +62,6 @@ public class CMD_Shoot extends Command {
 
     shooter.setReference(shooterSupplier.getAsDouble());
     hood.setReference(hoodSupplier.getAsDouble());
-
-    // intake.setVoltage(IntakeConstants.kOff);
   }
 
   @Override
@@ -82,13 +80,6 @@ public class CMD_Shoot extends Command {
       shooting = true;
       timer.reset();
     }
-
-    // if (shooting) {
-    //   // Toggles state every 0.5 seconds
-    //   boolean shouldBeStowed = ((int) (timer.get() / 1) % 2 == 0);
-    //   intake.setExtenderReference(
-    //       shouldBeStowed ? ExtenderConstants.kStow : ExtenderConstants.kHome);
-    // }
   }
 
   @Override

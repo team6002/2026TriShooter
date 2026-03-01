@@ -18,6 +18,7 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.utils.constants.RobotMode;
+import frc.robot.utils.hubcounter.HubShiftUtil;
 import java.util.HashMap;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
@@ -132,17 +133,6 @@ public class Robot extends LoggedRobot {
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
     robotContainer.updateTelemetryAndLED();
-    // if (!(robotContainer.vision.lastResult(robotContainer.drive, 0) == null
-    //         || robotContainer.vision.lastResult(robotContainer.drive, 1) == null)) {
-    //     Logger.recordOutput(
-    //             "Vision/Camera0/DistanceFromClosestTag",
-    //             Units.metersToInches(
-    //                     robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
-    //     Logger.recordOutput(
-    //             "Vision/Camera1/DistanceFromClosestTag",
-    //             Units.metersToInches(
-    //                     robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
-    // }
   }
 
   /** This function is called once when the robot is disabled. */
@@ -160,10 +150,10 @@ public class Robot extends LoggedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    HubShiftUtil.initialize();
     autonomousCommand = robotContainer.getAutonomousCommand();
-    // robotContainer.resetSimulationField();
 
-    // schedule the autonomous command (example)
+    // schedule the autonomous command
     if (autonomousCommand != null) CommandScheduler.getInstance().schedule(autonomousCommand);
   }
 
@@ -179,6 +169,7 @@ public class Robot extends LoggedRobot {
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
+    HubShiftUtil.initialize();
     robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderPosition());
   }
 
@@ -193,7 +184,6 @@ public class Robot extends LoggedRobot {
   public void testInit() {
     // Cancels all running commands at the start of test mode.
     CommandScheduler.getInstance().cancelAll();
-    // CommandScheduler.getInstance().schedule(testCommand = robotContainer.getTestCommand());
   }
 
   /** This function is called periodically during test mode. */
@@ -209,9 +199,6 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is first started up. */
   @Override
   public void simulationInit() {
-    // sim.setPose(robotContainer.resetPose.getX(), robotContainer.resetPose.getY(),
-    // robotContainer.resetPose.getRotation().getRadians());
-
     robotContainer.resetSimulationField();
   }
 
@@ -220,16 +207,9 @@ public class Robot extends LoggedRobot {
   public void simulationPeriodic() {
     robotContainer.updateSimulation();
 
-    double dt = 0.02;
-
     // Step physics using the module states commanded by your Drive subsystem
-    sim.step(dt, robotContainer.drive.getModuleStates());
+    sim.step(0.02, robotContainer.drive.getModuleStates());
     sim.syncToRealPose(robotContainer.drive.getPose());
-
-    // simPose = sim.getPose2d();
-
-    // // Push the pose into your Drive subsystem's odometry
-    // robotContainer.drive.applySimPose(simPose);
 
     Logger.recordOutput("Robot/Pose", robotContainer.drive.getPose());
     Logger.recordOutput("Robot/Pose3d", sim.getPose3d());

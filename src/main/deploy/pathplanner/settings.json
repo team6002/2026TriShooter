@@ -3,10 +3,7 @@
   "robotLength": 0.838,
   "holonomicMode": true,
   "pathFolders": [
-    "Bump",
-    "Middle+Depot",
-    "DoubleTrench",
-    "Outpost+Depot",
+    "Outpost",
     "Trench"
   ],
   "autoFolders": [],

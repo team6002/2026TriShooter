@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8627766952966369,
-        "y": 0.8467766952966369
+        "x": 1.7883862925697644,
+        "y": 0.7043095745498429
       },
       "isLocked": false,
       "linkedName": "IntakeOutpost"
     },
     {
       "anchor": {
-        "x": 1.75,
-        "y": 1.165
+        "x": 2.877,
+        "y": 1.538
       },
       "prevControl": {
-        "x": 1.573223304703363,
-        "y": 0.9882233047033632
+        "x": 2.154144373172123,
+        "y": 0.9234700463335294
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootOutpost"
+      "linkedName": "ShootTrench"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 55.0
   },
   "reversed": false,
-  "folder": "Trench",
+  "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

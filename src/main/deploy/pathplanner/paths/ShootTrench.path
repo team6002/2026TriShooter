@@ -4,56 +4,40 @@
     {
       "anchor": {
         "x": 7.5,
-        "y": 4.5
+        "y": 3.5
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.231867469879518,
-        "y": 3.652530120481928
+        "x": 7.5,
+        "y": 3.25
       },
       "isLocked": false,
-      "linkedName": "SwipeHalfMiddleTrench"
+      "linkedName": "SweepHalfMiddle"
     },
     {
       "anchor": {
-        "x": 6.0,
-        "y": 4.5
+        "x": 7.5,
+        "y": 0.75
       },
       "prevControl": {
-        "x": 5.961386238284079,
-        "y": 4.164294317891844
+        "x": 7.75,
+        "y": 0.75
       },
       "nextControl": {
-        "x": 6.038613761715921,
-        "y": 4.835705682108156
+        "x": 7.25,
+        "y": 0.75
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.0,
-        "y": 7.33
+        "x": 2.877,
+        "y": 1.538
       },
       "prevControl": {
-        "x": 6.1622834747799216,
-        "y": 7.139831459454109
-      },
-      "nextControl": {
-        "x": 5.8377165252200784,
-        "y": 7.520168540545892
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 2.467,
-        "y": 6.2
-      },
-      "prevControl": {
-        "x": 2.467,
-        "y": 8.108626056163802
+        "x": 1.5688524548048868,
+        "y": 0.22985245480488703
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,15 +46,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.8738589211618103,
-      "rotationDegrees": -90.0
-    },
-    {
-      "waypointRelativePos": 2.5,
+      "waypointRelativePos": 1.33,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 2.65,
+      "waypointRelativePos": 1.67,
       "rotationDegrees": 0.0
     }
   ],
@@ -86,14 +66,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -45.0
+    "velocity": 0.0,
+    "rotation": 55.0
   },
   "reversed": false,
   "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "useDefaultConstraints": true
 }
