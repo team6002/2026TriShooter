@@ -15,66 +15,63 @@ import org.ironmaple.utils.FieldMirroringUtils;
 import org.json.simple.parser.ParseException;
 
 public interface Auto {
-    Command getAutoCommand(RobotContainer robot, boolean mirrored)
-            throws IOException, ParseException;
+  Command getAutoCommand(RobotContainer robot, boolean mirrored) throws IOException, ParseException;
 
-    static Auto none() {
-        return new Auto() {
-            @Override
-            public Command getAutoCommand(RobotContainer robot, boolean mirrored) {
-                return Commands.none();
-            }
-        };
+  static Auto none() {
+    return new Auto() {
+      @Override
+      public Command getAutoCommand(RobotContainer robot, boolean mirrored) {
+        return Commands.none();
+      }
+    };
+  }
+
+  default Command setAutoStartPose(String pathName, Boolean mirrored, Drive drive) {
+    // 1. Declare a final variable that will be used in the lambda
+    final PathPlannerPath finalPath;
+
+    try {
+      PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
+
+      if (mirrored) {
+        loadedPath = loadedPath.mirrorPath();
+      }
+
+      // Handle Alliance flipping
+      if (DriverStation.getAlliance().isPresent() && FieldConstants.getAlliance() == Alliance.Red) {
+        loadedPath = loadedPath.flipPath();
+      }
+
+      finalPath = loadedPath; // This is the only assignment to finalPath
+    } catch (Exception e) {
+      DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+      return Commands.none(); // Better than returning an empty anonymous Command
     }
 
-    default Command setAutoStartPose(String pathName, Boolean mirrored, Drive drive) {
-        // 1. Declare a final variable that will be used in the lambda
-        final PathPlannerPath finalPath;
+    // Now finalPath is effectively final and safe for the lambda
+    return Commands.runOnce(() -> drive.resetOdometry(finalPath.getStartingHolonomicPose().get()));
+  }
 
-        try {
-            PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
+  static PathPlannerPath getPath(String name, boolean mirror) throws IOException, ParseException {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(name);
+    return mirror ? path.mirrorPath() : path;
+  }
 
-            if (mirrored) {
-                loadedPath = loadedPath.mirrorPath();
-            }
+  static Pose2d flipLeftRight(Pose2d pose) {
+    return new Pose2d(
+        pose.getX(),
+        FieldMirroringUtils.FIELD_HEIGHT - pose.getY(),
+        pose.getRotation().unaryMinus());
+  }
 
-            // Handle Alliance flipping
-            if (DriverStation.getAlliance().isPresent()
-                    && FieldConstants.getAlliance() == Alliance.Red) {
-                loadedPath = loadedPath.flipPath();
-            }
-
-            finalPath = loadedPath; // This is the only assignment to finalPath
-        } catch (Exception e) {
-            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
-            return Commands.none(); // Better than returning an empty anonymous Command
-        }
-
-        // Now finalPath is effectively final and safe for the lambda
-        return Commands.runOnce(
-                () -> drive.resetOdometry(finalPath.getStartingHolonomicPose().get()));
+  default Command followPath(String pathName, boolean mirrored) {
+    PathPlannerPath path;
+    try {
+      path = getPath(pathName, mirrored);
+    } catch (Exception e) {
+      DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+      return Commands.none();
     }
-
-    static PathPlannerPath getPath(String name, boolean mirror) throws IOException, ParseException {
-        PathPlannerPath path = PathPlannerPath.fromPathFile(name);
-        return mirror ? path.mirrorPath() : path;
-    }
-
-    static Pose2d flipLeftRight(Pose2d pose) {
-        return new Pose2d(
-                pose.getX(),
-                FieldMirroringUtils.FIELD_HEIGHT - pose.getY(),
-                pose.getRotation().unaryMinus());
-    }
-
-    default Command followPath(String pathName, boolean mirrored) {
-        PathPlannerPath path;
-        try {
-            path = getPath(pathName, mirrored);
-        } catch (Exception e) {
-            DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
-            return Commands.none();
-        }
-        return AutoBuilder.followPath(path);
-    }
+    return AutoBuilder.followPath(path);
+  }
 }

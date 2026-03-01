@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.45,
-        "y": 0.67
+        "x": 2.877,
+        "y": 1.538
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.654788011072248,
-        "y": 0.8133941090877616
+        "x": 1.9981281847596901,
+        "y": 0.8646971614031282
       },
       "isLocked": false,
-      "linkedName": "IntakeOutpost"
+      "linkedName": "ShootTrench"
     },
     {
       "anchor": {
-        "x": 1.75,
-        "y": 1.165
+        "x": 0.686,
+        "y": 0.67
       },
       "prevControl": {
-        "x": 1.545211988927752,
-        "y": 1.0216058909122385
+        "x": 1.6284237207760346,
+        "y": 0.7816014131512795
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootOutpost"
+      "linkedName": "IntakeOutpost"
     }
   ],
   "rotationTargets": [],
@@ -33,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 4.0,
-    "maxAngularVelocity": 540.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Outpost+Depot",
+  "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }

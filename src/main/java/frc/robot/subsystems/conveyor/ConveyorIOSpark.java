@@ -12,77 +12,77 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 public class ConveyorIOSpark implements ConveyorIO {
-    private final SparkMax conveyorMotor;
-    private final RelativeEncoder conveyorEncoder;
-    private final SparkClosedLoopController conveyorController;
+  private final SparkMax conveyorMotor;
+  private final RelativeEncoder conveyorEncoder;
+  private final SparkClosedLoopController conveyorController;
 
-    private double conveyorReference;
-    private ControlType conveyorType;
+  private double conveyorReference;
+  private ControlType conveyorType;
 
-    public ConveyorIOSpark() {
-        // initialize motor
-        conveyorMotor = new SparkMax(ConveyorConstants.kConveyorCanId, MotorType.kBrushless);
+  public ConveyorIOSpark() {
+    // initialize motor
+    conveyorMotor = new SparkMax(ConveyorConstants.kConveyorCanId, MotorType.kBrushless);
 
-        // initialize PID controller
-        conveyorController = conveyorMotor.getClosedLoopController();
+    // initialize PID controller
+    conveyorController = conveyorMotor.getClosedLoopController();
 
-        // initalize encoder
-        conveyorEncoder = conveyorMotor.getEncoder();
+    // initalize encoder
+    conveyorEncoder = conveyorMotor.getEncoder();
 
-        // apply config
-        conveyorMotor.configure(
-                ConveyorConfig.conveyorConfig,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+    // apply config
+    conveyorMotor.configure(
+        ConveyorConfig.conveyorConfig,
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
 
-        // reset target speed in init
-        conveyorReference = 0;
-        conveyorType = ControlType.kVoltage;
-    }
+    // reset target speed in init
+    conveyorReference = 0;
+    conveyorType = ControlType.kVoltage;
+  }
 
-    @Override
-    public void updateInputs(ConveyorIOInputs inputs) {
-        inputs.conveyorReference = getReference();
-        inputs.conveyorCurrent = getCurrent();
-        inputs.conveyorVoltage = getVoltage();
-        inputs.conveyorVelocity = getVelocity();
-        inputs.conveyorTemp = Fahrenheit.convertFrom(conveyorMotor.getMotorTemperature(), Celsius);
-    }
+  @Override
+  public void updateInputs(ConveyorIOInputs inputs) {
+    inputs.conveyorReference = getReference();
+    inputs.conveyorCurrent = getCurrent();
+    inputs.conveyorVoltage = getVoltage();
+    inputs.conveyorVelocity = getVelocity();
+    inputs.conveyorTemp = Fahrenheit.convertFrom(conveyorMotor.getMotorTemperature(), Celsius);
+  }
 
-    @Override
-    public double getVelocity() {
-        return conveyorEncoder.getVelocity();
-    }
+  @Override
+  public double getVelocity() {
+    return conveyorEncoder.getVelocity();
+  }
 
-    @Override
-    public double getCurrent() {
-        return conveyorMotor.getOutputCurrent();
-    }
+  @Override
+  public double getCurrent() {
+    return conveyorMotor.getOutputCurrent();
+  }
 
-    @Override
-    public double getVoltage() {
-        return conveyorMotor.getBusVoltage() * conveyorMotor.getAppliedOutput();
-    }
+  @Override
+  public double getVoltage() {
+    return conveyorMotor.getBusVoltage() * conveyorMotor.getAppliedOutput();
+  }
 
-    @Override
-    public double getReference() {
-        return conveyorReference;
-    }
+  @Override
+  public double getReference() {
+    return conveyorReference;
+  }
 
-    @Override
-    public void setVoltage(double voltage) {
-        conveyorReference = voltage;
-        conveyorType = ControlType.kVoltage;
-    }
+  @Override
+  public void setVoltage(double voltage) {
+    conveyorReference = voltage;
+    conveyorType = ControlType.kVoltage;
+  }
 
-    @Override
-    public void setReference(double velocity) {
-        conveyorReference = velocity;
-        conveyorType = ControlType.kVelocity;
-    }
+  @Override
+  public void setReference(double velocity) {
+    conveyorReference = velocity;
+    conveyorType = ControlType.kVelocity;
+  }
 
-    @Override
-    public void periodic() {
-        conveyorController.setSetpoint(conveyorReference, conveyorType);
-    }
+  @Override
+  public void periodic() {
+    conveyorController.setSetpoint(conveyorReference, conveyorType);
+  }
 }

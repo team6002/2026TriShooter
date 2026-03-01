@@ -20,56 +20,53 @@ import java.util.function.Supplier;
  * flight time calculated from {@link MapleShooterOptimization} (this is for shooting-on-the-move)
  */
 public class JoystickDriveAndAimAtTarget {
-    public static Command driveAndAimAtTarget(
-            MapleJoystickDriveInput input,
-            HolonomicDriveSubsystem driveSubsystem,
-            Supplier<Translation2d> targetPositionSupplier,
-            MapleShooterOptimization shooterOptimization,
-            double pilotInputMultiplier,
-            boolean finishWhenComplete) {
-        return new FunctionalCommand(
-                () ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(
-                                        new ChassisHeadingController.FaceToTargetRequest(
-                                                targetPositionSupplier, shooterOptimization)),
-                () -> execute(driveSubsystem, input, pilotInputMultiplier),
-                (interrupted) ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(new ChassisHeadingController.NullRequest()),
-                () -> finishWhenComplete && ChassisHeadingController.getInstance().atSetPoint(),
-                driveSubsystem);
-    }
+  public static Command driveAndAimAtTarget(
+      MapleJoystickDriveInput input,
+      HolonomicDriveSubsystem driveSubsystem,
+      Supplier<Translation2d> targetPositionSupplier,
+      MapleShooterOptimization shooterOptimization,
+      double pilotInputMultiplier,
+      boolean finishWhenComplete) {
+    return new FunctionalCommand(
+        () ->
+            ChassisHeadingController.getInstance()
+                .setHeadingRequest(
+                    new ChassisHeadingController.FaceToTargetRequest(
+                        targetPositionSupplier, shooterOptimization)),
+        () -> execute(driveSubsystem, input, pilotInputMultiplier),
+        (interrupted) ->
+            ChassisHeadingController.getInstance()
+                .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+        () -> finishWhenComplete && ChassisHeadingController.getInstance().atSetPoint(),
+        driveSubsystem);
+  }
 
-    public static Command driveAndAimAtDirection(
-            MapleJoystickDriveInput input,
-            HolonomicDriveSubsystem driveSubsystem,
-            Supplier<Rotation2d> rotationTarget,
-            double pilotInputMultiplier,
-            boolean finishWhenComplete) {
-        return new FunctionalCommand(
-                () ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(
-                                        new ChassisHeadingController.FaceToRotationRequest(
-                                                rotationTarget.get())),
-                () -> execute(driveSubsystem, input, pilotInputMultiplier),
-                (interrupted) ->
-                        ChassisHeadingController.getInstance()
-                                .setHeadingRequest(new ChassisHeadingController.NullRequest()),
-                () -> finishWhenComplete && ChassisHeadingController.getInstance().atSetPoint(),
-                driveSubsystem);
-    }
+  public static Command driveAndAimAtDirection(
+      MapleJoystickDriveInput input,
+      HolonomicDriveSubsystem driveSubsystem,
+      Supplier<Rotation2d> rotationTarget,
+      double pilotInputMultiplier,
+      boolean finishWhenComplete) {
+    return new FunctionalCommand(
+        () ->
+            ChassisHeadingController.getInstance()
+                .setHeadingRequest(
+                    new ChassisHeadingController.FaceToRotationRequest(rotationTarget.get())),
+        () -> execute(driveSubsystem, input, pilotInputMultiplier),
+        (interrupted) ->
+            ChassisHeadingController.getInstance()
+                .setHeadingRequest(new ChassisHeadingController.NullRequest()),
+        () -> finishWhenComplete && ChassisHeadingController.getInstance().atSetPoint(),
+        driveSubsystem);
+  }
 
-    public static void execute(
-            HolonomicDriveSubsystem driveSubsystem,
-            MapleJoystickDriveInput input,
-            double pilotInputMultiplier) {
-        driveSubsystem.runDriverStationCentricChassisSpeeds(
-                input.getJoystickChassisSpeeds(
-                        driveSubsystem.getChassisMaxLinearVelocityMetersPerSec()
-                                * pilotInputMultiplier,
-                        0),
-                true);
-    }
+  public static void execute(
+      HolonomicDriveSubsystem driveSubsystem,
+      MapleJoystickDriveInput input,
+      double pilotInputMultiplier) {
+    driveSubsystem.runDriverStationCentricChassisSpeeds(
+        input.getJoystickChassisSpeeds(
+            driveSubsystem.getChassisMaxLinearVelocityMetersPerSec() * pilotInputMultiplier, 0),
+        true);
+  }
 }

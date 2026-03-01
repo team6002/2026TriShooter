@@ -21,157 +21,175 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class IntakeIOSim implements IntakeIO {
 
-    private final DCMotorSim intakeSim;
-    private final PIDController intakePIDController =
-            new PIDController(IntakeConstants.kPSim, IntakeConstants.kISim, IntakeConstants.kDSim);
-    private final SimpleMotorFeedforward intakeFeedforward =
-            new SimpleMotorFeedforward(IntakeConstants.kS, IntakeConstants.kV, IntakeConstants.kA);
-    private static IntakeSimulation intakeSimulation;
-    private double reference = 0;
+  private final DCMotorSim intakeSim;
+  private final PIDController intakePIDController =
+      new PIDController(IntakeConstants.kPSim, IntakeConstants.kISim, IntakeConstants.kDSim);
+  private final SimpleMotorFeedforward intakeFeedforward =
+      new SimpleMotorFeedforward(IntakeConstants.kS, IntakeConstants.kV, IntakeConstants.kA);
+  private static IntakeSimulation intakeSimulation;
+  private double reference = 0;
 
-    private final DCMotorSim intakeExtenderSim;
-    private final PIDController intakeExtenderPIDController =
-            new PIDController(
-                    ExtenderConstants.kPSim, ExtenderConstants.kISim, ExtenderConstants.kDSim);
-    private final SimpleMotorFeedforward intakeExtenderFeedforward =
-            new SimpleMotorFeedforward(
-                    ExtenderConstants.kS, ExtenderConstants.kV, IntakeConstants.kA);
-    private double extenderReference = 0;
+  private final DCMotorSim intakeExtenderSim;
+  private final PIDController intakeExtenderPIDController =
+      new PIDController(ExtenderConstants.kPSim, ExtenderConstants.kISim, ExtenderConstants.kDSim);
+  private final SimpleMotorFeedforward intakeExtenderFeedforward =
+      new SimpleMotorFeedforward(ExtenderConstants.kS, ExtenderConstants.kV, IntakeConstants.kA);
+  private double extenderReference = 0;
 
-    public static double objectsInHopper = 0;
+  public static double objectsInHopper = 0;
 
-    private final LoggedMechanism2d intakeMechanism;
-    private final LoggedMechanismRoot2d intakeRoot;
-    private final LoggedMechanismLigament2d intakeVisualizer =
-            new LoggedMechanismLigament2d(
-                    "intake", Inches.of(1), Degrees.of(-87.5), 50, new Color8Bit(255, 92, 0));
+  private final LoggedMechanism2d intakeMechanism;
+  private final LoggedMechanismRoot2d intakeRoot;
+  private final LoggedMechanismLigament2d intakeVisualizer =
+      new LoggedMechanismLigament2d(
+          "intake", Inches.of(1), Degrees.of(-87.5), 50, new Color8Bit(255, 92, 0));
 
-    public IntakeIOSim(AbstractDriveTrainSimulation driveSim) {
-        intakeSim =
-                new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(
-                                DCMotor.getNEO(1), .178, IntakeConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+  public IntakeIOSim(AbstractDriveTrainSimulation driveSim) {
+    intakeSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .178, IntakeConstants.kGearRatio),
+            DCMotor.getNEO(1));
 
-        intakeExtenderSim =
-                new DCMotorSim(
-                        LinearSystemId.createDCMotorSystem(
-                                DCMotor.getNEO(1), .1, ExtenderConstants.kGearRatio),
-                        DCMotor.getNEO(1));
+    intakeExtenderSim =
+        new DCMotorSim(
+            LinearSystemId.createDCMotorSystem(DCMotor.getNEO(1), .1, ExtenderConstants.kGearRatio),
+            DCMotor.getNEO(1));
 
-        intakeMechanism = new LoggedMechanism2d(Inches.of(24), Inches.of(10));
-        intakeRoot =
-                intakeMechanism.getRoot(
-                        "Intake", Units.inchesToMeters(-16), Units.inchesToMeters(0));
-        intakeRoot.append(intakeVisualizer);
+    intakeMechanism = new LoggedMechanism2d(Inches.of(24), Inches.of(10));
+    intakeRoot =
+        intakeMechanism.getRoot("Intake", Units.inchesToMeters(-16), Units.inchesToMeters(0));
+    intakeRoot.append(intakeVisualizer);
 
-        intakeSimulation =
-                IntakeSimulation.OverTheBumperIntake(
-                        "Fuel", driveSim, Inches.of(24), Inches.of(10), IntakeSide.BACK, 48);
+    intakeSimulation =
+        IntakeSimulation.OverTheBumperIntake(
+            "Fuel", driveSim, Inches.of(24), Inches.of(10), IntakeSide.BACK, 48);
 
-        intakeSimulation.startIntake();
-    }
+    intakeSimulation.startIntake();
+  }
 
-    @Override
-    public void updateInputs(IntakeIOInputs inputs) {
-        inputs.intakeCurrent = getCurrent();
-        inputs.intakeVoltage = getVoltage();
-        inputs.intakeReference = getReference();
-        inputs.intakeVelocity = Units.radiansToDegrees(getVelocity());
-    }
+  @Override
+  public void updateInputs(IntakeIOInputs inputs) {
+    inputs.intakeCurrent = getCurrent();
+    inputs.intakeVoltage = getVoltage();
+    inputs.intakeReference = getReference();
+    inputs.intakeVelocity = Units.radiansToDegrees(getVelocity());
+    inputs.intakePosition = Units.radiansToDegrees(getPosition());
 
-    @Override
-    public void setReference(double reference) {
-        this.reference = reference;
-    }
+    inputs.extenderCurrent = getExtenderCurrent();
+    inputs.extenderVoltage = getExtenderVoltage();
+    inputs.extenderReference = getExtenderReference();
+    inputs.extenderVelocity = Units.radiansToDegrees(getExtenderVelocity());
+    inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
+    inputs.extenderInPosition = getExtenderInPosition();
+  }
 
-    @Override
-    public double getReference() {
-        return reference;
-    }
+  @Override
+  public void setReference(double reference) {
+    this.reference = reference;
+  }
 
-    @Override
-    public void setVoltage(double voltage) {
-        intakeSim.setInputVoltage(voltage);
-    }
+  @Override
+  public double getReference() {
+    return reference;
+  }
 
-    @Override
-    public double getVoltage() {
-        return intakeSim.getInputVoltage();
-    }
+  @Override
+  public void setVoltage(double voltage) {
+    intakeSim.setInputVoltage(voltage);
+  }
 
-    @Override
-    public double getCurrent() {
-        return intakeSim.getCurrentDrawAmps();
-    }
+  @Override
+  public double getVoltage() {
+    return intakeSim.getInputVoltage();
+  }
 
-    @Override
-    public double getVelocity() {
-        return intakeSim.getAngularVelocityRadPerSec();
-    }
+  @Override
+  public double getCurrent() {
+    return intakeSim.getCurrentDrawAmps();
+  }
 
-    @Override
-    public void setExtenderReference(double reference) {
-        this.extenderReference = reference;
-    }
+  @Override
+  public double getVelocity() {
+    return intakeSim.getAngularVelocityRadPerSec();
+  }
 
-    @Override
-    public double getExtenderReference() {
-        return extenderReference;
-    }
+  @Override
+  public double getPosition() {
+    return intakeSim.getAngularPositionRad();
+  }
 
-    @Override
-    public void setExtenderVoltage(double voltage) {
-        intakeExtenderSim.setInputVoltage(voltage);
-    }
+  @Override
+  public void setExtenderReference(double reference) {
+    this.extenderReference = reference;
+  }
 
-    @Override
-    public double getExtenderVoltage() {
-        return intakeExtenderSim.getInputVoltage();
-    }
+  @Override
+  public double getExtenderReference() {
+    return extenderReference;
+  }
 
-    @Override
-    public double getExtenderCurrent() {
-        return intakeExtenderSim.getCurrentDrawAmps();
-    }
+  @Override
+  public void setExtenderVoltage(double voltage) {
+    intakeExtenderSim.setInputVoltage(voltage);
+  }
 
-    @Override
-    public double getExtenderVelocity() {
-        return intakeExtenderSim.getAngularVelocityRadPerSec();
-    }
+  @Override
+  public double getExtenderVoltage() {
+    return intakeExtenderSim.getInputVoltage();
+  }
 
-    @Override
-    public void periodic() {
-        intakeSim.setInput(
-                intakePIDController.calculate(intakeSim.getAngularVelocityRadPerSec(), reference)
-                        + intakeFeedforward.calculateWithVelocities(getVelocity(), reference));
+  @Override
+  public double getExtenderCurrent() {
+    return intakeExtenderSim.getCurrentDrawAmps();
+  }
 
-        intakeExtenderSim.setInput(
-                intakeExtenderPIDController.calculate(
-                                intakeExtenderSim.getAngularVelocityRadPerSec(), reference)
-                        + intakeExtenderFeedforward.calculateWithVelocities(
-                                getVelocity(), reference));
+  @Override
+  public double getExtenderVelocity() {
+    return intakeExtenderSim.getAngularVelocityRadPerSec();
+  }
 
-        intakeSim.update(0.02);
-        intakeExtenderSim.update(0.02);
+  @Override
+  public double getExtenderPosition() {
+    return intakeExtenderSim.getAngularPositionRad();
+  }
 
-        Logger.recordOutput("Intake/FuelInHopper", numObjectsInHopper());
-        Logger.recordOutput("IntakeVisualizer", intakeMechanism);
-    }
+  @Override
+  public boolean getExtenderInPosition() {
+    // Math.abs(getExtenderPosition() - getExtenderReference()) < ExtenderConstants.kTolerance;
+    return true;
+  }
 
-    public static boolean obtainFuelFromHopper() {
-        return intakeSimulation.obtainGamePieceFromIntake();
-    }
+  @Override
+  public void periodic() {
+    intakeSim.setInput(
+        intakePIDController.calculate(intakeSim.getAngularVelocityRadPerSec(), reference)
+            + intakeFeedforward.calculateWithVelocities(getVelocity(), reference));
 
-    public static int numObjectsInHopper() {
-        return intakeSimulation.getGamePiecesAmount();
-    }
+    intakeExtenderSim.setInput(
+        intakeExtenderPIDController.calculate(
+                intakeExtenderSim.getAngularVelocityRadPerSec(), reference)
+            + intakeExtenderFeedforward.calculateWithVelocities(getVelocity(), reference));
 
-    public static void putFuelInHopperSim(int fuel) {
-        setFuelInHopper(numObjectsInHopper() + fuel);
-    }
+    intakeSim.update(0.02);
+    intakeExtenderSim.update(0.02);
 
-    public static void setFuelInHopper(int fuel) {
-        intakeSimulation.setGamePiecesCount(fuel);
-    }
+    Logger.recordOutput("Intake/FuelInHopper", numObjectsInHopper());
+    Logger.recordOutput("IntakeVisualizer", intakeMechanism);
+  }
+
+  public static boolean obtainFuelFromHopper() {
+    return intakeSimulation.obtainGamePieceFromIntake();
+  }
+
+  public static int numObjectsInHopper() {
+    return intakeSimulation.getGamePiecesAmount();
+  }
+
+  public static void putFuelInHopperSim(int fuel) {
+    setFuelInHopper(numObjectsInHopper() + fuel);
+  }
+
+  public static void setFuelInHopper(int fuel) {
+    intakeSimulation.setGamePiecesCount(fuel);
+  }
 }

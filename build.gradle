@@ -1,7 +1,6 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2026.2.1"
-    // Added Spotless for linting and formatting
     id "com.diffplug.spotless" version "6.25.0"
 }
 
@@ -10,15 +9,26 @@ java {
     targetCompatibility = JavaVersion.VERSION_17
 }
 
-// Spotless Configuration: Enforces 4-space indents and cleans up imports
 spotless {
     java {
         target 'src/**/*.java'
-        indentWithSpaces(4) // Your 4-space indent requirement
+        googleJavaFormat()
+        formatAnnotations()
         removeUnusedImports()
-        googleJavaFormat('1.17.0').aosp() // AOSP style uses 4-space instead of Google's 2-space
         endWithNewline()
     }
+}
+
+tasks.register('installGitHooks') {
+    doLast {
+        def hookFile = file('.git/hooks/pre-commit')
+        hookFile.text = '#!/bin/sh\ncmd.exe /c "gradlew.bat spotlessApply"\n'
+        hookFile.setExecutable(true)
+    }
+}
+
+tasks.named('build') {
+    dependsOn 'installGitHooks'
 }
 
 def ROBOT_MAIN_CLASS = "frc.robot.Main"
