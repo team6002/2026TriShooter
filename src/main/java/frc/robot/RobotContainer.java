@@ -32,6 +32,7 @@ import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
+import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.subsystems.shooter.*;
@@ -69,6 +70,7 @@ public class RobotContainer {
   private final Field2d field = new Field2d();
   // Controller
   public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
+  public final DriverMap operator = new DriverMap.LeftHandedXbox(1);
 
   public Pose2d resetPose;
 
@@ -99,9 +101,9 @@ public class RobotContainer {
             new Vision(
                 drive
                 // new VisionIOPhotonVision(Vision_Constants.camera0Name,
-                // Vision_Constants.robotToCamera0),
+                //     Vision_Constants.robotToCamera0),
                 // new VisionIOPhotonVision(Vision_Constants.camera1Name,
-                // Vision_Constants.robotToCamera1)
+                //     Vision_Constants.robotToCamera1)
                 );
 
         break;
@@ -213,7 +215,12 @@ public class RobotContainer {
       autoChooser.addOption(
           "Outpost + Depot", new AUTO_OutpostAndDepot().getAutoCommand(this, false));
 
-      autoChooser.addOption("IntakePath", new AUTO_IntakePath().getAutoCommand(this, false));
+      autoChooser.addOption(
+          "Left Double Trench (Start intake facing bump, swipe our half, shoot, swipe other half, and shoot on opposite side)",
+          new AUTO_DoubleTrench().getAutoCommand(this, false));
+      autoChooser.addOption(
+          "Right Double Trench (Start intake facing bump, swipe our half, shoot, swipe other half, and shoot on opposite side)",
+          new AUTO_DoubleTrench().getAutoCommand(this, true));
 
       autoChooser.addOption("Bump Left", new AUTO_Bump().getAutoCommand(this, false));
       autoChooser.addOption("Bump Right", new AUTO_Bump().getAutoCommand(this, true));
@@ -223,8 +230,8 @@ public class RobotContainer {
     }
 
     // Set up SysId routines
-    // autoChooser.addOption("Drive Wheel Radius Characterization",
-    // DriveCommands.wheelRadiusCharacterization(drive));
+    autoChooser.addOption(
+        "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
     // autoChooser.addOption("Drive Simple FF Characterization",
     // DriveCommands.feedforwardCharacterization(drive));
     // autoChooser.addOption(
@@ -277,16 +284,16 @@ public class RobotContainer {
                     new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
     driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    driver
-        .autoAlignmentButton()
-        .whileTrue(
-            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-                driveInput,
-                drive,
-                () -> FieldConstants.getHubPose(),
-                ShooterConstants.kShooterOptimization,
-                0.5,
-                false));
+    // driver
+    //     .autoAlignmentButton()
+    //     .whileTrue(
+    //         JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+    //             driveInput,
+    //             drive,
+    //             () -> FieldConstants.getHubPose(),
+    //             ShooterConstants.kShooterOptimization,
+    //             0.5,
+    //             false));
 
     driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
 
@@ -302,11 +309,17 @@ public class RobotContainer {
       driver
           .scoreButton()
           .whileTrue(
-              new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.35, Math.toRadians(21000)));
+              new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.45, Math.toRadians(23000)));
       driver
           .rightBumper()
           .whileTrue(
               new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.2, Math.toRadians(18000)));
+
+      operator
+          .scoreButton()
+          .onTrue(intake.setExtenderTargetAngle(ExtenderConstants.kStow))
+          .onFalse(intake.setExtenderTargetAngle(ExtenderConstants.kExtended));
+
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new ShootFuelSim(driveSimulation, hood, shooter));
     }

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6,
-        "y": 0.85
+        "x": 2.467,
+        "y": 2.154
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.35,
-        "y": 0.85
+        "x": 2.290223304703363,
+        "y": 1.977223304703363
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +20,8 @@
         "y": 0.67
       },
       "prevControl": {
-        "x": 0.936,
-        "y": 0.67
+        "x": 0.890788011072248,
+        "y": 0.8133941090877616
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,10 +45,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Outpost+Depot",
+  "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 45.0
   },
   "useDefaultConstraints": true
 }

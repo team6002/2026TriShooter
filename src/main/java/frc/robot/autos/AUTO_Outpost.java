@@ -19,7 +19,7 @@ public class AUTO_Outpost implements Auto {
         setAutoStartPose("IntakeOutpost", mirrored, robot.drive),
         new CMD_Stow(robot.intake),
         followPath("IntakeOutpost", mirrored),
-        new WaitCommand(2),
+        new WaitCommand(1),
         followPath("ShootOutpostFromClimb", mirrored),
         Robot.CURRENT_ROBOT_MODE == RobotMode.REAL
             ? new CMD_Shoot(

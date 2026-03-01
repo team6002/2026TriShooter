@@ -75,7 +75,7 @@ public class DriveConstants {
 
   // Drive motor configuration
   public static final int driveMotorCurrentLimit = 60;
-  public static final double wheelRadiusMeters = Units.inchesToMeters(1.2);
+  public static final double wheelRadiusMeters = Units.inchesToMeters(1.45);
   public static final double driveMotorReduction =
       (45.0 * 22.0) / (12.0 * 15.0); // MAXSwerve with 12 pinion teeth and 22 spur teeth
   public static final DCMotor driveGearbox = DCMotor.getNeoVortex(1);
@@ -148,7 +148,7 @@ public class DriveConstants {
 
   public static final DCMotor STEER_MOTOR_MODEL = DCMotor.getNeo550(1);
 
-  public static final Distance WHEEL_RADIUS = Inches.of(1.39);
+  public static final Distance WHEEL_RADIUS = Inches.of(1.45);
 
   public static final double DRIVE_GEAR_RATIO = driveMotorReduction;
   public static final double STEER_GEAR_RATIO = turnMotorReduction;

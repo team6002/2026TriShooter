@@ -29,7 +29,7 @@ public class AUTO_OutpostAndDepot implements Auto {
                     robot.shooter,
                     0.2,
                     Math.toRadians(18000))
-                .withTimeout(5)
+                .withTimeout(3)
             : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter),
         followPath("IntakeDepotFromOutpost", mirrored),
         Robot.CURRENT_ROBOT_MODE == RobotMode.REAL ? new CMD_Intake(robot.intake) : Commands.none(),
@@ -43,7 +43,7 @@ public class AUTO_OutpostAndDepot implements Auto {
                     robot.shooter,
                     0.35,
                     Math.toRadians(21000))
-                .withTimeout(5)
+                .withTimeout(3)
             : new ShootFuelSim(robot.driveSimulation, robot.hood, robot.shooter));
   }
 }

@@ -169,7 +169,7 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public boolean getExtenderInPosition() {
-    double positionError = Math.abs(intakeExtenderEncoder.getPosition() - intakeExtenderReference);
+    double positionError = Math.abs(getPosition() - getReference());
     return positionError < ExtenderConstants.kPositionTolerance;
   }
 

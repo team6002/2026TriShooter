@@ -3,32 +3,53 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6,
-        "y": 0.85
+        "x": 4.0,
+        "y": 7.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.35,
-        "y": 0.85
+        "x": 5.0,
+        "y": 7.4
+      },
+      "isLocked": false,
+      "linkedName": "ShootDoubleTrech"
+    },
+    {
+      "anchor": {
+        "x": 6.15,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 5.15,
+        "y": 7.4
+      },
+      "nextControl": {
+        "x": 7.15,
+        "y": 7.4
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.686,
-        "y": 0.67
+        "x": 7.5,
+        "y": 4.5
       },
       "prevControl": {
-        "x": 0.936,
-        "y": 0.67
+        "x": 8.187435901715112,
+        "y": 5.63856571221565
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeOutpost"
+      "linkedName": "SwipeHalfMiddleTrench"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.316182572614108,
+      "rotationDegrees": 135.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,13 +63,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 90.0
   },
   "reversed": false,
-  "folder": "Outpost+Depot",
+  "folder": "DoubleTrench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -78.93748761455363
   },
   "useDefaultConstraints": true
 }
