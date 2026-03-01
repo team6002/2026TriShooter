@@ -41,16 +41,23 @@ public class IntakeConfig {
         .voltageCompensation(12.0);
     intakeExtenderConfig
         .absoluteEncoder
-        .positionConversionFactor(Math.PI * 2)
-        .velocityConversionFactor((Math.PI * 2) / 60)
+        .positionConversionFactor((Math.PI * 2) / ExtenderConstants.kAbsoluteGearRatio)
+        .velocityConversionFactor((Math.PI * 2) / (ExtenderConstants.kAbsoluteGearRatio * 60))
         .averageDepth(2)
         .inverted(true);
+    intakeExtenderConfig
+        .encoder
+        .positionConversionFactor((Math.PI * 2) / ExtenderConstants.kGearRatio)
+        .velocityConversionFactor((Math.PI * 2) / (ExtenderConstants.kAbsoluteGearRatio * 60))
+        .uvwAverageDepth(2)
+        .uvwMeasurementPeriod(16);
     intakeExtenderConfig
         .closedLoop
         .pid(
             ExtenderConstants.kP, ExtenderConstants.kI, ExtenderConstants.kD, ClosedLoopSlot.kSlot0)
         .outputRange(ExtenderConstants.kMinOutput, ExtenderConstants.kMaxOutput)
-        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+        // .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
     intakeExtenderConfig
         .closedLoop
         .maxMotion

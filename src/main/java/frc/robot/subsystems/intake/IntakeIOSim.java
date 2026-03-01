@@ -73,6 +73,14 @@ public class IntakeIOSim implements IntakeIO {
     inputs.intakeVoltage = getVoltage();
     inputs.intakeReference = getReference();
     inputs.intakeVelocity = Units.radiansToDegrees(getVelocity());
+    inputs.intakePosition = Units.radiansToDegrees(getPosition());
+
+    inputs.extenderCurrent = getExtenderCurrent();
+    inputs.extenderVoltage = getExtenderVoltage();
+    inputs.extenderReference = getExtenderReference();
+    inputs.extenderVelocity = Units.radiansToDegrees(getExtenderVelocity());
+    inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
+    inputs.extenderInPosition = getExtenderInPosition();
   }
 
   @Override
@@ -106,6 +114,11 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
+  public double getPosition() {
+    return intakeSim.getAngularPositionRad();
+  }
+
+  @Override
   public void setExtenderReference(double reference) {
     this.extenderReference = reference;
   }
@@ -133,6 +146,17 @@ public class IntakeIOSim implements IntakeIO {
   @Override
   public double getExtenderVelocity() {
     return intakeExtenderSim.getAngularVelocityRadPerSec();
+  }
+
+  @Override
+  public double getExtenderPosition() {
+    return intakeExtenderSim.getAngularPositionRad();
+  }
+
+  @Override
+  public boolean getExtenderInPosition() {
+    // Math.abs(getExtenderPosition() - getExtenderReference()) < ExtenderConstants.kTolerance;
+    return true;
   }
 
   @Override
