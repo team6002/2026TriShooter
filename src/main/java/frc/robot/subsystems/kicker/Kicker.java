@@ -7,63 +7,68 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.Logger;
 
 public class Kicker extends SubsystemBase {
-    private final KickerIO io;
-    private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
+  private final KickerIO io;
+  private final KickerIOInputsAutoLogged inputs = new KickerIOInputsAutoLogged();
 
-    private final SysIdRoutine sysIdRoutine;
+  private final SysIdRoutine sysIdRoutine;
 
-    public Kicker(KickerIO io) {
-        this.io = io;
-        this.sysIdRoutine = new SysIdRoutine(
-                new SysIdRoutine.Config(
-                        null, null, null, (state) -> Logger.recordOutput("/Kicker/SysIdState", state.toString())),
-                new SysIdRoutine.Mechanism((voltage) -> io.setVoltage(voltage.baseUnitMagnitude()), null, this));
-    }
+  public Kicker(KickerIO io) {
+    this.io = io;
+    this.sysIdRoutine =
+        new SysIdRoutine(
+            new SysIdRoutine.Config(
+                null,
+                null,
+                null,
+                (state) -> Logger.recordOutput("/Kicker/SysIdState", state.toString())),
+            new SysIdRoutine.Mechanism(
+                (voltage) -> io.setVoltage(voltage.baseUnitMagnitude()), null, this));
+  }
 
-    public SysIdRoutine getSysIdRoutine() {
-        return sysIdRoutine;
-    }
+  public SysIdRoutine getSysIdRoutine() {
+    return sysIdRoutine;
+  }
 
-    public double getReference() {
-        return io.getReference();
-    }
+  public double getReference() {
+    return io.getReference();
+  }
 
-    public double getVelocity() {
-        return io.getVelocity();
-    }
+  public double getVelocity() {
+    return io.getVelocity();
+  }
 
-    public double getCurrent() {
-        return io.getCurrent();
-    }
+  public double getCurrent() {
+    return io.getCurrent();
+  }
 
-    public double getVoltage() {
-        return io.getVoltage();
-    }
+  public double getVoltage() {
+    return io.getVoltage();
+  }
 
-    public void setVoltage(double voltage) {
-        io.setVoltage(voltage);
-    }
+  public void setVoltage(double voltage) {
+    io.setVoltage(voltage);
+  }
 
-    public Command runVoltage(double voltage) {
-        return Commands.runOnce(() -> setVoltage(voltage), this);
-    }
+  public Command runVoltage(double voltage) {
+    return Commands.runOnce(() -> setVoltage(voltage), this);
+  }
 
-    public void setReference(double velocity) {
-        io.setReference(velocity);
-    }
+  public void setReference(double velocity) {
+    io.setReference(velocity);
+  }
 
-    public Command setTargetVel(double vel) {
-        return Commands.runOnce(() -> setReference(vel), this);
-    }
+  public Command setTargetVel(double vel) {
+    return Commands.runOnce(() -> setReference(vel), this);
+  }
 
-    public boolean atVelocity() {
-        return io.atVelocity();
-    }
+  public boolean atVelocity() {
+    return io.atVelocity();
+  }
 
-    @Override
-    public void periodic() {
-        io.updateInputs(inputs);
-        io.periodic();
-        Logger.processInputs(this.getName(), inputs);
-    }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    io.periodic();
+    Logger.processInputs(this.getName(), inputs);
+  }
 }

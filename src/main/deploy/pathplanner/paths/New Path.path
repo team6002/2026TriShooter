@@ -3,64 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.75,
-        "y": 1.165
+        "x": 1.58,
+        "y": 4.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.75,
-        "y": 2.165
-      },
-      "isLocked": false,
-      "linkedName": "ShootOutpost"
-    },
-    {
-      "anchor": {
-        "x": 1.75,
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/ShootFromDepot.path
+        "x": 0.6267766952966372,
+        "y": 6.1767766952966365
+=======
+        "x": 2.579999999999999,
         "y": 4.0
-      },
-      "prevControl": {
-        "x": 1.75,
-        "y": 3.75
-      },
-      "nextControl": {
-        "x": 1.75,
-        "y": 4.25
+>>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/New Path.path
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.45,
-        "y": 6.0
+        "x": 4.63,
+        "y": 4.035
       },
       "prevControl": {
-        "x": 1.4499999999999997,
-        "y": 6.0
+        "x": 3.63,
+        "y": 4.035
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "IntakeDepot"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 0.75,
-      "rotationDegrees": 0.0
-    },
-    {
-      "waypointRelativePos": 1.5,
-      "rotationDegrees": -45.0
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/ShootFromDepot.path
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
+=======
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 360.0,
+>>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/New Path.path
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
@@ -70,10 +56,10 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Outpost+Depot",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 45.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

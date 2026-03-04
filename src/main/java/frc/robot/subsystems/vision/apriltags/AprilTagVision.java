@@ -22,106 +22,119 @@ import java.util.OptionalInt;
 import org.littletonrobotics.junction.Logger;
 
 public class AprilTagVision extends SubsystemBase {
-    private final AprilTagVisionIO io;
-    private final AprilTagVisionIO.CameraInputs[] inputs;
+  private final AprilTagVisionIO io;
+  private final AprilTagVisionIO.CameraInputs[] inputs;
 
-    private final MapleMultiTagPoseEstimator multiTagPoseEstimator;
-    private final Alert[] camerasDisconnectedAlerts;
-    private final Alert[] camerasNoResultAlerts;
-    private final Debouncer[] camerasNoResultDebouncer;
+  private final MapleMultiTagPoseEstimator multiTagPoseEstimator;
+  private final Alert[] camerasDisconnectedAlerts;
+  private final Alert[] camerasNoResultAlerts;
+  private final Debouncer[] camerasNoResultDebouncer;
 
-    private final LinearFilter visionHasResultAverage = LinearFilter.movingAverage(50);
+  private final LinearFilter visionHasResultAverage = LinearFilter.movingAverage(50);
 
-    public AprilTagVision(AprilTagVisionIO io, List<PhotonCameraProperties> camerasProperties) {
-        this.io = io;
-        this.inputs = new AprilTagVisionIO.CameraInputs[camerasProperties.size()];
-        for (int i = 0; i < inputs.length; i++) inputs[i] = new AprilTagVisionIO.CameraInputs(i);
-        this.camerasDisconnectedAlerts = new Alert[camerasProperties.size()];
-        this.camerasNoResultAlerts = new Alert[camerasProperties.size()];
-        this.camerasNoResultDebouncer = new Debouncer[camerasProperties.size()];
-        for (int i = 0; i < camerasProperties.size(); i++) {
-            this.camerasDisconnectedAlerts[i] = AlertsManager.create(
-                    "Photon Camera " + i + " '" + camerasProperties.get(i).name + "' disconnected",
-                    Alert.AlertType.kError);
-            this.camerasNoResultAlerts[i] = AlertsManager.create(
-                    "Photon Camera " + i + " '" + camerasProperties.get(i).name + "' no result",
-                    Alert.AlertType.kWarning);
-            this.camerasNoResultDebouncer[i] = new Debouncer(0.5);
-            this.camerasDisconnectedAlerts[i].set(false);
-        }
-
-        this.multiTagPoseEstimator = new MapleMultiTagPoseEstimator(
-                fieldLayout, new CameraHeightAndPitchRollAngleFilter(), camerasProperties);
+  public AprilTagVision(AprilTagVisionIO io, List<PhotonCameraProperties> camerasProperties) {
+    this.io = io;
+    this.inputs = new AprilTagVisionIO.CameraInputs[camerasProperties.size()];
+    for (int i = 0; i < inputs.length; i++) inputs[i] = new AprilTagVisionIO.CameraInputs(i);
+    this.camerasDisconnectedAlerts = new Alert[camerasProperties.size()];
+    this.camerasNoResultAlerts = new Alert[camerasProperties.size()];
+    this.camerasNoResultDebouncer = new Debouncer[camerasProperties.size()];
+    for (int i = 0; i < camerasProperties.size(); i++) {
+      this.camerasDisconnectedAlerts[i] =
+          AlertsManager.create(
+              "Photon Camera " + i + " '" + camerasProperties.get(i).name + "' disconnected",
+              Alert.AlertType.kError);
+      this.camerasNoResultAlerts[i] =
+          AlertsManager.create(
+              "Photon Camera " + i + " '" + camerasProperties.get(i).name + "' no result",
+              Alert.AlertType.kWarning);
+      this.camerasNoResultDebouncer[i] = new Debouncer(0.5);
+      this.camerasDisconnectedAlerts[i].set(false);
     }
 
-    private Optional<MapleMultiTagPoseEstimator.VisionObservation> result = Optional.empty();
+    this.multiTagPoseEstimator =
+        new MapleMultiTagPoseEstimator(
+            fieldLayout, new CameraHeightAndPitchRollAngleFilter(), camerasProperties);
+  }
 
-    @Override
-    public void periodic() {
-        io.updateInputs(inputs);
-        for (int i = 0; i < inputs.length; i++) Logger.processInputs(APRIL_TAGS_VISION_PATH + "Camera_" + i, inputs[i]);
+  private Optional<MapleMultiTagPoseEstimator.VisionObservation> result = Optional.empty();
 
-        for (int i = 0; i < inputs.length; i++) {
-            this.camerasDisconnectedAlerts[i].set(!inputs[i].cameraConnected);
-            this.camerasNoResultAlerts[i].set((!camerasDisconnectedAlerts[i].get())
-                    && camerasNoResultDebouncer[i].calculate(!inputs[i].newPipeLineResultAvailable));
-        }
+  @Override
+  public void periodic() {
+    io.updateInputs(inputs);
+    for (int i = 0; i < inputs.length; i++)
+      Logger.processInputs(APRIL_TAGS_VISION_PATH + "Camera_" + i, inputs[i]);
 
-        result = multiTagPoseEstimator.estimateRobotPose(inputs, getResultsTimeStamp());
-        result.ifPresent(RobotState.getInstance()::addVisionObservation);
-        RobotState.getInstance().visionObservationRate =
-                visionHasResultAverage.calculate(result.isPresent() ? 1.0 : 0.0);
-
-        Logger.recordOutput(
-                APRIL_TAGS_VISION_PATH + "Results/Estimated Pose", displayVisionPointEstimateResult(result));
-        SmartDashboard.putBoolean("Vision Result Trustable", resultPresent);
-        Logger.recordOutput(APRIL_TAGS_VISION_PATH + "Results/Presented", resultPresent);
+    for (int i = 0; i < inputs.length; i++) {
+      this.camerasDisconnectedAlerts[i].set(!inputs[i].cameraConnected);
+      this.camerasNoResultAlerts[i].set(
+          (!camerasDisconnectedAlerts[i].get())
+              && camerasNoResultDebouncer[i].calculate(!inputs[i].newPipeLineResultAvailable));
     }
 
-    private static final Pose2d EMPTY_DISPLAY = new Pose2d(-114514, -114514, new Rotation2d());
-    private Optional<MapleMultiTagPoseEstimator.VisionObservation> previousResult = Optional.empty();
-    private final Debouncer resultPresentDebouncer = new Debouncer(0.1, Debouncer.DebounceType.kFalling);
-    private boolean resultPresent = false;
+    result = multiTagPoseEstimator.estimateRobotPose(inputs, getResultsTimeStamp());
+    result.ifPresent(RobotState.getInstance()::addVisionObservation);
+    RobotState.getInstance().visionObservationRate =
+        visionHasResultAverage.calculate(result.isPresent() ? 1.0 : 0.0);
 
-    private Pose2d displayVisionPointEstimateResult(Optional<MapleMultiTagPoseEstimator.VisionObservation> result) {
-        resultPresent = resultPresentDebouncer.calculate(result.isPresent());
-        if (!resultPresent) return EMPTY_DISPLAY;
+    Logger.recordOutput(
+        APRIL_TAGS_VISION_PATH + "Results/Estimated Pose",
+        displayVisionPointEstimateResult(result));
+    SmartDashboard.putBoolean("Vision Result Trustable", resultPresent);
+    Logger.recordOutput(APRIL_TAGS_VISION_PATH + "Results/Presented", resultPresent);
+  }
 
-        Pose2d toReturn = result.orElse(
-                        previousResult.orElse(new MapleMultiTagPoseEstimator.VisionObservation(EMPTY_DISPLAY, null, 0)))
-                .visionPose();
-        result.ifPresent(newResult -> previousResult = Optional.of(newResult));
-        return toReturn;
+  private static final Pose2d EMPTY_DISPLAY = new Pose2d(-114514, -114514, new Rotation2d());
+  private Optional<MapleMultiTagPoseEstimator.VisionObservation> previousResult = Optional.empty();
+  private final Debouncer resultPresentDebouncer =
+      new Debouncer(0.1, Debouncer.DebounceType.kFalling);
+  private boolean resultPresent = false;
+
+  private Pose2d displayVisionPointEstimateResult(
+      Optional<MapleMultiTagPoseEstimator.VisionObservation> result) {
+    resultPresent = resultPresentDebouncer.calculate(result.isPresent());
+    if (!resultPresent) return EMPTY_DISPLAY;
+
+    Pose2d toReturn =
+        result
+            .orElse(
+                previousResult.orElse(
+                    new MapleMultiTagPoseEstimator.VisionObservation(EMPTY_DISPLAY, null, 0)))
+            .visionPose();
+    result.ifPresent(newResult -> previousResult = Optional.of(newResult));
+    return toReturn;
+  }
+
+  private double getResultsTimeStamp() {
+    if (inputs.length == 0) return Timer.getTimestamp();
+    double totalTimeStampSeconds = 0, camerasUsed = 0;
+    for (AprilTagVisionIO.CameraInputs input : inputs) {
+      if (input.newPipeLineResultAvailable) {
+        totalTimeStampSeconds += input.timeStampSeconds;
+        camerasUsed++;
+      }
     }
+    return totalTimeStampSeconds / camerasUsed - ADDITIONAL_LATENCY_COMPENSATION.in(Seconds);
+  }
 
-    private double getResultsTimeStamp() {
-        if (inputs.length == 0) return Timer.getTimestamp();
-        double totalTimeStampSeconds = 0, camerasUsed = 0;
-        for (AprilTagVisionIO.CameraInputs input : inputs) {
-            if (input.newPipeLineResultAvailable) {
-                totalTimeStampSeconds += input.timeStampSeconds;
-                camerasUsed++;
-            }
-        }
-        return totalTimeStampSeconds / camerasUsed - ADDITIONAL_LATENCY_COMPENSATION.in(Seconds);
-    }
+  public Command focusOnTarget(int tagId, int cameraToFocusId) {
+    return startEnd(
+        () -> multiTagPoseEstimator.enableFocusMode(tagId, cameraToFocusId),
+        multiTagPoseEstimator::disableFocusMode);
+  }
 
-    public Command focusOnTarget(int tagId, int cameraToFocusId) {
-        return startEnd(
-                () -> multiTagPoseEstimator.enableFocusMode(tagId, cameraToFocusId),
-                multiTagPoseEstimator::disableFocusMode);
-    }
+  public Command focusOnTarget(OptionalInt tagId, Integer... cameraToFocusId) {
+    return startEnd(
+        () -> multiTagPoseEstimator.setFocusMode(tagId, cameraToFocusId),
+        multiTagPoseEstimator::disableFocusMode);
+  }
 
-    public Command focusOnTarget(OptionalInt tagId, Integer... cameraToFocusId) {
-        return startEnd(
-                () -> multiTagPoseEstimator.setFocusMode(tagId, cameraToFocusId),
-                multiTagPoseEstimator::disableFocusMode);
-    }
-
-    public final Trigger cameraDisconnected = new Trigger(() -> {
-        // for (AprilTagVisionIO.CameraInputs input : AprilTagVision.this.inputs) if
-        // (!input.cameraConnected) return
-        // true;
-        return false;
-    });
+  public final Trigger cameraDisconnected =
+      new Trigger(
+          () -> {
+            // for (AprilTagVisionIO.CameraInputs input : AprilTagVision.this.inputs) if
+            // (!input.cameraConnected) return
+            // true;
+            return false;
+          });
 }

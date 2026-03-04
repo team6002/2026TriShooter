@@ -7,32 +7,32 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class HoodConfig {
-    public static final SparkMaxConfig hoodConfig = new SparkMaxConfig();
+  public static final SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
-    static {
-        hoodConfig
-                .disableFollowerMode()
-                .idleMode(IdleMode.kBrake)
-                .inverted(HoodConstants.kInverted)
-                .smartCurrentLimit(40)
-                .voltageCompensation(12.0);
-        hoodConfig
-                .absoluteEncoder
-                .positionConversionFactor(1)
-                .velocityConversionFactor(1)
-                .averageDepth(16)
-                .inverted(true);
-        hoodConfig
-                .closedLoop
-                .pid(HoodConstants.kP, HoodConstants.kI, HoodConstants.kD, ClosedLoopSlot.kSlot0)
-                .outputRange(HoodConstants.kMinOutput, HoodConstants.kMaxOutput)
-                .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
-        hoodConfig
-                .closedLoop
-                .maxMotion
-                .allowedProfileError(HoodConstants.kTolerance, ClosedLoopSlot.kSlot0)
-                .cruiseVelocity(HoodConstants.kMaxVel, ClosedLoopSlot.kSlot0)
-                .maxAcceleration(HoodConstants.kMaxAccel)
-                .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal, ClosedLoopSlot.kSlot0);
-    }
+  static {
+    hoodConfig
+        .disableFollowerMode()
+        .idleMode(IdleMode.kBrake)
+        .inverted(HoodConstants.kInverted)
+        .smartCurrentLimit(40)
+        .voltageCompensation(12.0);
+    hoodConfig
+        .absoluteEncoder
+        .positionConversionFactor(1)
+        .velocityConversionFactor(1)
+        .averageDepth(16)
+        .inverted(true);
+    hoodConfig
+        .closedLoop
+        .pid(HoodConstants.kP, HoodConstants.kI, HoodConstants.kD, ClosedLoopSlot.kSlot0)
+        .outputRange(HoodConstants.kMinOutput, HoodConstants.kMaxOutput)
+        .feedbackSensor(FeedbackSensor.kAbsoluteEncoder);
+    hoodConfig
+        .closedLoop
+        .maxMotion
+        .allowedProfileError(HoodConstants.kTolerance, ClosedLoopSlot.kSlot0)
+        .cruiseVelocity(HoodConstants.kMaxVel, ClosedLoopSlot.kSlot0)
+        .maxAcceleration(HoodConstants.kMaxAccel)
+        .positionMode(MAXMotionPositionMode.kMAXMotionTrapezoidal, ClosedLoopSlot.kSlot0);
+  }
 }

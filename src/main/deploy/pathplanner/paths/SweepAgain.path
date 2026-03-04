@@ -3,81 +3,87 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.467,
-        "y": 6.194
+        "x": 2.877,
+        "y": 1.538
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8747082393337835,
-        "y": 4.5538400762169005
+        "x": 2.877,
+        "y": 0.5380000000000001
       },
       "isLocked": false,
-      "linkedName": "ShootBump"
+      "linkedName": "ShootTrench"
     },
     {
       "anchor": {
-        "x": 7.5,
-        "y": 5.5
+        "x": 4.5,
+        "y": 0.67
       },
       "prevControl": {
-        "x": 6.732580351593186,
-        "y": 6.798909304943668
+        "x": 3.5,
+        "y": 0.6700000000000002
       },
       "nextControl": {
-        "x": 7.627167875490123,
-        "y": 5.284759828462881
+        "x": 7.5,
+        "y": 0.67
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.614337349397591,
-        "y": 2.1335783132530115
+        "x": 7.5,
+        "y": 3.5
       },
       "prevControl": {
-        "x": 7.647007879572738,
-        "y": 4.135466228919848
+        "x": 7.5,
+        "y": 0.5000000000000004
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SwipeMiddleBump"
+      "linkedName": "SweepHalfMiddle"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.33,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 0.8616352201257862,
+      "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 0.63,
-      "rotationDegrees": 45.0
+      "waypointRelativePos": 1.1289308176100643,
+      "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 0.8,
-      "rotationDegrees": 135.0
+      "waypointRelativePos": 1.5,
+      "rotationDegrees": -90.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/SwipeMiddleTrench.path
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
+=======
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
+    "maxAngularVelocity": 360.0,
+>>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/SweepAgain.path
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -90.0
   },
   "reversed": false,
-  "folder": "Bump",
+  "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -45.0
+    "rotation": 55.0
   },
   "useDefaultConstraints": true
 }
