@@ -71,7 +71,7 @@ public class RobotContainer {
   private final Field2d field = new Field2d();
   // Controller
   public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
-//   public final DriverMap operator = new DriverMap.LeftHandedXbox(1);
+  //   public final DriverMap operator = new DriverMap.LeftHandedXbox(1);
 
   public Pose2d resetPose;
 
@@ -174,10 +174,10 @@ public class RobotContainer {
       autoChooser.addOption("Trench Left", new AUTO_Trench().getAutoCommand(this, true));
       autoChooser.addOption("Outpost", new AUTO_Outpost().getAutoCommand(this, false));
 
-    // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
-    // distance
-    // Multiply wheel radius by actual distance (in) / 118.11 inches
-    //   autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
+      // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
+      // distance
+      // Multiply wheel radius by actual distance (in) / 118.11 inches
+      //   autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
     } catch (Exception e) {
       AlertsManager.create("Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
       e.printStackTrace();
@@ -190,15 +190,15 @@ public class RobotContainer {
     // autoChooser.addOption("Drive Simple FF Characterization",
     // DriveCommands.feedforwardCharacterization(drive));
     autoChooser.addOption(
-            "Drive SysId (Quasistatic Forward)",
-    drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
-            "Drive SysId (Quasistatic Reverse)",
-    drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("Drive SysId (Dynamic Forward)",
-    drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption("Drive SysId (Dynamic Reverse)",
-    drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -237,16 +237,16 @@ public class RobotContainer {
                 HubShiftUtil.getOfficialShiftInfo().active()
                     && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 3
                     && DriverStation.isTeleopEnabled())
-            .onTrue(driver.rumbleLeftRight(1));
-        // .onTrue(operator.rumbleLeftRight(1));
+        .onTrue(driver.rumbleLeftRight(1));
+    // .onTrue(operator.rumbleLeftRight(1));
     // rumble driver / operator joystick when 5 seconds left until hub active period
     new Trigger(
             () ->
                 !HubShiftUtil.getOfficialShiftInfo().active()
                     && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 5
                     && DriverStation.isTeleopEnabled())
-            .onTrue(driver.rumble(1));
-        // .onTrue(operator.rumble(1));
+        .onTrue(driver.rumble(1));
+    // .onTrue(operator.rumble(1));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -280,10 +280,10 @@ public class RobotContainer {
       driver.scoreButton().whileTrue(shootClose());
       driver.rightBumper().whileTrue(shootFar());
 
-    //   operator
-    //       .scoreButton()
-    //       .onTrue(intake.setExtenderTargetAngle(ExtenderConstants.kStow))
-    //       .onFalse(intake.setExtenderTargetAngle(ExtenderConstants.kExtended));
+      //   operator
+      //       .scoreButton()
+      //       .onTrue(intake.setExtenderTargetAngle(ExtenderConstants.kStow))
+      //       .onFalse(intake.setExtenderTargetAngle(ExtenderConstants.kExtended));
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));

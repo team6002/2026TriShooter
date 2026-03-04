@@ -36,8 +36,6 @@ public class IntakeIOSim implements IntakeIO {
       new SimpleMotorFeedforward(ExtenderConstants.kS, ExtenderConstants.kV, IntakeConstants.kA);
   private double extenderReference = 0;
 
-  public static double objectsInHopper = 0;
-
   private final LoggedMechanism2d intakeMechanism;
   private final LoggedMechanismRoot2d intakeRoot;
   private final LoggedMechanismLigament2d intakeVisualizer =

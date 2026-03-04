@@ -34,7 +34,7 @@ public class IntakeConstants {
   public static final class ExtenderConstants {
     public static final int kIntakeExtenderCanId = 7;
 
-    public static final double kP = 10;//5
+    public static final double kP = 10; // 5
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
@@ -60,8 +60,8 @@ public class IntakeConstants {
     public static final double kStow = Math.toRadians(185);
     public static final double kExtended = Math.toRadians(250);
 
-    public static final double kMaxVel = Math.toRadians(16000);
-    public static final double kMaxAccel = Math.toRadians(48000);
+    public static final double kMaxVel = Math.toRadians(64000);
+    public static final double kMaxAccel = Math.toRadians(72000);
 
     public static final double kPositionTolerance = Math.toRadians(5);
 

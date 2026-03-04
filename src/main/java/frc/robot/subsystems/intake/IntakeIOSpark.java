@@ -88,6 +88,8 @@ public class IntakeIOSpark implements IntakeIO {
     inputs.extenderVoltage = getExtenderVoltage();
     inputs.extenderVelocity = getExtenderVelocity();
     inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
+    inputs.extenderProfileSetpoint =
+        Units.radiansToDegrees(intakeExtenderController.getMAXMotionSetpointPosition());
     inputs.extenderInPosition = getExtenderInPosition();
     inputs.extenderTemp =
         Fahrenheit.convertFrom(intakeExtenderMotor.getMotorTemperature(), Celsius);
@@ -171,7 +173,6 @@ public class IntakeIOSpark implements IntakeIO {
   public boolean getExtenderInPosition() {
     double positionError = Math.abs(getExtenderPosition() - getExtenderReference());
     return positionError < ExtenderConstants.kPositionTolerance;
-    // return true;
   }
 
   @Override
@@ -197,8 +198,7 @@ public class IntakeIOSpark implements IntakeIO {
   public void periodic() {
     intakeController.setSetpoint(intakeReference, intakeType);
 
-    // intakeExtenderController.setSetpoint(
-    //     intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
-    intakeExtenderController.setSetpoint(0, ControlType.kVoltage);
+    intakeExtenderController.setSetpoint(
+        intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
   }
 }

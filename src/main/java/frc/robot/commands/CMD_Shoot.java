@@ -63,7 +63,7 @@ public class CMD_Shoot extends Command {
     shooter.setReference(shooterSupplier.getAsDouble());
     hood.setReference(hoodSupplier.getAsDouble());
   }
-  
+
   @Override
   public void end(boolean interrupted) {
     shooter.setReference(0);
