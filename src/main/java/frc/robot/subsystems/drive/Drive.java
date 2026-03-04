@@ -324,6 +324,14 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);
   }
 
+  public void acceptWithHeading(
+      Pose2d visionRobotPoseMeters,
+      double timestampSeconds,
+      Matrix<N3, N1> visionMeasurementStdDevs) {
+    poseEstimator.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+
   /** Adds a new timestamped vision measurement. */
   @Override
   public void accept(
@@ -331,10 +339,17 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
-    // ignore AprilTag heading data
-    Pose2d poseWithGyroHeading = new Pose2d(visionRobotPoseMeters.getTranslation(), getRotation());
+    // Replace the vision heading with gyro heading
+    Pose2d xyOnlyPose = new Pose2d(
+        visionRobotPoseMeters.getTranslation(),
+        gyroInputs.yawPosition // your gyro-based rotation
+    );
+
     poseEstimator.addVisionMeasurement(
-        poseWithGyroHeading, timestampSeconds, visionMeasurementStdDevs);
+        xyOnlyPose,
+        timestampSeconds,
+        visionMeasurementStdDevs
+    );
   }
 
   /** Returns the maximum linear speed in meters per sec. */

@@ -170,8 +170,8 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public boolean getExtenderInPosition() {
     double positionError = Math.abs(getExtenderPosition() - getExtenderReference());
-    return positionError < ExtenderConstants.kPositionTolerance;
-    // return true;
+    // return positionError < ExtenderConstants.kPositionTolerance;
+    return true;
   }
 
   @Override
@@ -197,8 +197,8 @@ public class IntakeIOSpark implements IntakeIO {
   public void periodic() {
     intakeController.setSetpoint(intakeReference, intakeType);
 
-    intakeExtenderController.setSetpoint(
-        intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
-    // intakeExtenderController.setSetpoint(0, ControlType.kVoltage);
+    // intakeExtenderController.setSetpoint(
+        // intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
+    intakeExtenderController.setSetpoint(0, ControlType.kVoltage);
   }
 }

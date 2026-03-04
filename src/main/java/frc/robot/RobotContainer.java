@@ -99,11 +99,14 @@ public class RobotContainer {
         kicker = new Kicker(new KickerIOSpark());
         hood = new Hood(new HoodIOSpark());
 
-                this.vision = new Vision(
-                        drive,
-                        // drive,
-                        new VisionIOPhotonVision(Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
-                        new VisionIOPhotonVision(Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
+        this.vision =
+            new Vision(
+                drive
+                ,new VisionIOPhotonVision(Vision_Constants.camera0Name,
+                    Vision_Constants.robotToCamera0),
+                new VisionIOPhotonVision(Vision_Constants.camera1Name,
+                    Vision_Constants.robotToCamera1)
+                );
 
         break;
       case SIM:
