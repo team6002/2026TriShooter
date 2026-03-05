@@ -138,14 +138,14 @@ public class Robot extends LoggedRobot {
   /** This function is called once when the robot is disabled. */
   @Override
   public void disabledInit() {
+    robotContainer.intake.setVoltage(IntakeConstants.kOff);
+    robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderReference());
     robotContainer.resetSimulationField();
   }
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {
-    // robotContainer.checkForCommandChanges();
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

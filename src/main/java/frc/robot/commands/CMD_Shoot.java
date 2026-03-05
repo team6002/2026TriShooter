@@ -65,6 +65,14 @@ public class CMD_Shoot extends Command {
   }
 
   @Override
+  public void end(boolean interrupted) {
+    shooter.setReference(0);
+    hood.setReference(HoodConstants.kMinPos);
+    conveyor.setVoltage(ConveyorConstants.kOff);
+    kicker.setVoltage(KickerConstants.kOff);
+  }
+
+  @Override
   public void execute() {
     if (shooter.isReady() && hood.atReference() && !shooting) {
       conveyor.setVoltage(ConveyorConstants.kConvey);
@@ -80,13 +88,5 @@ public class CMD_Shoot extends Command {
       shooting = true;
       timer.reset();
     }
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    conveyor.setVoltage(ConveyorConstants.kOff);
-    kicker.setVoltage(KickerConstants.kOff);
-    shooter.setReference(0);
-    hood.setReference(HoodConstants.kMinPos);
   }
 }
