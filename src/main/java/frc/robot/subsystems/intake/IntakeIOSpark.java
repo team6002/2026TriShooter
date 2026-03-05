@@ -34,22 +34,18 @@ public class IntakeIOSpark implements IntakeIO {
   private ControlType intakeExtenderType;
 
   public IntakeIOSpark() {
-    // initialize motor
     intakeMotor = new SparkFlex(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
     intakeFollowerMotor = new SparkFlex(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
     intakeExtenderMotor =
         new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
 
-    // initialize PID controller
     intakeController = intakeMotor.getClosedLoopController();
     intakeExtenderController = intakeExtenderMotor.getClosedLoopController();
 
-    // initalize encoder
     intakeEncoder = intakeMotor.getEncoder();
     intakeExtenderEncoder = intakeExtenderMotor.getAbsoluteEncoder();
 
-    // apply config
     intakeMotor.configure(
         IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -63,7 +59,6 @@ public class IntakeIOSpark implements IntakeIO {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // reset target speed in init
     intakeReference = 0;
     intakeType = ControlType.kVelocity;
 
@@ -88,6 +83,10 @@ public class IntakeIOSpark implements IntakeIO {
     inputs.extenderVoltage = getExtenderVoltage();
     inputs.extenderVelocity = getExtenderVelocity();
     inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
+    inputs.extenderProfilePositionSetpoint =
+        Units.radiansToDegrees(intakeExtenderController.getMAXMotionSetpointPosition());
+    inputs.extenderProfileVelocitySetpoint =
+        Units.radiansToDegrees(intakeExtenderController.getMAXMotionSetpointVelocity());
     inputs.extenderInPosition = getExtenderInPosition();
     inputs.extenderTemp =
         Fahrenheit.convertFrom(intakeExtenderMotor.getMotorTemperature(), Celsius);
@@ -169,26 +168,26 @@ public class IntakeIOSpark implements IntakeIO {
 
   @Override
   public boolean getExtenderInPosition() {
-    double positionError = Math.abs(getPosition() - getReference());
+    double positionError = Math.abs(getExtenderPosition() - getExtenderReference());
     return positionError < ExtenderConstants.kPositionTolerance;
   }
 
   @Override
   public void setExtenderLowCurrentMode(boolean lowCurrentMode) {
     if (lowCurrentMode) {
-      SparkFlexConfig newLeadConfig = new SparkFlexConfig();
-      newLeadConfig.apply(IntakeConfig.intakeExtenderConfig);
-      newLeadConfig.smartCurrentLimit(5);
+      SparkFlexConfig newConfig = new SparkFlexConfig();
+      newConfig.apply(IntakeConfig.intakeExtenderConfig);
+      newConfig.smartCurrentLimit(2);
 
       intakeExtenderMotor.configureAsync(
-          newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+          newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     } else {
-      SparkFlexConfig newLeadConfig = new SparkFlexConfig();
-      newLeadConfig.apply(IntakeConfig.intakeExtenderConfig);
-      newLeadConfig.smartCurrentLimit(40);
+      SparkFlexConfig newConfig = new SparkFlexConfig();
+      newConfig.apply(IntakeConfig.intakeExtenderConfig);
+      newConfig.smartCurrentLimit(40);
 
       intakeExtenderMotor.configureAsync(
-          newLeadConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+          newConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
     }
   }
 
@@ -196,10 +195,7 @@ public class IntakeIOSpark implements IntakeIO {
   public void periodic() {
     intakeController.setSetpoint(intakeReference, intakeType);
 
-    // horizontal is 270, offset to 0
-
-    double ff = -ExtenderConstants.kG * (Math.cos(getExtenderPosition() - Math.toRadians(270)));
     intakeExtenderController.setSetpoint(
-        intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0, ff);
+        intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
   }
 }
