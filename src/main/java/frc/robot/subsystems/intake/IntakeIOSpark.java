@@ -83,10 +83,6 @@ public class IntakeIOSpark implements IntakeIO {
     inputs.extenderVoltage = getExtenderVoltage();
     inputs.extenderVelocity = getExtenderVelocity();
     inputs.extenderPosition = Units.radiansToDegrees(getExtenderPosition());
-    inputs.extenderProfilePositionSetpoint =
-        Units.radiansToDegrees(intakeExtenderController.getMAXMotionSetpointPosition());
-    inputs.extenderProfileVelocitySetpoint =
-        Units.radiansToDegrees(intakeExtenderController.getMAXMotionSetpointVelocity());
     inputs.extenderInPosition = getExtenderInPosition();
     inputs.extenderTemp =
         Fahrenheit.convertFrom(intakeExtenderMotor.getMotorTemperature(), Celsius);

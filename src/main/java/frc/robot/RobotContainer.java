@@ -15,7 +15,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -37,7 +36,6 @@ import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
-import frc.robot.utils.AlertsManager;
 import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
@@ -75,7 +73,7 @@ public class RobotContainer {
   public Pose2d resetPose;
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  private final LoggedDashboardChooser<Auto> autoChooser;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
@@ -97,13 +95,15 @@ public class RobotContainer {
         kicker = new Kicker(new KickerIOSpark());
         hood = new Hood(new HoodIOSpark());
 
-        this.vision =
-            new Vision(
-                drive,
-                new VisionIOPhotonVision(
-                    Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
-                new VisionIOPhotonVision(
-                    Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
+        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+
+        // this.vision =
+        //     new Vision(
+        //         drive,
+        //         new VisionIOPhotonVision(
+        //             Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
+        //         new VisionIOPhotonVision(
+        //             Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
 
         break;
       case SIM:
@@ -167,37 +167,14 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
-    try {
-      autoChooser.addDefaultOption(
-          "Trench And Outpost", new AUTO_TrenchAndOutpost().getAutoCommand(this, false));
-      autoChooser.addOption("Trench Left", new AUTO_Trench().getAutoCommand(this, true));
-      autoChooser.addOption("Outpost", new AUTO_Outpost().getAutoCommand(this, false));
+    autoChooser.addDefaultOption("Trench And Outpost", new AUTO_TrenchAndOutpost());
+    autoChooser.addOption("Trench Left", new AUTO_Trench());
+    autoChooser.addOption("Outpost", new AUTO_Outpost());
 
-      // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
-      // distance
-      //   Multiply wheel radius by actual distance (in) / 118.11 inches
-      // autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
-    } catch (Exception e) {
-      AlertsManager.create("Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
-      e.printStackTrace();
-    }
-
-    // Set up SysId routines
-
-    // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption("Drive Simple FF Characterization",
-    // DriveCommands.feedforwardCharacterization(drive));
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Forward)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Quasistatic Reverse)",
-    //     drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    // autoChooser.addOption(
-    //     "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
+    // distance
+    //   Multiply wheel radius by actual distance (in) / 118.11 inches
+    // autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -230,22 +207,20 @@ public class RobotContainer {
 
     ledStatusLight.setDefaultCommand(ledStatusLight.showHubStatus());
 
-    // rumble driver / operator controller when 3 seconds left on hub active period
+    // rumble driver controller when 3 seconds left on hub active period
     new Trigger(
             () ->
                 HubShiftUtil.getOfficialShiftInfo().active()
                     && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 3
                     && DriverStation.isTeleopEnabled())
         .onTrue(driver.rumbleLeftRight(1));
-    // .onTrue(operator.rumbleLeftRight(1));
-    // rumble driver / operator joystick when 5 seconds left until hub active period
+    // rumble driver joystick when 5 seconds left until hub active period
     new Trigger(
             () ->
                 !HubShiftUtil.getOfficialShiftInfo().active()
                     && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 5
                     && DriverStation.isTeleopEnabled())
         .onTrue(driver.rumble(1));
-    // .onTrue(operator.rumble(1));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -257,16 +232,16 @@ public class RobotContainer {
                     new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
     driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    driver
-        .autoAlignmentButton()
-        .whileTrue(
-            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-                driveInput,
-                drive,
-                () -> FieldConstants.getHubPose(),
-                ShooterConstants.kShooterOptimization,
-                0.5,
-                false));
+    // driver
+    //     .autoAlignmentButton()
+    //     .whileTrue(
+    //         JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+    //             driveInput,
+    //             drive,
+    //             () -> FieldConstants.getHubPose(),
+    //             ShooterConstants.kShooterOptimization,
+    //             0.5,
+    //             false));
 
     driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
 
@@ -279,11 +254,6 @@ public class RobotContainer {
       driver.scoreButton().whileTrue(shootClose());
       driver.rightBumper().whileTrue(shootFar());
 
-      //   operator
-      //       .scoreButton()
-      //       .onTrue(intake.setExtenderTargetAngle(ExtenderConstants.kStow))
-      //       .onFalse(intake.setExtenderTargetAngle(ExtenderConstants.kExtended));
-
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
     }
@@ -294,7 +264,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Auto getAutonomousCommand() {
     return autoChooser.get();
   }
 

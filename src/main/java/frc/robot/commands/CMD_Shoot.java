@@ -78,15 +78,15 @@ public class CMD_Shoot extends Command {
       conveyor.setVoltage(ConveyorConstants.kConvey);
       kicker.setVoltage(KickerConstants.kKick);
 
-      intake.setExtenderLowCurrentMode(false);
-      intake.setExtenderReference(ExtenderConstants.kStow);
-
       timer.start();
     }
 
-    if (timer.get() > 0.25 && !shooting) {
+    if (timer.get() > 1 && !shooting) {
       shooting = true;
       timer.reset();
+
+      intake.setExtenderLowCurrentMode(false);
+      intake.setExtenderReference(ExtenderConstants.kStow);
     }
   }
 }
