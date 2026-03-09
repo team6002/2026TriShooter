@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
@@ -250,9 +251,11 @@ public class RobotContainer {
 
       driver.yButton().onTrue(new CMD_Stow(intake));
       driver.aButton().onTrue(new CMD_Home(intake));
+      driver.stopWithXButton().onTrue(new InstantCommand(() -> drive.stopWithX()));
 
       driver.scoreButton().whileTrue(shootClose());
       driver.rightBumper().whileTrue(shootFar());
+      driver.autoAlignmentButton().whileTrue(shootMid());
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
@@ -323,10 +326,17 @@ public class RobotContainer {
   }
 
   public Command shootClose() {
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.2, Math.toRadians(18000));
+    // start, .2, 18000
+    // .35, 19000
+    // .375, 19500
+    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.4, Math.toRadians(19500));
+  }
+
+  public Command shootMid() {
+    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.325, Math.toRadians(21500));
   }
 
   public Command shootFar() {
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.45, Math.toRadians(23000));
+    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.8, Math.toRadians(20000));
   }
 }

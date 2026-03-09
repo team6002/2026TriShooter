@@ -4,12 +4,12 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 1.46
+        "y": 1.55
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.0,
-        "y": 0.569725212806764
+        "y": 0.6597252128067641
       },
       "isLocked": false,
       "linkedName": "ShootTrench"
@@ -77,7 +77,7 @@
   "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 57.5
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

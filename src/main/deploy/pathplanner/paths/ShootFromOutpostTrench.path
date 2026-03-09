@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.57,
-        "y": 0.67
+        "x": 0.3,
+        "y": 0.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.584906599955879,
-        "y": 0.7883905677055645
+        "x": 1.314906599955879,
+        "y": 0.9683905677055644
       },
       "isLocked": false,
       "linkedName": "IntakeOutpost"
@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 1.46
+        "y": 1.55
       },
       "prevControl": {
         "x": 2.366513303367072,
-        "y": 0.7794657981144705
+        "y": 0.8694657981144707
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 57.5
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": "Outpost",

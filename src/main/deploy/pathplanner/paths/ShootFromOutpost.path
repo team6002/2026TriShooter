@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.57,
-        "y": 0.67
+        "x": 0.3,
+        "y": 0.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.4078996870455216,
-        "y": 1.5078996870455217
+        "x": 1.1378996870455216,
+        "y": 1.6878996870455216
       },
       "isLocked": false,
       "linkedName": "IntakeOutpost"
