@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
@@ -96,15 +95,14 @@ public class RobotContainer {
         kicker = new Kicker(new KickerIOSpark());
         hood = new Hood(new HoodIOSpark());
 
-        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-
-        // this.vision =
-        //     new Vision(
-        //         drive,
-        //         new VisionIOPhotonVision(
-        //             Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
-        //         new VisionIOPhotonVision(
-        //             Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
+        this.vision =
+            new Vision(
+                drive,
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
+                new VisionIOPhotonVision(
+                    Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
+                new VisionIOPhotonVision(
+                    Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
 
         break;
       case SIM:
@@ -133,6 +131,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive,
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
                 new VisionIOPhotonVisionSim(
                     Vision_Constants.camera0Name,
                     Vision_Constants.robotToCamera0,
@@ -160,7 +159,12 @@ public class RobotContainer {
         kicker = new Kicker(new KickerIO() {});
         hood = new Hood(new HoodIO() {});
 
-        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive,
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
+                new VisionIO() {},
+                new VisionIO() {});
         break;
     }
 
@@ -207,21 +211,6 @@ public class RobotContainer {
     conveyor.setDefaultCommand(conveyor.runVoltage(ConveyorConstants.kOff));
 
     ledStatusLight.setDefaultCommand(ledStatusLight.showHubStatus());
-
-    // rumble driver controller when 3 seconds left on hub active period
-    new Trigger(
-            () ->
-                HubShiftUtil.getOfficialShiftInfo().active()
-                    && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 3
-                    && DriverStation.isTeleopEnabled())
-        .onTrue(driver.rumbleLeftRight(1));
-    // rumble driver joystick when 5 seconds left until hub active period
-    new Trigger(
-            () ->
-                !HubShiftUtil.getOfficialShiftInfo().active()
-                    && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 5
-                    && DriverStation.isTeleopEnabled())
-        .onTrue(driver.rumble(1));
 
     // Reset gyro / odometry
     final Runnable resetGyro =
@@ -329,14 +318,17 @@ public class RobotContainer {
     // start, .2, 18000
     // .35, 19000
     // .375, 19500
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.4, Math.toRadians(19500));
+    return new CMD_Shoot(
+        drive, conveyor, hood, intake, kicker, shooter, 0.4, Math.toRadians(19500));
   }
 
   public Command shootMid() {
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.325, Math.toRadians(21500));
+    return new CMD_Shoot(
+        drive, conveyor, hood, intake, kicker, shooter, 0.325, Math.toRadians(21500));
   }
 
   public Command shootFar() {
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.8, Math.toRadians(20000));
+    return new CMD_Shoot(
+        drive, conveyor, hood, intake, kicker, shooter, 0.8, Math.toRadians(20000));
   }
 }
