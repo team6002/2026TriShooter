@@ -11,7 +11,6 @@ public class AUTO_3MeterTest implements Auto {
   public Command getAutoCommand(RobotContainer robot, boolean mirrored)
       throws IOException, ParseException {
     return Commands.sequence(
-        setAutoStartPose("3MeterTest", mirrored, robot.drive),
-        followPath("3MeterTest", mirrored));
+        setAutoStartPose("3MeterTest", mirrored, robot.drive), followPath("3MeterTest", mirrored));
   }
 }

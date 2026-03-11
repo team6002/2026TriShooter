@@ -33,10 +33,14 @@ public class GyroIONavX implements GyroIO {
     yawPositionQueue = SparkOdometryThread.getInstance().registerSignal(navX::getAngle);
   }
 
+  public void zeroRotation() {
+    navX.zeroYaw();
+  }
+
   @Override
   public void updateInputs(GyroIOInputs inputs) {
     inputs.connected = navX.isConnected();
-    inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle());
+    inputs.yawPosition = Rotation2d.fromDegrees(-navX.getAngle() * (180.0 / GYRO_HALFREV));
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
 
     inputs.odometryYawTimestamps =

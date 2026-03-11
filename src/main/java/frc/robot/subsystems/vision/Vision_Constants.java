@@ -26,8 +26,8 @@ public class Vision_Constants {
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
   // Camera names, must match names configured on coprocessor
-  public static String camera0Name = "MidLeftCamera";
-  public static String camera1Name = "MidRightCamera";
+  public static String camera0Name = "LeftCam";
+  public static String camera1Name = "RightCam";
 
   public static final double stdDevFactor = 1;
 
@@ -45,9 +45,9 @@ public class Vision_Constants {
               Units.inchesToMeters(12), Units.inchesToMeters(-8), Units.inchesToMeters(12)),
           new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
 
-    // Basic filtering thresholds
-    public static double maxAmbiguity = 0.2;
-    public static double maxZError = 0.75;
+  // Basic filtering thresholds
+  public static double maxAmbiguity = 0.2;
+  public static double maxZError = 0.75;
 
   // Standard deviation baselines, for 1 meter distance and 1 tag
   // (Adjusted automatically based on distance and # of tags)

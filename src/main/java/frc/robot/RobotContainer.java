@@ -101,12 +101,11 @@ public class RobotContainer {
 
         this.vision =
             new Vision(
-                drive
-                ,new VisionIOPhotonVision(Vision_Constants.camera0Name,
-                    Vision_Constants.robotToCamera0),
-                new VisionIOPhotonVision(Vision_Constants.camera1Name,
-                    Vision_Constants.robotToCamera1)
-                );
+                drive,
+                new VisionIOPhotonVision(
+                    Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
+                new VisionIOPhotonVision(
+                    Vision_Constants.camera1Name, Vision_Constants.robotToCamera1));
 
         break;
       case SIM:
@@ -132,17 +131,18 @@ public class RobotContainer {
         kicker = new Kicker(new KickerIOSim());
         hood = new Hood(new HoodIOSim());
 
-                vision = new Vision(
-                        drive,
-                        // drive,
-                        new VisionIOPhotonVisionSim(
-                                Vision_Constants.camera0Name,
-                                Vision_Constants.robotToCamera0,
-                                driveSimulation::getSimulatedDriveTrainPose),
-                        new VisionIOPhotonVisionSim(
-                                Vision_Constants.camera1Name,
-                                Vision_Constants.robotToCamera1,
-                                driveSimulation::getSimulatedDriveTrainPose));
+        vision =
+            new Vision(
+                drive,
+                // drive,
+                new VisionIOPhotonVisionSim(
+                    Vision_Constants.camera0Name,
+                    Vision_Constants.robotToCamera0,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    Vision_Constants.camera1Name,
+                    Vision_Constants.robotToCamera1,
+                    driveSimulation::getSimulatedDriveTrainPose));
 
         break;
       default:
@@ -176,10 +176,10 @@ public class RobotContainer {
       autoChooser.addOption("Trench Left", new AUTO_Trench().getAutoCommand(this, true));
       autoChooser.addOption("Outpost", new AUTO_Outpost().getAutoCommand(this, false));
 
-    // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
-    // distance
-    // Multiply wheel radius by actual distance (in) / 118.11 inches
-    //   autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
+      // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
+      // distance
+      // Multiply wheel radius by actual distance (in) / 118.11 inches
+      //   autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
     } catch (Exception e) {
       AlertsManager.create("Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
       e.printStackTrace();
@@ -192,15 +192,15 @@ public class RobotContainer {
     // autoChooser.addOption("Drive Simple FF Characterization",
     // DriveCommands.feedforwardCharacterization(drive));
     autoChooser.addOption(
-            "Drive SysId (Quasistatic Forward)",
-    drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+        "Drive SysId (Quasistatic Forward)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
-            "Drive SysId (Quasistatic Reverse)",
-    drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption("Drive SysId (Dynamic Forward)",
-    drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption("Drive SysId (Dynamic Reverse)",
-    drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+        "Drive SysId (Quasistatic Reverse)",
+        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    autoChooser.addOption(
+        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -251,13 +251,15 @@ public class RobotContainer {
         .onTrue(operator.rumble(1));
 
     // Reset gyro / odometry
+    GyroIONavX gyro = new GyroIONavX();
     final Runnable resetGyro =
         Robot.CURRENT_ROBOT_MODE == RobotMode.SIM
             ? () -> drive.resetOdometry(driveSimulation.getSimulatedDriveTrainPose())
             // reset odometry to actual robot pose during simulation
-            : () ->
-                drive.resetOdometry(
-                    new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+            : () -> {
+              drive.resetOdometry(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
+              gyro.zeroRotation();
+            }; // zero gyro
     driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
     driver

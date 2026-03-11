@@ -340,16 +340,13 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
     // Replace the vision heading with gyro heading
-    Pose2d xyOnlyPose = new Pose2d(
-        visionRobotPoseMeters.getTranslation(),
-        gyroInputs.yawPosition // your gyro-based rotation
-    );
+    Pose2d xyOnlyPose =
+        new Pose2d(
+            visionRobotPoseMeters.getTranslation(),
+            gyroInputs.yawPosition // your gyro-based rotation
+            );
 
-    poseEstimator.addVisionMeasurement(
-        xyOnlyPose,
-        timestampSeconds,
-        visionMeasurementStdDevs
-    );
+    poseEstimator.addVisionMeasurement(xyOnlyPose, timestampSeconds, visionMeasurementStdDevs);
   }
 
   /** Returns the maximum linear speed in meters per sec. */

@@ -56,6 +56,8 @@ public class DriveConstants {
   public static final SwerveDriveKinematics DRIVE_KINEMATICS =
       new SwerveDriveKinematics(moduleTranslations);
 
+  public static final double GYRO_HALFREV = 180;
+
   // Zeroed rotation values for each module, see setup instructions
   public static final Rotation2d frontLeftZeroRotation = new Rotation2d(-Math.PI / 2);
   public static final Rotation2d frontRightZeroRotation = new Rotation2d(0.0);

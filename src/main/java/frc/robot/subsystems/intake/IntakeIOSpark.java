@@ -7,7 +7,6 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -198,7 +197,7 @@ public class IntakeIOSpark implements IntakeIO {
     intakeController.setSetpoint(intakeReference, intakeType);
 
     // intakeExtenderController.setSetpoint(
-        // intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
+    // intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
     intakeExtenderController.setSetpoint(0, ControlType.kVoltage);
   }
 }

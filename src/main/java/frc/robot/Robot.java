@@ -4,6 +4,7 @@
 // Modified by 5516 Iron Maple https://github.com/Shenzhen-Robotics-Alliance/
 
 package frc.robot;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
 import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.IO.GyroIONavX;
 import frc.robot.subsystems.drive.SwervePhysicsSim;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.IntakeConstants;
@@ -124,28 +126,31 @@ public class Robot extends LoggedRobot {
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
 
+    GyroIONavX gyro = new GyroIONavX();
+    gyro.zeroRotation();
+
     // Start AdvantageKit logger
     Logger.start();
   }
 
-    /** This function is called periodically during all modes. */
-    @Override
-    public void robotPeriodic() {
-        CommandScheduler.getInstance().run();
-        robotContainer.updateTelemetryAndLED();
+  /** This function is called periodically during all modes. */
+  @Override
+  public void robotPeriodic() {
+    CommandScheduler.getInstance().run();
+    robotContainer.updateTelemetryAndLED();
 
-        var r0 = robotContainer.vision.lastResult(robotContainer.drive, 0);
-        var r1 = robotContainer.vision.lastResult(robotContainer.drive, 1);
+    var r0 = robotContainer.vision.lastResult(robotContainer.drive, 0);
+    var r1 = robotContainer.vision.lastResult(robotContainer.drive, 1);
 
-        if (r0 != null || r1 != null) {
-            Logger.recordOutput(
-                    "Vision/Camera0/DistanceFromClosestTag",
-                    Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
-            Logger.recordOutput(
-                    "Vision/Camera1/DistanceFromClosestTag",
-                    Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
-        }
+    if (r0 != null || r1 != null) {
+      Logger.recordOutput(
+          "Vision/Camera0/DistanceFromClosestTag",
+          Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
+      Logger.recordOutput(
+          "Vision/Camera1/DistanceFromClosestTag",
+          Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
     }
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
