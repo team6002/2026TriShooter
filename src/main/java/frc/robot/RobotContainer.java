@@ -15,7 +15,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -24,8 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
@@ -34,12 +32,10 @@ import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.drive.IO.*;
 import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
-import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
-import frc.robot.utils.AlertsManager;
 import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
@@ -72,12 +68,12 @@ public class RobotContainer {
   private final Field2d field = new Field2d();
   // Controller
   public final DriverMap driver = new DriverMap.LeftHandedXbox(0);
-  public final DriverMap operator = new DriverMap.LeftHandedXbox(1);
+  //   public final DriverMap operator = new DriverMap.LeftHandedXbox(1);
 
   public Pose2d resetPose;
 
   // Dashboard inputs
-  private final LoggedDashboardChooser<Command> autoChooser;
+  private final LoggedDashboardChooser<Auto> autoChooser;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
@@ -102,6 +98,7 @@ public class RobotContainer {
         this.vision =
             new Vision(
                 drive,
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
                 new VisionIOPhotonVision(
                     Vision_Constants.camera0Name, Vision_Constants.robotToCamera0),
                 new VisionIOPhotonVision(
@@ -134,7 +131,11 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive,
+<<<<<<< HEAD
                 // drive,
+=======
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
                 new VisionIOPhotonVisionSim(
                     Vision_Constants.camera0Name,
                     Vision_Constants.robotToCamera0,
@@ -162,7 +163,12 @@ public class RobotContainer {
         kicker = new Kicker(new KickerIO() {});
         hood = new Hood(new HoodIO() {});
 
-        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
+        vision =
+            new Vision(
+                drive,
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
+                new VisionIO() {},
+                new VisionIO() {});
         break;
     }
 
@@ -170,12 +176,11 @@ public class RobotContainer {
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
-    try {
-      autoChooser.addDefaultOption(
-          "Trench And Outpost", new AUTO_TrenchAndOutpost().getAutoCommand(this, false));
-      autoChooser.addOption("Trench Left", new AUTO_Trench().getAutoCommand(this, true));
-      autoChooser.addOption("Outpost", new AUTO_Outpost().getAutoCommand(this, false));
+    autoChooser.addDefaultOption("Trench And Outpost", new AUTO_TrenchAndOutpost());
+    autoChooser.addOption("Trench Left", new AUTO_Trench());
+    autoChooser.addOption("Outpost", new AUTO_Outpost());
 
+<<<<<<< HEAD
       // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
       // distance
       // Multiply wheel radius by actual distance (in) / 118.11 inches
@@ -201,6 +206,12 @@ public class RobotContainer {
         "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+=======
+    // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
+    // distance
+    //   Multiply wheel radius by actual distance (in) / 118.11 inches
+    // autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
 
     // Configure the button bindings
     configureButtonBindings();
@@ -233,23 +244,6 @@ public class RobotContainer {
 
     ledStatusLight.setDefaultCommand(ledStatusLight.showHubStatus());
 
-    // rumble driver / operator controller when 3 seconds left on hub active period
-    new Trigger(
-            () ->
-                HubShiftUtil.getOfficialShiftInfo().active()
-                    && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 3
-                    && DriverStation.isTeleopEnabled())
-        .onTrue(driver.rumbleLeftRight(1))
-        .onTrue(operator.rumbleLeftRight(1));
-    // rumble driver / operator joystick when 5 seconds left until hub active period
-    new Trigger(
-            () ->
-                !HubShiftUtil.getOfficialShiftInfo().active()
-                    && HubShiftUtil.getOfficialShiftInfo().remainingTime() < 5
-                    && DriverStation.isTeleopEnabled())
-        .onTrue(driver.rumble(1))
-        .onTrue(operator.rumble(1));
-
     // Reset gyro / odometry
     GyroIONavX gyro = new GyroIONavX();
     final Runnable resetGyro =
@@ -280,14 +274,10 @@ public class RobotContainer {
 
       driver.yButton().onTrue(new CMD_Stow(intake));
       driver.aButton().onTrue(new CMD_Home(intake));
+      driver.stopWithXButton().onTrue(new InstantCommand(() -> drive.stopWithX()));
 
       driver.scoreButton().whileTrue(shootClose());
       driver.rightBumper().whileTrue(shootFar());
-
-      operator
-          .scoreButton()
-          .onTrue(intake.setExtenderTargetAngle(ExtenderConstants.kStow))
-          .onFalse(intake.setExtenderTargetAngle(ExtenderConstants.kExtended));
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
@@ -299,7 +289,7 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  public Auto getAutonomousCommand() {
     return autoChooser.get();
   }
 
@@ -358,10 +348,15 @@ public class RobotContainer {
   }
 
   public Command shootClose() {
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.2, Math.toRadians(18000));
+    // start, .2, 18000
+    // .35, 19000
+    // .375, 19500
+    return new CMD_Shoot(
+        drive, conveyor, hood, intake, kicker, shooter, 0.4, Math.toRadians(19500));
   }
 
   public Command shootFar() {
-    return new CMD_Shoot(conveyor, hood, intake, kicker, shooter, 0.45, Math.toRadians(23000));
+    return new CMD_Shoot(
+        drive, conveyor, hood, intake, kicker, shooter, 0.8, Math.toRadians(20000));
   }
 }

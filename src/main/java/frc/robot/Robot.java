@@ -6,7 +6,11 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
+<<<<<<< HEAD
 import edu.wpi.first.math.util.Units;
+=======
+import edu.wpi.first.wpilibj.Alert.AlertType;
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -19,6 +23,7 @@ import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.utils.AlertsManager;
 import frc.robot.utils.constants.RobotMode;
 import frc.robot.utils.hubcounter.HubShiftUtil;
 import java.util.HashMap;
@@ -168,7 +173,12 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     HubShiftUtil.initialize();
-    autonomousCommand = robotContainer.getAutonomousCommand();
+    try {
+      autonomousCommand = robotContainer.getAutonomousCommand().getAutoCommand(robotContainer);
+    } catch (Exception e) {
+      AlertsManager.create(e.getStackTrace().toString(), AlertType.kError);
+      e.printStackTrace();
+    }
 
     // schedule the autonomous command
     if (autonomousCommand != null) CommandScheduler.getInstance().schedule(autonomousCommand);

@@ -282,4 +282,8 @@ public class ChassisHeadingController {
 
     return instance;
   }
+
+  public double getAbsoluteHeadingErrorDegrees() {
+    return Math.abs(chassisRotationCloseLoop.getError());
+  }
 }

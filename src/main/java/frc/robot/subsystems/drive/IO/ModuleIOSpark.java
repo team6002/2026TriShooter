@@ -27,7 +27,6 @@ import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -37,7 +36,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.SparkOdometryThread;
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
@@ -121,8 +119,7 @@ public class ModuleIOSpark implements ModuleIO {
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(driveKp, 0.0, driveKd);
-    driveConfig.closedLoop.feedForward.sva(
-        DriveConstants.driveKs, DriveConstants.driveKv, DriveConstants.driveKa);
+    driveConfig.closedLoop.feedForward.sva(driveKs, driveKv, driveKa);
     driveConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -235,23 +232,17 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void setDriveOpenLoop(double output) {
-    driveSpark.setVoltage(output);
+    driveController.setSetpoint(output, ControlType.kVoltage);
   }
 
   @Override
   public void setTurnOpenLoop(double output) {
-    turnSpark.setVoltage(output);
+    turnController.setSetpoint(output, ControlType.kVoltage);
   }
 
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
-    double ffVolts = driveKs * Math.signum(velocityRadPerSec) + driveKv * velocityRadPerSec;
-    driveController.setSetpoint(
-        velocityRadPerSec,
-        ControlType.kVelocity,
-        ClosedLoopSlot.kSlot0,
-        ffVolts,
-        ArbFFUnits.kVoltage);
+    driveController.setSetpoint(velocityRadPerSec, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 
   @Override

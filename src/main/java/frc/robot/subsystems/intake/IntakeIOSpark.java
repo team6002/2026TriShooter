@@ -33,22 +33,18 @@ public class IntakeIOSpark implements IntakeIO {
   private ControlType intakeExtenderType;
 
   public IntakeIOSpark() {
-    // initialize motor
     intakeMotor = new SparkFlex(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
     intakeFollowerMotor = new SparkFlex(IntakeConstants.kIntakeFollowerCanId, MotorType.kBrushless);
 
     intakeExtenderMotor =
         new SparkMax(ExtenderConstants.kIntakeExtenderCanId, MotorType.kBrushless);
 
-    // initialize PID controller
     intakeController = intakeMotor.getClosedLoopController();
     intakeExtenderController = intakeExtenderMotor.getClosedLoopController();
 
-    // initalize encoder
     intakeEncoder = intakeMotor.getEncoder();
     intakeExtenderEncoder = intakeExtenderMotor.getAbsoluteEncoder();
 
-    // apply config
     intakeMotor.configure(
         IntakeConfig.intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -62,7 +58,6 @@ public class IntakeIOSpark implements IntakeIO {
         ResetMode.kResetSafeParameters,
         PersistMode.kPersistParameters);
 
-    // reset target speed in init
     intakeReference = 0;
     intakeType = ControlType.kVelocity;
 
@@ -169,8 +164,12 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public boolean getExtenderInPosition() {
     double positionError = Math.abs(getExtenderPosition() - getExtenderReference());
+<<<<<<< HEAD
     // return positionError < ExtenderConstants.kPositionTolerance;
     return true;
+=======
+    return positionError < ExtenderConstants.kPositionTolerance;
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
   }
 
   @Override
@@ -196,8 +195,13 @@ public class IntakeIOSpark implements IntakeIO {
   public void periodic() {
     intakeController.setSetpoint(intakeReference, intakeType);
 
+<<<<<<< HEAD
     // intakeExtenderController.setSetpoint(
     // intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
     intakeExtenderController.setSetpoint(0, ControlType.kVoltage);
+=======
+    intakeExtenderController.setSetpoint(
+        intakeExtenderReference, intakeExtenderType, ClosedLoopSlot.kSlot0);
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
   }
 }

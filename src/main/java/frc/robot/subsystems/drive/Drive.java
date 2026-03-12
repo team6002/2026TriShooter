@@ -243,6 +243,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
    * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will
    * return to their normal orientations the next time a nonzero velocity is requested.
    */
+  @Override
   public void stopWithX() {
     Rotation2d[] headings = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
@@ -339,6 +340,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
       double timestampSeconds,
       Matrix<N3, N1> visionMeasurementStdDevs) {
 
+<<<<<<< HEAD
     // Replace the vision heading with gyro heading
     Pose2d xyOnlyPose =
         new Pose2d(
@@ -347,6 +349,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
             );
 
     poseEstimator.addVisionMeasurement(xyOnlyPose, timestampSeconds, visionMeasurementStdDevs);
+=======
+    poseEstimator.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
   }
 
   /** Returns the maximum linear speed in meters per sec. */

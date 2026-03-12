@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.877,
-        "y": 1.538
+        "x": 3.0,
+        "y": 1.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.877,
-        "y": 0.5380000000000001
+        "x": 3.0,
+        "y": 0.6597252128067641
       },
       "isLocked": false,
       "linkedName": "ShootTrench"
@@ -20,11 +20,11 @@
         "y": 0.67
       },
       "prevControl": {
-        "x": 3.5,
+        "x": 4.0,
         "y": 0.6700000000000002
       },
       "nextControl": {
-        "x": 7.5,
+        "x": 8.25,
         "y": 0.67
       },
       "isLocked": false,
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 7.5,
+        "x": 8.5,
         "y": 3.5
       },
       "prevControl": {
-        "x": 7.5,
+        "x": 8.5,
         "y": 0.5000000000000004
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "SweepHalfMiddle"
+      "linkedName": "SweepOpponentHalf"
     }
   ],
   "rotationTargets": [
@@ -62,6 +62,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD
 <<<<<<< HEAD:src/main/deploy/pathplanner/paths/SwipeMiddleTrench.path
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -69,6 +70,10 @@
 =======
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
+=======
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
     "maxAngularVelocity": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/SweepAgain.path
     "maxAngularAcceleration": 720.0,
@@ -83,7 +88,7 @@
   "folder": "Trench",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

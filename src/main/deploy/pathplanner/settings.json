@@ -12,12 +12,17 @@
   ],
   "autoFolders": [],
 <<<<<<< HEAD
+<<<<<<< HEAD
   "defaultMaxVel": 2.0,
   "defaultMaxAccel": 2.0,
   "defaultMaxAngVel": 540.0,
 =======
   "defaultMaxVel": 1.0,
   "defaultMaxAccel": 1.0,
+=======
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
   "defaultMaxAngVel": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d
   "defaultMaxAngAccel": 720.0,

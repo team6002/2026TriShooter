@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
+import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.hood.Hood;
 import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.Intake;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.shooter.Shooter;
 import java.util.function.DoubleSupplier;
 
 public class CMD_Shoot extends Command {
+  private final Drive drive;
   private final Conveyor conveyor;
   private final Hood hood;
   private final Intake intake;
@@ -25,6 +27,7 @@ public class CMD_Shoot extends Command {
   private final DoubleSupplier hoodSupplier, shooterSupplier;
 
   public CMD_Shoot(
+      Drive drive,
       Conveyor conveyor,
       Hood hood,
       Intake intake,
@@ -32,10 +35,11 @@ public class CMD_Shoot extends Command {
       Shooter shooter,
       double hoodAng,
       double shooterVel) {
-    this(conveyor, hood, intake, kicker, shooter, () -> hoodAng, () -> shooterVel);
+    this(drive, conveyor, hood, intake, kicker, shooter, () -> hoodAng, () -> shooterVel);
   }
 
   public CMD_Shoot(
+      Drive drive,
       Conveyor conveyor,
       Hood hood,
       Intake intake,
@@ -43,6 +47,8 @@ public class CMD_Shoot extends Command {
       Shooter shooter,
       DoubleSupplier hoodSupplier,
       DoubleSupplier shooterSupplier) {
+
+    this.drive = drive;
     this.conveyor = conveyor;
     this.hood = hood;
     this.intake = intake;
@@ -62,6 +68,8 @@ public class CMD_Shoot extends Command {
 
     shooter.setReference(shooterSupplier.getAsDouble());
     hood.setReference(hoodSupplier.getAsDouble());
+
+    drive.stopWithX();
   }
 
   @Override
@@ -78,15 +86,15 @@ public class CMD_Shoot extends Command {
       conveyor.setVoltage(ConveyorConstants.kConvey);
       kicker.setVoltage(KickerConstants.kKick);
 
-      intake.setExtenderLowCurrentMode(false);
-      intake.setExtenderReference(ExtenderConstants.kStow);
-
       timer.start();
     }
 
-    if (timer.get() > 0.25 && !shooting) {
+    if (timer.get() > 1 && !shooting) {
       shooting = true;
       timer.reset();
+
+      intake.setExtenderLowCurrentMode(false);
+      intake.setExtenderReference(ExtenderConstants.kStow);
     }
   }
 }

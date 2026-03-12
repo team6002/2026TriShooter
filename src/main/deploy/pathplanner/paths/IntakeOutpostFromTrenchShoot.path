@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.877,
-        "y": 1.538
+        "x": 3.0,
+        "y": 1.55
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.9981281847596901,
-        "y": 0.8646971614031282
+        "x": 2.1211281847596903,
+        "y": 0.8766971614031285
       },
       "isLocked": false,
       "linkedName": "ShootTrench"
     },
     {
       "anchor": {
-        "x": 0.686,
-        "y": 0.67
+        "x": 0.3,
+        "y": 0.85
       },
       "prevControl": {
-        "x": 1.6284237207760346,
-        "y": 0.7816014131512795
+        "x": 1.2424237207760347,
+        "y": 0.9616014131512794
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,6 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD
 <<<<<<< HEAD:src/main/deploy/pathplanner/paths/ShootOutpost.path
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -40,6 +41,10 @@
 =======
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
+=======
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
     "maxAngularVelocity": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/IntakeOutpostFromTrenchShoot.path
     "maxAngularAcceleration": 720.0,
@@ -54,7 +59,7 @@
   "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 59.99999999999999
   },
   "useDefaultConstraints": true
 }

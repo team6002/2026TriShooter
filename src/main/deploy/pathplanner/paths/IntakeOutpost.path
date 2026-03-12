@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 0.686,
-        "y": 0.67
+        "x": 0.3,
+        "y": 0.85
       },
       "prevControl": {
-        "x": 1.1997184442872248,
-        "y": 1.2289522546975697
+        "x": 0.8137184442872247,
+        "y": 1.4089522546975695
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "IntakeOutpost"
     }
   ],
   "rotationTargets": [],
@@ -34,12 +34,17 @@
   "eventMarkers": [],
   "globalConstraints": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
     "maxAngularVelocity": 540.0,
 =======
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
+=======
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
     "maxAngularVelocity": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d
     "maxAngularAcceleration": 720.0,

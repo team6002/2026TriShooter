@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.686,
-        "y": 0.67
+        "x": 0.3,
+        "y": 0.85
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7883862925697644,
-        "y": 0.7043095745498429
+        "x": 1.1378996870455216,
+        "y": 1.6878996870455216
       },
       "isLocked": false,
       "linkedName": "IntakeOutpost"
     },
     {
       "anchor": {
-        "x": 2.877,
-        "y": 1.538
+        "x": 1.8,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 2.154144373172123,
-        "y": 0.9234700463335294
+        "x": 1.8,
+        "y": 2.75
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "ShootTrench"
+      "linkedName": "ShootOutpost"
     }
   ],
   "rotationTargets": [],
@@ -33,6 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD
 <<<<<<< HEAD:src/main/deploy/pathplanner/paths/IntakeDepot.path
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -40,6 +41,10 @@
 =======
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
+=======
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
     "maxAngularVelocity": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/ShootFromOutpost.path
     "maxAngularAcceleration": 720.0,
@@ -48,7 +53,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": "Outpost",

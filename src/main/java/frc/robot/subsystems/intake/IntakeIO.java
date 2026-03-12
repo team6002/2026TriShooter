@@ -17,6 +17,8 @@ public interface IntakeIO {
     public double extenderVelocity;
     public double extenderReference;
     public double extenderPosition;
+    public double extenderProfilePositionSetpoint;
+    public double extenderProfileVelocitySetpoint;
     public boolean extenderInPosition;
     public double extenderTemp;
 

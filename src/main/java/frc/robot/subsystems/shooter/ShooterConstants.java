@@ -40,6 +40,9 @@ public class ShooterConstants {
   public static final double kMinOutput = -1;
   public static final double kMaxOutput = 1;
 
+  public static final double kIdleVolts =
+      0.33; // keeps the flywheels slowly spinning when idle to save power on startup
+
   // sim
   public static final double kGearRatio = 1;
   public static final double kFuelMassKg = Kilograms.convertFrom(0.5, Pounds);

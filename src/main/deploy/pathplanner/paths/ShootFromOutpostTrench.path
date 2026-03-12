@@ -3,11 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.58,
-        "y": 4.0
+        "x": 0.3,
+        "y": 0.85
       },
       "prevControl": null,
       "nextControl": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/New Path.path
 <<<<<<< HEAD:src/main/deploy/pathplanner/paths/ShootFromDepot.path
         "x": 0.6267766952966372,
         "y": 6.1767766952966365
@@ -15,22 +16,26 @@
         "x": 2.579999999999999,
         "y": 4.0
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/New Path.path
+=======
+        "x": 1.314906599955879,
+        "y": 0.9683905677055644
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d:src/main/deploy/pathplanner/paths/ShootFromOutpostTrench.path
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "IntakeOutpost"
     },
     {
       "anchor": {
-        "x": 4.63,
-        "y": 4.035
+        "x": 3.0,
+        "y": 1.55
       },
       "prevControl": {
-        "x": 3.63,
-        "y": 4.035
+        "x": 2.366513303367072,
+        "y": 0.8694657981144707
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootTrench"
     }
   ],
   "rotationTargets": [],
@@ -38,6 +43,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD:src/main/deploy/pathplanner/paths/New Path.path
 <<<<<<< HEAD:src/main/deploy/pathplanner/paths/ShootFromDepot.path
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -45,6 +51,10 @@
 =======
     "maxVelocity": 1.0,
     "maxAcceleration": 1.0,
+=======
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+>>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d:src/main/deploy/pathplanner/paths/ShootFromOutpostTrench.path
     "maxAngularVelocity": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/New Path.path
     "maxAngularAcceleration": 720.0,
@@ -53,10 +63,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Outpost",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0
