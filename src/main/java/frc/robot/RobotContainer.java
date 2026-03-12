@@ -222,16 +222,16 @@ public class RobotContainer {
                     new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
     driver.resetOdometryButton().onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    // driver
-    //     .autoAlignmentButton()
-    //     .whileTrue(
-    //         JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-    //             driveInput,
-    //             drive,
-    //             () -> FieldConstants.getHubPose(),
-    //             ShooterConstants.kShooterOptimization,
-    //             0.5,
-    //             false));
+    driver
+        .autoAlignmentButton()
+        .whileTrue(
+            JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                driveInput,
+                drive,
+                () -> FieldConstants.getHubPose(),
+                ShooterConstants.kShooterOptimization,
+                0.5,
+                false));
 
     driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
 
@@ -244,7 +244,6 @@ public class RobotContainer {
 
       driver.scoreButton().whileTrue(shootClose());
       driver.rightBumper().whileTrue(shootFar());
-      driver.autoAlignmentButton().whileTrue(shootMid());
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
@@ -320,11 +319,6 @@ public class RobotContainer {
     // .375, 19500
     return new CMD_Shoot(
         drive, conveyor, hood, intake, kicker, shooter, 0.4, Math.toRadians(19500));
-  }
-
-  public Command shootMid() {
-    return new CMD_Shoot(
-        drive, conveyor, hood, intake, kicker, shooter, 0.325, Math.toRadians(21500));
   }
 
   public Command shootFar() {

@@ -36,17 +36,21 @@ public class Vision_Constants {
   public static final Transform3d robotToCamera0 =
       new Transform3d(
           new Translation3d(
-              Units.inchesToMeters(12), Units.inchesToMeters(8), Units.inchesToMeters(12)),
-          new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
+              // camera is 13 inches forward, 7.75 inches left, and 12 inches up from the center of
+              // the bot
+              Units.inchesToMeters(-13), Units.inchesToMeters(7.75), Units.inchesToMeters(12)),
+          new Rotation3d(0, Math.toRadians(-20), 0));
 
   public static final Transform3d robotToCamera1 =
       new Transform3d(
           new Translation3d(
-              Units.inchesToMeters(12), Units.inchesToMeters(-8), Units.inchesToMeters(12)),
-          new Rotation3d(0, Math.toRadians(-15), Math.toRadians(0)));
+              // camera is 13 inches forward, 7.75 inches left, and 12 inches up from the center of
+              // the bot
+              Units.inchesToMeters(-13), Units.inchesToMeters(-7.75), Units.inchesToMeters(12)),
+          new Rotation3d(0, Math.toRadians(-20), 0));
 
   // Basic filtering thresholds
-  public static double maxAmbiguity = 0.3;
+  public static double maxAmbiguity = 0.2;
   public static double maxZError = 0.75;
 
   // Standard deviation baselines, for 1 meter distance and 1 tag

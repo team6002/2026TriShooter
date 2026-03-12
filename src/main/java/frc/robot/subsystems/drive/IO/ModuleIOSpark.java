@@ -119,8 +119,7 @@ public class ModuleIOSpark implements ModuleIO {
         .closedLoop
         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(driveKp, 0.0, driveKd);
-    driveConfig.closedLoop.feedForward
-        .sva(driveKs, driveKv, driveKa);
+    driveConfig.closedLoop.feedForward.sva(driveKs, driveKv, driveKa);
     driveConfig
         .signals
         .primaryEncoderPositionAlwaysOn(true)
@@ -243,10 +242,7 @@ public class ModuleIOSpark implements ModuleIO {
 
   @Override
   public void setDriveVelocity(double velocityRadPerSec) {
-    driveController.setSetpoint(
-        velocityRadPerSec,
-        ControlType.kVelocity,
-        ClosedLoopSlot.kSlot0);
+    driveController.setSetpoint(velocityRadPerSec, ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 
   @Override
