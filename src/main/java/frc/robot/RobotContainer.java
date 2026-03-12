@@ -131,11 +131,7 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive,
-<<<<<<< HEAD
-                // drive,
-=======
                 () -> drive.getMeasuredChassisSpeedsRobotRelative(),
->>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
                 new VisionIOPhotonVisionSim(
                     Vision_Constants.camera0Name,
                     Vision_Constants.robotToCamera0,
@@ -179,39 +175,6 @@ public class RobotContainer {
     autoChooser.addDefaultOption("Trench And Outpost", new AUTO_TrenchAndOutpost());
     autoChooser.addOption("Trench Left", new AUTO_Trench());
     autoChooser.addOption("Outpost", new AUTO_Outpost());
-
-<<<<<<< HEAD
-      // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
-      // distance
-      // Multiply wheel radius by actual distance (in) / 118.11 inches
-      //   autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
-    } catch (Exception e) {
-      AlertsManager.create("Auto Chooser failed to load: " + e.getMessage(), AlertType.kError);
-      e.printStackTrace();
-    }
-
-    // Set up SysId routines
-
-    // autoChooser.addOption(
-    //     "Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
-    // autoChooser.addOption("Drive Simple FF Characterization",
-    // DriveCommands.feedforwardCharacterization(drive));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Forward)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Quasistatic Reverse)",
-        drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    autoChooser.addOption(
-        "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-=======
-    // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
-    // distance
-    //   Multiply wheel radius by actual distance (in) / 118.11 inches
-    // autoChooser.addOption("3MeterTest", new AUTO_3MeterTest().getAutoCommand(this, false));
->>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
 
     // Configure the button bindings
     configureButtonBindings();

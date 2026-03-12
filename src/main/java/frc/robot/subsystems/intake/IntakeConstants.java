@@ -34,11 +34,8 @@ public class IntakeConstants {
   public static final class ExtenderConstants {
     public static final int kIntakeExtenderCanId = 7;
 
-<<<<<<< HEAD
-    public static final double kP = 10; // 5
-=======
     public static final double kP = 3;
->>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
+
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
