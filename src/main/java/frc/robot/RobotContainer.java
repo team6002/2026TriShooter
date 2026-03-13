@@ -310,8 +310,8 @@ public class RobotContainer {
     Logger.recordOutput(
         "Hub Duration Remaining", HubShiftUtil.getOfficialShiftInfo().remainingTime());
   }
-  
+
   public Command shootClose() {
-      return new CMD_ShootNoVision(conveyor, hood, intake, kicker, shooter);
+    return new CMD_ShootNoVision(conveyor, hood, intake, kicker, shooter);
   }
 }
