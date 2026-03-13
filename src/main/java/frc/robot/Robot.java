@@ -123,7 +123,9 @@ public class Robot extends LoggedRobot {
               }
             }));
     // allow the drivetrain to pass over the bump in simulation mode
-    SimulatedArena.overrideInstance(new Arena2026Rebuilt(false));
+    Arena2026Rebuilt field = new Arena2026Rebuilt(false);
+    field.setEfficiencyMode(true);
+    SimulatedArena.overrideInstance(field);
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
@@ -141,17 +143,17 @@ public class Robot extends LoggedRobot {
     CommandScheduler.getInstance().run();
     robotContainer.updateTelemetryAndLED();
 
-    var r0 = robotContainer.vision.lastResult(robotContainer.drive, 0);
-    var r1 = robotContainer.vision.lastResult(robotContainer.drive, 1);
+    // var r0 = robotContainer.vision.lastResult(robotContainer.drive, 0);
+    // var r1 = robotContainer.vision.lastResult(robotContainer.drive, 1);
 
-    if (r0 != null || r1 != null) {
-      Logger.recordOutput(
-          "Vision/Camera0/DistanceFromClosestTag",
-          Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
-      Logger.recordOutput(
-          "Vision/Camera1/DistanceFromClosestTag",
-          Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
-    }
+    // if (r0 != null || r1 != null) {
+    //   Logger.recordOutput(
+    //       "Vision/Camera0/DistanceFromClosestTag",
+    //       Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 0)));
+    //   Logger.recordOutput(
+    //       "Vision/Camera1/DistanceFromClosestTag",
+    //       Units.metersToInches(robotContainer.vision.lastResultDistance(robotContainer.drive, 1)));
+    // }
   }
 
   /** This function is called once when the robot is disabled. */
