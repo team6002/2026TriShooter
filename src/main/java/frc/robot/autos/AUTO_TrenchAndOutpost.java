@@ -21,14 +21,13 @@ public class AUTO_TrenchAndOutpost implements Auto {
         new CMD_Extend(robot.intake),
         followPath("ShootTrench", false),
         // shoot for 2 seconds and then run to outpost
-        // robot.shootClose().withTimeout(4),
+        robot.shootClose().withTimeout(4),
         followPath("IntakeOutpostFromTrenchShoot", false),
         new CMD_Extend(robot.intake),
         // wait a short time to let HP dump the outpost into our hopper
         new WaitCommand(1),
         // run back to the same shooting spot from earlier and unload until auto ends
-        followPath("ShootFromOutpostTrench", false)
-        // robot.shootClose()
-        );
+        followPath("ShootFromOutpostTrench", false),
+        robot.shootClose());
   }
 }

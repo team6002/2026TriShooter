@@ -113,10 +113,10 @@ public interface HolonomicDriveSubsystem extends Subsystem {
   }
 
   default void stopWithX() {
-      stop();
+    stop();
   }
-  
-  default void activeXLock(){}
+
+  default void activeXLock() {}
 
   default RobotConfig defaultPathPlannerRobotConfig() {
     return new RobotConfig(

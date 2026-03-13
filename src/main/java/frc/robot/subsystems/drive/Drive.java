@@ -245,19 +245,19 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
    */
   @Override
   public void stopWithX() {
-      Rotation2d[] headings = new Rotation2d[4];
-      for (int i = 0; i < 4; i++) {
-          headings[i] = moduleTranslations[i].getAngle();
-      }
-      kinematics.resetHeadings(headings);
-      stop();
+    Rotation2d[] headings = new Rotation2d[4];
+    for (int i = 0; i < 4; i++) {
+      headings[i] = moduleTranslations[i].getAngle();
+    }
+    kinematics.resetHeadings(headings);
+    stop();
   }
 
   @Override
   public void activeXLock() {
     Rotation2d[] xAngles = new Rotation2d[4];
     for (int i = 0; i < 4; i++) {
-        xAngles[i] = moduleTranslations[i].getAngle();
+      xAngles[i] = moduleTranslations[i].getAngle();
     }
 
     ChassisSpeeds halt = new ChassisSpeeds(0, 0, 0);
@@ -266,14 +266,15 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
         ChassisHeadingController.getInstance()
             .calculate(getMeasuredChassisSpeedsFieldRelative(), getPose());
 
-    if (angularVelocityOverride.isPresent() && Math.abs(angularVelocityOverride.getAsDouble()) > 0.05) {
-        runRobotCentricChassisSpeeds(halt);
+    if (angularVelocityOverride.isPresent()
+        && Math.abs(angularVelocityOverride.getAsDouble()) > 0.05) {
+      runRobotCentricChassisSpeeds(halt);
     } else {
-        for (int i = 0; i < 4; i++) {
-            modules[i].runSetpoint(new SwerveModuleState(0, xAngles[i]));
-        }
+      for (int i = 0; i < 4; i++) {
+        modules[i].runSetpoint(new SwerveModuleState(0, xAngles[i]));
+      }
     }
-}
+  }
 
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
