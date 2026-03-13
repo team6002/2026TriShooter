@@ -43,7 +43,7 @@ public class Vision_Constants {
           new Translation3d(
               // camera is 13 inches forward, 7.75 inches left, and 12 inches up from the center of
               // the bot
-              Units.inchesToMeters(-13), Units.inchesToMeters(7.75), Units.inchesToMeters(12)),
+              Units.inchesToMeters(13), Units.inchesToMeters(7.75), Units.inchesToMeters(12)),
           new Rotation3d(0, Math.toRadians(-20), 0));
 
   public static final Transform3d robotToCamera1 =
@@ -51,7 +51,7 @@ public class Vision_Constants {
           new Translation3d(
               // camera is 13 inches forward, 7.75 inches left, and 12 inches up from the center of
               // the bot
-              Units.inchesToMeters(-13), Units.inchesToMeters(-7.75), Units.inchesToMeters(12)),
+              Units.inchesToMeters(13), Units.inchesToMeters(-7.75), Units.inchesToMeters(12)),
           new Rotation3d(0, Math.toRadians(-20), 0));
 
   // Basic filtering thresholds

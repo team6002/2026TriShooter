@@ -15,6 +15,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -35,6 +36,7 @@ import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.led.LEDStatusLight;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
+import frc.robot.utils.CustomPIDs.ChassisHeadingController;
 import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
@@ -44,6 +46,7 @@ import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -61,6 +64,9 @@ public class RobotContainer {
   public final Hood hood;
   public final Vision vision;
   public final LEDStatusLight ledStatusLight;
+
+  private final LoggedNetworkNumber shooterRef = new LoggedNetworkNumber("/Tuning/shooterRef", 20000);
+  private final LoggedNetworkNumber hoodRef = new LoggedNetworkNumber("/Tuning/hoodRef", 0.4);
 
   public SwerveDriveSimulation driveSimulation = null;
 
@@ -309,9 +315,11 @@ public class RobotContainer {
     Logger.recordOutput("Hub Active", HubShiftUtil.getOfficialShiftInfo().active());
     Logger.recordOutput(
         "Hub Duration Remaining", HubShiftUtil.getOfficialShiftInfo().remainingTime());
+    Logger.recordOutput("ChassisHeadingControllerAtSetpoint", ChassisHeadingController.getInstance().atSetPoint());
+    Logger.recordOutput("DistFromHub", Units.metersToInches(FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation())));
   }
 
   public Command shootClose() {
-    return new CMD_ShootNoVision(conveyor, hood, intake, kicker, shooter);
+    return new CMD_ShootNoVision(conveyor, hood, intake, kicker, shooter, ()-> Math.toRadians(shooterRef.get()), ()-> hoodRef.get());
   }
 }
