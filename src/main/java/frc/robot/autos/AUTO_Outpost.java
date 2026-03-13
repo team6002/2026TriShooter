@@ -19,7 +19,8 @@ public class AUTO_Outpost implements Auto {
         // wait for HP to unload outpost into hopper
         new WaitCommand(1),
         // shoot until auto ends
-        followPath("ShootFromOutpost", false),
-        robot.shootClose());
+        followPath("ShootFromOutpost", false)
+        // robot.shootClose()
+        );
   }
 }

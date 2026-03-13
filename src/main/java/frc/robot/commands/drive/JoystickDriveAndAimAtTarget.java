@@ -11,6 +11,7 @@ import frc.robot.utils.CustomPIDs.MapleShooterOptimization;
 import java.util.function.Supplier;
 
 public class JoystickDriveAndAimAtTarget {
+
   public static Command driveAndAimAtTarget(
       MapleJoystickDriveInput input,
       HolonomicDriveSubsystem driveSubsystem,
@@ -25,11 +26,15 @@ public class JoystickDriveAndAimAtTarget {
                     new ChassisHeadingController.FaceToTargetRequest(
                         targetPositionSupplier, shooterOptimization)),
         () -> {
-          if (ChassisHeadingController.getInstance().getAbsoluteHeadingErrorDegrees() <= 1.0) {
-            driveSubsystem.stopWithX();
-          } else {
-            execute(driveSubsystem, input, pilotInputMultiplier);
-          }
+            double rawX = input.joystickXSupplier.getAsDouble();
+            double rawY = input.joystickYSupplier.getAsDouble();
+            boolean isMoving = Math.abs(rawX) > 0.1 || Math.abs(rawY) > 0.1;
+
+            if (isMoving) {
+                execute(driveSubsystem, input, pilotInputMultiplier);
+            } else {
+                driveSubsystem.activeXLock();
+            }
         },
         (interrupted) ->
             ChassisHeadingController.getInstance()
@@ -50,11 +55,15 @@ public class JoystickDriveAndAimAtTarget {
                 .setHeadingRequest(
                     new ChassisHeadingController.FaceToRotationRequest(rotationTarget.get())),
         () -> {
-          if (ChassisHeadingController.getInstance().getAbsoluteHeadingErrorDegrees() <= 1.0) {
-            driveSubsystem.stopWithX();
-          } else {
-            execute(driveSubsystem, input, pilotInputMultiplier);
-          }
+            double rawX = input.joystickXSupplier.getAsDouble();
+            double rawY = input.joystickYSupplier.getAsDouble();
+            boolean isMoving = Math.abs(rawX) > 0.1 || Math.abs(rawY) > 0.1;
+
+            if (isMoving) {
+                execute(driveSubsystem, input, pilotInputMultiplier);
+            } else {
+                driveSubsystem.activeXLock();
+            }
         },
         (interrupted) ->
             ChassisHeadingController.getInstance()

@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.autos.*;
@@ -234,7 +233,7 @@ public class RobotContainer {
                 false));
 
     driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
-
+    driver.scoreButton().whileTrue(new CMD_Shoot(drive, driveInput, conveyor, hood, intake, kicker, shooter));
     if (Robot.CURRENT_ROBOT_MODE == RobotMode.REAL) {
       driver.intakeButton().whileTrue(new CMD_Intake(intake)).onFalse(new CMD_Extend(intake));
 
@@ -242,8 +241,6 @@ public class RobotContainer {
       driver.aButton().onTrue(new CMD_Home(intake));
       driver.stopWithXButton().onTrue(new InstantCommand(() -> drive.stopWithX()));
 
-      driver.scoreButton().whileTrue(shootClose());
-      driver.rightBumper().whileTrue(shootFar());
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
@@ -311,18 +308,5 @@ public class RobotContainer {
     Logger.recordOutput("Hub Active", HubShiftUtil.getOfficialShiftInfo().active());
     Logger.recordOutput(
         "Hub Duration Remaining", HubShiftUtil.getOfficialShiftInfo().remainingTime());
-  }
-
-  public Command shootClose() {
-    // start, .2, 18000
-    // .35, 19000
-    // .375, 19500
-    return new CMD_Shoot(
-        drive, conveyor, hood, intake, kicker, shooter, 0.4, Math.toRadians(19500));
-  }
-
-  public Command shootFar() {
-    return new CMD_Shoot(
-        drive, conveyor, hood, intake, kicker, shooter, 0.8, Math.toRadians(20000));
   }
 }

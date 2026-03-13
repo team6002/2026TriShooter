@@ -19,12 +19,13 @@ public class AUTO_Trench implements Auto {
         new CMD_Extend(robot.intake),
         followPath("ShootTrench", true),
         // shoot for 2 seconds and then sweep middle again
-        robot.shootClose().withTimeout(2),
+        // robot.shootClose().withTimeout(2),
         new ParallelCommandGroup(new CMD_Intake(robot.intake), followPath("SweepAgain", true)),
         // turn of intake and run back to our side to shoot
         new CMD_Extend(robot.intake),
-        followPath("ShootTrenchAgain", true),
+        followPath("ShootTrenchAgain", true)
         // shoot until auto ends
-        robot.shootClose());
+        // robot.shootClose()
+        );
   }
 }
