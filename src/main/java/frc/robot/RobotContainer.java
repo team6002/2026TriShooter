@@ -15,7 +15,6 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -41,13 +40,9 @@ import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
 import frc.robot.utils.hubcounter.HubShiftUtil;
-
-import static edu.wpi.first.units.Units.Inches;
-
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnField;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -135,8 +130,7 @@ public class RobotContainer {
 
         vision =
             new Vision(
-                drive,
-                () -> drive.getMeasuredChassisSpeedsRobotRelative()
+                drive, () -> drive.getMeasuredChassisSpeedsRobotRelative()
                 // ,new VisionIOPhotonVisionSim(
                 //     Vision_Constants.camera0Name,
                 //     Vision_Constants.robotToCamera0,
@@ -145,7 +139,7 @@ public class RobotContainer {
                 //     Vision_Constants.camera1Name,
                 //     Vision_Constants.robotToCamera1,
                 //     driveSimulation::getSimulatedDriveTrainPose)
-                    );
+                );
 
         break;
       default:
