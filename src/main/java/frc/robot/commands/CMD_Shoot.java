@@ -1,7 +1,9 @@
 package frc.robot.commands;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.drive.JoystickDriveAndAimAtTarget;
 import frc.robot.subsystems.conveyor.Conveyor;
 import frc.robot.subsystems.conveyor.ConveyorConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -12,7 +14,11 @@ import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
-import java.util.function.DoubleSupplier;
+import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
+import frc.robot.utils.CustomPIDs.ChassisHeadingController;
+import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
+import frc.robot.utils.constants.FieldConstants;
 
 public class CMD_Shoot extends Command {
   private final Drive drive;
@@ -21,43 +27,30 @@ public class CMD_Shoot extends Command {
   private final Intake intake;
   private final Kicker kicker;
   private final Shooter shooter;
+  private final MapleJoystickDriveInput driveSupplier;
 
   private boolean shooting;
   private final Timer timer = new Timer();
-  private final DoubleSupplier hoodSupplier, shooterSupplier;
+  private final Debouncer atSetpointDebouncer = new Debouncer(0.5);
+  private Command driveCommand;
 
   public CMD_Shoot(
       Drive drive,
+      MapleJoystickDriveInput driveSupplier,
       Conveyor conveyor,
       Hood hood,
       Intake intake,
       Kicker kicker,
-      Shooter shooter,
-      double hoodAng,
-      double shooterVel) {
-    this(drive, conveyor, hood, intake, kicker, shooter, () -> hoodAng, () -> shooterVel);
-  }
-
-  public CMD_Shoot(
-      Drive drive,
-      Conveyor conveyor,
-      Hood hood,
-      Intake intake,
-      Kicker kicker,
-      Shooter shooter,
-      DoubleSupplier hoodSupplier,
-      DoubleSupplier shooterSupplier) {
-
+      Shooter shooter) {
     this.drive = drive;
+    this.driveSupplier = driveSupplier;
     this.conveyor = conveyor;
     this.hood = hood;
     this.intake = intake;
     this.kicker = kicker;
     this.shooter = shooter;
-    this.hoodSupplier = hoodSupplier;
-    this.shooterSupplier = shooterSupplier;
 
-    addRequirements(conveyor, hood, intake, kicker, shooter);
+    addRequirements(drive, conveyor, hood, intake, kicker, shooter);
   }
 
   @Override
@@ -66,35 +59,50 @@ public class CMD_Shoot extends Command {
     timer.stop();
     timer.reset();
 
-    shooter.setReference(shooterSupplier.getAsDouble());
-    hood.setReference(hoodSupplier.getAsDouble());
+    driveCommand =
+        JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+            driveSupplier,
+            drive,
+            FieldConstants::getHubPose,
+            ShooterConstants.kShooterOptimization,
+            0.5,
+            false);
+    driveCommand.initialize();
 
-    drive.stopWithX();
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-    shooter.setReference(0);
-    hood.setReference(HoodConstants.kMinPos);
-    conveyor.setVoltage(ConveyorConstants.kOff);
-    kicker.setVoltage(KickerConstants.kOff);
+    double distMeters = FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation());
+    ShootingParams shootingParams = ShooterConstants.getShootingParams(distMeters);
+    shooter.setReference(shootingParams.shooterReference());
+    hood.setReference(shootingParams.hoodReference());
   }
 
   @Override
   public void execute() {
-    if (shooter.isReady() && hood.atReference() && !shooting) {
+    driveCommand.execute();
+
+    boolean driveReady =
+        atSetpointDebouncer.calculate(ChassisHeadingController.getInstance().atSetPoint());
+
+    if (shooter.isReady() && hood.atReference() && driveReady && !shooting) {
       conveyor.setVoltage(ConveyorConstants.kConvey);
       kicker.setVoltage(KickerConstants.kKick);
-
-      timer.start();
+      timer.restart();
+      shooting = true;
     }
 
-    if (timer.get() > 1 && !shooting) {
-      shooting = true;
-      timer.reset();
-
-      intake.setExtenderLowCurrentMode(false);
+    if (shooting && timer.get() > 1) {
       intake.setExtenderReference(ExtenderConstants.kStow);
     }
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    if (driveCommand != null) {
+      driveCommand.end(interrupted);
+    }
+
+    shooter.setReference(0);
+    hood.setReference(HoodConstants.kMinPos);
+    conveyor.setVoltage(ConveyorConstants.kOff);
+    kicker.setVoltage(KickerConstants.kOff);
   }
 }

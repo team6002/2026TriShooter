@@ -64,7 +64,7 @@ public class IntakeConstants {
     public static final double kMaxVel = Math.toRadians(43200);
     public static final double kMaxAccel = Math.toRadians(86400);
 
-    public static final double kPositionTolerance = Math.toRadians(50);
+    public static final double kPositionTolerance = Math.toRadians(5);
 
     public static final double kGearRatio = 81;
     // absolute encoder has another 3:1 reduction after it

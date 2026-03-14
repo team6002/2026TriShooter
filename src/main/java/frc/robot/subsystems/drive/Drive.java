@@ -253,6 +253,29 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer, Holon
     stop();
   }
 
+  @Override
+  public void activeXLock() {
+    Rotation2d[] xAngles = new Rotation2d[4];
+    for (int i = 0; i < 4; i++) {
+      xAngles[i] = moduleTranslations[i].getAngle();
+    }
+
+    ChassisSpeeds halt = new ChassisSpeeds(0, 0, 0);
+
+    OptionalDouble angularVelocityOverride =
+        ChassisHeadingController.getInstance()
+            .calculate(getMeasuredChassisSpeedsFieldRelative(), getPose());
+
+    if (angularVelocityOverride.isPresent()
+        && Math.abs(angularVelocityOverride.getAsDouble()) > 0.05) {
+      runRobotCentricChassisSpeeds(halt);
+    } else {
+      for (int i = 0; i < 4; i++) {
+        modules[i].runSetpoint(new SwerveModuleState(0, xAngles[i]));
+      }
+    }
+  }
+
   /** Returns a command to run a quasistatic test in the specified direction. */
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return run(() -> runCharacterization(0.0))

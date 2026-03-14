@@ -76,16 +76,8 @@ public class ShooterConstants {
 
   // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
   public static final double[][] SHOOTING_TABLE = {
-    {1.0, 85.00, 6.02, 0.7608},
-    {2.0, 65.43, 6.43, 0.7482},
-    {3.0, 56.90, 7.04, 0.7641},
-    {4.0, 58.75, 7.86, 0.9812},
-    {5.0, 48.88, 8.47, 0.8978},
-    {6.0, 42.88, 9.29, 0.8818},
-    {7.0, 41.60, 9.90, 0.9457},
-    {8.0, 40.16, 10.51, 0.9960},
-    {9.0, 38.67, 11.12, 1.0365},
-    {10.0, 37.20, 11.73, 1.0699}
+    {3.048, 70.2, 3333.33, 1},
+    {5.08, 59.1, 3916.66, 1.12}
   };
 
   // Extract columns for MapleShooterOptimization
@@ -111,9 +103,9 @@ public class ShooterConstants {
 
   public static final ShootingParams getShootingParams(double distanceMeters) {
     // linear regressions calculated from desmos
-    double hoodAngle = (0.123023 * distanceMeters) - 0.18125;
-    double shooterVelRad = (44.19548 * distanceMeters) + 186.99956;
-    shooterVelRad = MathUtil.clamp(shooterVelRad, 350, 450);
+    double hoodAngle = (0.147638 * distanceMeters) - 0.05;
+    double shooterVelRad = (30.062300 * distanceMeters) + 257.436065;
+    shooterVelRad = MathUtil.clamp(shooterVelRad, 300, 450);
 
     // 11m/s^2 gravity to match maple sim
     double g = 11;
@@ -132,7 +124,7 @@ public class ShooterConstants {
 
     double tofSeconds = (vy + Math.sqrt(vy * vy + 2 * g * dy)) / g;
 
-    return new ShootingParams(launchAngleRad, shooterVelRad, tofSeconds);
+    return new ShootingParams(hoodAngle, shooterVelRad, tofSeconds);
   }
 
   public static final ShootingParams getSimShootingParams(double distance) {
