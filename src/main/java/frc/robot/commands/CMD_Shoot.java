@@ -15,6 +15,7 @@ import frc.robot.subsystems.kicker.Kicker;
 import frc.robot.subsystems.kicker.KickerConstants;
 import frc.robot.subsystems.shooter.Shooter;
 import frc.robot.subsystems.shooter.ShooterConstants;
+import frc.robot.subsystems.shooter.ShooterConstants.ShootingParams;
 import frc.robot.utils.CustomPIDs.ChassisHeadingController;
 import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
@@ -58,38 +59,41 @@ public class CMD_Shoot extends Command {
     timer.stop();
     timer.reset();
 
-    driveCommand = JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
-        driveSupplier,
-        drive,
-        FieldConstants::getHubPose,
-        ShooterConstants.kShooterOptimization,
-        0.5,
-        false);
+    driveCommand =
+        JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+            driveSupplier,
+            drive,
+            FieldConstants::getHubPose,
+            ShooterConstants.kShooterOptimization,
+            0.5,
+            false);
     driveCommand.initialize();
   }
 
   @Override
   public void execute() {
     driveCommand.execute();
-    shooter.setReference(Math.toRadians(20000));
-    hood.setReference(0.4);
+    // shooter.setReference(Math.toRadians(20000));
+    // hood.setReference(0.4);
+    double distMeters = FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation());
+    ShootingParams shootingParams = ShooterConstants.getShootingParams(distMeters);
 
-    boolean driveReady = atSetpointDebouncer.calculate(
-        ChassisHeadingController.getInstance().atSetPoint());
+    shooter.setReference(shootingParams.shooterReference());
+    hood.setReference(shootingParams.hoodReference());
+
+    boolean driveReady =
+        atSetpointDebouncer.calculate(ChassisHeadingController.getInstance().atSetPoint());
 
     if (shooter.isReady() && hood.atReference() && driveReady && !shooting) {
       conveyor.setVoltage(ConveyorConstants.kConvey);
       kicker.setVoltage(KickerConstants.kKick);
-
-      intake.setExtenderLowCurrentMode(false);
-      intake.setExtenderReference(ExtenderConstants.kStow);
-
-      timer.start();
+      timer.restart();
+      shooting = true;
     }
 
-    if (timer.get() > 0.25 && !shooting) {
-      shooting = true;
-      timer.reset();
+    if (shooting && timer.get() > 1.0) {
+      intake.setExtenderLowCurrentMode(false);
+      intake.setExtenderReference(ExtenderConstants.kStow);
     }
   }
 

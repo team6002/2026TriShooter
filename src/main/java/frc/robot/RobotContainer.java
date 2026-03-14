@@ -65,7 +65,8 @@ public class RobotContainer {
   public final Vision vision;
   public final LEDStatusLight ledStatusLight;
 
-  private final LoggedNetworkNumber shooterRef = new LoggedNetworkNumber("/Tuning/shooterRef", 20000);
+  private final LoggedNetworkNumber shooterRef =
+      new LoggedNetworkNumber("/Tuning/shooterRef", 20000);
   private final LoggedNetworkNumber hoodRef = new LoggedNetworkNumber("/Tuning/hoodRef", 0.4);
 
   public SwerveDriveSimulation driveSimulation = null;
@@ -315,11 +316,22 @@ public class RobotContainer {
     Logger.recordOutput("Hub Active", HubShiftUtil.getOfficialShiftInfo().active());
     Logger.recordOutput(
         "Hub Duration Remaining", HubShiftUtil.getOfficialShiftInfo().remainingTime());
-    Logger.recordOutput("ChassisHeadingControllerAtSetpoint", ChassisHeadingController.getInstance().atSetPoint());
-    Logger.recordOutput("DistFromHub", Units.metersToInches(FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation())));
+    Logger.recordOutput(
+        "ChassisHeadingControllerAtSetpoint", ChassisHeadingController.getInstance().atSetPoint());
+    Logger.recordOutput(
+        "DistFromHub",
+        Units.metersToInches(
+            FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation())));
   }
 
   public Command shootClose() {
-    return new CMD_ShootNoVision(conveyor, hood, intake, kicker, shooter, ()-> Math.toRadians(shooterRef.get()), ()-> hoodRef.get());
+    return new CMD_ShootNoVision(
+        conveyor,
+        hood,
+        intake,
+        kicker,
+        shooter,
+        () -> Math.toRadians(shooterRef.get()),
+        () -> hoodRef.get());
   }
 }

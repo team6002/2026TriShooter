@@ -26,7 +26,7 @@ public class CMD_ShootNoVision extends Command {
 
   public CMD_ShootNoVision(
       Conveyor conveyor, Hood hood, Intake intake, Kicker kicker, Shooter shooter) {
-    this(conveyor, hood, intake, kicker, shooter, () -> 20000, () -> 0.4);
+    this(conveyor, hood, intake, kicker, shooter, () -> Math.toRadians(20000), () -> 0.4);
   }
 
   public CMD_ShootNoVision(
@@ -57,28 +57,19 @@ public class CMD_ShootNoVision extends Command {
 
   @Override
   public void execute() {
-    // shooter.setReference(Math.toRadians(shooterSupplier.getAsDouble()));
-    // hood.setReference(hoodSupplier.getAsDouble());
-
-    //120, 20000, 0.4
-    //200, 23500, 0.7
-
-    shooter.setReference(Math.toRadians(23000));
-    hood.setReference(0.5);
+    shooter.setReference(shooterSupplier.getAsDouble());
+    hood.setReference(hoodSupplier.getAsDouble());
 
     if (shooter.isReady() && hood.atReference() && !shooting) {
       conveyor.setVoltage(ConveyorConstants.kConvey);
       kicker.setVoltage(KickerConstants.kKick);
-
-      intake.setExtenderLowCurrentMode(false);
-      intake.setExtenderReference(ExtenderConstants.kStow);
-
-      timer.start();
+      timer.restart();
+      shooting = true;
     }
 
-    if (timer.get() > 0.25 && !shooting) {
-      shooting = true;
-      timer.reset();
+    if (shooting && timer.get() > 1.0) {
+      intake.setExtenderLowCurrentMode(false);
+      intake.setExtenderReference(ExtenderConstants.kStow);
     }
   }
 
