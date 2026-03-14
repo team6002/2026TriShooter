@@ -68,18 +68,16 @@ public class CMD_Shoot extends Command {
             0.5,
             false);
     driveCommand.initialize();
+
+    double distMeters = FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation());
+    ShootingParams shootingParams = ShooterConstants.getShootingParams(distMeters);
+    shooter.setReference(shootingParams.shooterReference());
+    hood.setReference(shootingParams.hoodReference());
   }
 
   @Override
   public void execute() {
     driveCommand.execute();
-    // shooter.setReference(Math.toRadians(20000));
-    // hood.setReference(0.4);
-    double distMeters = FieldConstants.getHubPose().getDistance(drive.getPose().getTranslation());
-    ShootingParams shootingParams = ShooterConstants.getShootingParams(distMeters);
-
-    shooter.setReference(shootingParams.shooterReference());
-    hood.setReference(shootingParams.hoodReference());
 
     boolean driveReady =
         atSetpointDebouncer.calculate(ChassisHeadingController.getInstance().atSetPoint());
@@ -91,8 +89,7 @@ public class CMD_Shoot extends Command {
       shooting = true;
     }
 
-    if (shooting && timer.get() > 1.0) {
-      intake.setExtenderLowCurrentMode(false);
+    if (shooting && timer.get() > 1) {
       intake.setExtenderReference(ExtenderConstants.kStow);
     }
   }

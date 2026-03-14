@@ -67,8 +67,7 @@ public class CMD_ShootNoVision extends Command {
       shooting = true;
     }
 
-    if (shooting && timer.get() > 1.0) {
-      intake.setExtenderLowCurrentMode(false);
+    if (shooting && timer.get() > 1) {
       intake.setExtenderReference(ExtenderConstants.kStow);
     }
   }

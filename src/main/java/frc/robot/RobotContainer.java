@@ -67,7 +67,7 @@ public class RobotContainer {
 
   private final LoggedNetworkNumber shooterRef =
       new LoggedNetworkNumber("/Tuning/shooterRef", 20000);
-  private final LoggedNetworkNumber hoodRef = new LoggedNetworkNumber("/Tuning/hoodRef", 0.4);
+  private final LoggedNetworkNumber hoodRef = new LoggedNetworkNumber("/Tuning/hoodRef", Robot.CURRENT_ROBOT == Robot.RobotName.COMP_BOT ? .4 : .25);
 
   public SwerveDriveSimulation driveSimulation = null;
 
@@ -181,6 +181,8 @@ public class RobotContainer {
     autoChooser.addDefaultOption("Trench And Outpost", new AUTO_TrenchAndOutpost());
     autoChooser.addOption("Trench Left", new AUTO_Trench());
     autoChooser.addOption("Outpost", new AUTO_Outpost());
+    autoChooser.addOption("2 sweep left", new AUTO_2SweepLeft());
+    autoChooser.addOption("2 sweep right", new AUTO_2SweepRight());
 
     // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
     // distance
