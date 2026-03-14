@@ -67,7 +67,9 @@ public class RobotContainer {
 
   private final LoggedNetworkNumber shooterRef =
       new LoggedNetworkNumber("/Tuning/shooterRef", 20000);
-  private final LoggedNetworkNumber hoodRef = new LoggedNetworkNumber("/Tuning/hoodRef", Robot.CURRENT_ROBOT == Robot.RobotName.COMP_BOT ? .4 : .25);
+  private final LoggedNetworkNumber hoodRef =
+      new LoggedNetworkNumber(
+          "/Tuning/hoodRef", Robot.CURRENT_ROBOT == Robot.RobotName.COMP_BOT ? .4 : .25);
 
   public SwerveDriveSimulation driveSimulation = null;
 
