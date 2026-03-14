@@ -57,8 +57,14 @@ public class CMD_ShootNoVision extends Command {
 
   @Override
   public void execute() {
-    shooter.setReference(Math.toRadians(shooterSupplier.getAsDouble()));
-    hood.setReference(hoodSupplier.getAsDouble());
+    // shooter.setReference(Math.toRadians(shooterSupplier.getAsDouble()));
+    // hood.setReference(hoodSupplier.getAsDouble());
+
+    //120, 20000, 0.4
+    //200, 23500, 0.7
+
+    shooter.setReference(Math.toRadians(23000));
+    hood.setReference(0.5);
 
     if (shooter.isReady() && hood.atReference() && !shooting) {
       conveyor.setVoltage(ConveyorConstants.kConvey);

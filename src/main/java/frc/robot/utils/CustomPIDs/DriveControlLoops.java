@@ -35,10 +35,10 @@ public class DriveControlLoops {
   public static final LinearVelocity SWERVE_VELOCITY_DEADBAND = MetersPerSecond.of(0.03);
   public static final MaplePIDController.MaplePIDConfig CHASSIS_ROTATION_CLOSE_LOOP =
       new MaplePIDController.MaplePIDConfig(
-          Math.toRadians(360) /* 360 */,
-          Math.toRadians(90) /* 90 */,
-          0.05,
-          Math.toRadians(2),
+          Math.toRadians(360),
+          Math.toRadians(90),
+          0.03,
+          Math.toRadians(3),
           .02,
           false,
           0);
