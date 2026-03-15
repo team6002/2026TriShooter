@@ -45,10 +45,25 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.25,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.25,
+        "maxAngularVelocity": 360.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD:src/main/deploy/pathplanner/paths/SwipeHalfMiddleBump.path
     "maxVelocity": 2.0,
@@ -61,6 +76,10 @@
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
 >>>>>>> 168c2bec1ee4f1091547dd1ba9d4c7437c0ed79d
+=======
+    "maxVelocity": 3.25,
+    "maxAcceleration": 3.25,
+>>>>>>> 708fe350b1d60e316b30100e1e6abe28f1e6a9e2
     "maxAngularVelocity": 360.0,
 >>>>>>> f30a232c3166ec5a7fda463eb037aa6225e24b6d:src/main/deploy/pathplanner/paths/SweepHalfMiddle.path
     "maxAngularAcceleration": 720.0,
