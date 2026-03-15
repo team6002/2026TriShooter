@@ -196,6 +196,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void teleopInit() {
     HubShiftUtil.initialize();
+    robotContainer.updateButtonBindings();
     robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderPosition());
   }
 

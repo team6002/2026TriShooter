@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
 import frc.robot.commands.drive.*;
@@ -82,6 +83,7 @@ public class RobotContainer {
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Auto> autoChooser;
+  private final LoggedDashboardChooser<Boolean> buttonBindingChooser;
 
   /** The container for the robot. Contains subsystems, IO devices, and commands. */
   public RobotContainer() {
@@ -184,8 +186,14 @@ public class RobotContainer {
     autoChooser.addOption("Trench Left", new AUTO_TrenchLeft());
     autoChooser.addOption("Trench Right", new AUTO_TrenchRight());
     autoChooser.addOption("Outpost", new AUTO_Outpost());
+
+    // Set button binding config
+    buttonBindingChooser = new LoggedDashboardChooser<>("Button Bindings");
+    buttonBindingChooser.addDefaultOption("real", true);
+    buttonBindingChooser.addOption("sysID", false);
     // autoChooser.addOption("2 sweep left", new AUTO_2SweepLeft());
     // autoChooser.addOption("2 sweep right", new AUTO_2SweepRight());
+
 
     // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
     // distance
@@ -193,7 +201,6 @@ public class RobotContainer {
     // autoChooser.addOption("3MeterTest", new AUTO_3MeterTest());
 
     // Configure the button bindings
-    configureButtonBindings();
 
     SmartDashboard.putData("Field", field);
   }
@@ -264,6 +271,22 @@ public class RobotContainer {
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
       driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
+    }
+  }
+
+  public void sysIDButtonBindings() {
+    driver.aButton().onTrue(drive.sysIdQuasistatic(Direction.kForward));
+    driver.bButton().onTrue(drive.sysIdQuasistatic(Direction.kReverse));
+    driver.stopWithXButton().onTrue(drive.sysIdDynamic(Direction.kForward));
+    driver.yButton().onTrue(drive.sysIdDynamic(Direction.kReverse));
+  }
+
+  public void updateButtonBindings() {
+    if (Boolean.TRUE.equals(buttonBindingChooser.get())) {
+      configureButtonBindings();
+    } else {
+        // This triggers if the value is FALSE or NULL
+        sysIDButtonBindings();
     }
   }
 
