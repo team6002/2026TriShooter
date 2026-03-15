@@ -95,11 +95,11 @@ public class DriveConstants {
   public static final double driveKp = 0.0;
   public static final double driveKd = 0.0;
   public static final double driveKs =
-      Robot.CURRENT_ROBOT == RobotName.COMP_BOT ? 0.06 : 0.09815; // 0.06
+      Robot.CURRENT_ROBOT == RobotName.COMP_BOT ? 0.18408 : 0.09815; // 0.06
   public static final double driveKv =
-      Robot.CURRENT_ROBOT == RobotName.COMP_BOT ? 0.92 : 0.093236; // .092
+      Robot.CURRENT_ROBOT == RobotName.COMP_BOT ? 0.092302 : 0.093236; // 0.92 // .092
   public static final double driveKa =
-      Robot.CURRENT_ROBOT == RobotName.COMP_BOT ? 0.0 : 0.013717; // 0.0
+      Robot.CURRENT_ROBOT == RobotName.COMP_BOT ? 0.075403 : 0.013717; // 0.0
   public static final double driveSimP = 0.05;
   public static final double driveSimD = 0.0;
   public static final double driveSimKs = 0.0;
