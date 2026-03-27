@@ -28,7 +28,7 @@ public class IntakeIOSim implements IntakeIO {
       new PIDController(IntakeConstants.kPSim, IntakeConstants.kISim, IntakeConstants.kDSim);
   private final SimpleMotorFeedforward intakeFeedforward =
       new SimpleMotorFeedforward(IntakeConstants.kS, IntakeConstants.kV, IntakeConstants.kA);
-  
+
   // No longer static - each robot instance gets its own simulation object
   private final IntakeSimulation intakeSimulation;
   private double reference = 0;
@@ -107,25 +107,80 @@ public class IntakeIOSim implements IntakeIO {
     inputs.extenderInPosition = getExtenderInPosition();
   }
 
-  @Override public void setReference(double reference) { this.reference = reference; }
-  @Override public double getReference() { return reference; }
-  @Override public void setVoltage(double voltage) { intakeSim.setInputVoltage(voltage); }
-  @Override public double getVoltage() { return intakeSim.getInputVoltage(); }
-  @Override public double getCurrent() { return intakeSim.getCurrentDrawAmps(); }
-  @Override public double getVelocity() { return intakeSim.getAngularVelocityRadPerSec(); }
-  @Override public double getPosition() { return intakeSim.getAngularPositionRad(); }
+  @Override
+  public void setReference(double reference) {
+    this.reference = reference;
+  }
 
-  @Override public void setExtenderReference(double reference) { goal = new TrapezoidProfile.State(reference, 0); }
-  @Override public double getExtenderReference() { return goal.position; }
-  @Override public void setExtenderVoltage(double voltage) { intakeExtenderSim.setInputVoltage(voltage); }
-  @Override public double getExtenderVoltage() { return appliedExtenderVoltage; }
-  @Override public double getExtenderCurrent() { return intakeExtenderSim.getCurrentDrawAmps(); }
-  @Override public double getExtenderVelocity() { return intakeExtenderSim.getVelocityRadPerSec(); }
-  @Override public double getExtenderPosition() { return intakeExtenderSim.getAngleRads() + Math.toRadians(270); }
+  @Override
+  public double getReference() {
+    return reference;
+  }
+
+  @Override
+  public void setVoltage(double voltage) {
+    intakeSim.setInputVoltage(voltage);
+  }
+
+  @Override
+  public double getVoltage() {
+    return intakeSim.getInputVoltage();
+  }
+
+  @Override
+  public double getCurrent() {
+    return intakeSim.getCurrentDrawAmps();
+  }
+
+  @Override
+  public double getVelocity() {
+    return intakeSim.getAngularVelocityRadPerSec();
+  }
+
+  @Override
+  public double getPosition() {
+    return intakeSim.getAngularPositionRad();
+  }
+
+  @Override
+  public void setExtenderReference(double reference) {
+    goal = new TrapezoidProfile.State(reference, 0);
+  }
+
+  @Override
+  public double getExtenderReference() {
+    return goal.position;
+  }
+
+  @Override
+  public void setExtenderVoltage(double voltage) {
+    intakeExtenderSim.setInputVoltage(voltage);
+  }
+
+  @Override
+  public double getExtenderVoltage() {
+    return appliedExtenderVoltage;
+  }
+
+  @Override
+  public double getExtenderCurrent() {
+    return intakeExtenderSim.getCurrentDrawAmps();
+  }
+
+  @Override
+  public double getExtenderVelocity() {
+    return intakeExtenderSim.getVelocityRadPerSec();
+  }
+
+  @Override
+  public double getExtenderPosition() {
+    return intakeExtenderSim.getAngleRads() + Math.toRadians(270);
+  }
 
   @Override
   public boolean getExtenderInPosition() {
-    return Math.abs(getExtenderPosition() - getExtenderReference()) < ExtenderConstants.kPositionTolerance;
+    return Math.abs(getExtenderPosition() - getExtenderReference())
+        < ExtenderConstants.kPositionTolerance;
   }
 
   @Override

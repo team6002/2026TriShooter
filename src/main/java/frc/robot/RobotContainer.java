@@ -13,6 +13,8 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -43,7 +45,6 @@ import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
 import frc.robot.utils.hubcounter.HubShiftUtil;
-
 import java.io.IOException;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
@@ -52,9 +53,6 @@ import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
-
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -147,16 +145,16 @@ public class RobotContainer {
 
         vision =
             new Vision(
-                drive, () -> drive.getMeasuredChassisSpeedsRobotRelative()
-                ,new VisionIOPhotonVisionSim(
+                drive,
+                () -> drive.getMeasuredChassisSpeedsRobotRelative(),
+                new VisionIOPhotonVisionSim(
                     Vision_Constants.camera0Name,
                     Vision_Constants.robotToCamera0,
                     driveSimulation::getSimulatedDriveTrainPose),
                 new VisionIOPhotonVisionSim(
                     Vision_Constants.camera1Name,
                     Vision_Constants.robotToCamera1,
-                    driveSimulation::getSimulatedDriveTrainPose)
-                );
+                    driveSimulation::getSimulatedDriveTrainPose));
 
         break;
       default:
@@ -203,7 +201,6 @@ public class RobotContainer {
     buttonBindingChooser.addOption("sysID", false);
     // autoChooser.addOption("2 sweep left", new AUTO_2SweepLeft());
     // autoChooser.addOption("2 sweep right", new AUTO_2SweepRight());
-
 
     // Wheel Radius Test, tell the bot to run in a straight line for 3 meters, measure actual
     // distance
@@ -288,9 +285,13 @@ public class RobotContainer {
     driver.aButton().onTrue(drive.sysIdQuasistatic(Direction.kForward));
     // driver.bButton().onTrue(drive.sysIdQuasistatic(Direction.kReverse));
     // In RobotContainer.java
-// When you press 'B' on the driver controller, the opponent starts their path
+    // When you press 'B' on the driver controller, the opponent starts their path
     try {
-      driver.bButton().onTrue(AIRobotInSimulation.instances[0].opponentRobotFollowPath(PathPlannerPath.fromPathFile("opprobot")));
+      driver
+          .bButton()
+          .onTrue(
+              AIRobotInSimulation.instances[0].opponentRobotFollowPath(
+                  PathPlannerPath.fromPathFile("opprobot")));
     } catch (FileVersionException | IOException | ParseException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -303,8 +304,8 @@ public class RobotContainer {
     if (Boolean.TRUE.equals(buttonBindingChooser.get())) {
       configureButtonBindings();
     } else {
-        // This triggers if the value is FALSE or NULL
-        sysIDButtonBindings();
+      // This triggers if the value is FALSE or NULL
+      sysIDButtonBindings();
     }
   }
 

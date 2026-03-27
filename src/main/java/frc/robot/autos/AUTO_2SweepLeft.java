@@ -6,7 +6,6 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.commands.CMD_Extend;
 import frc.robot.commands.CMD_Intake;
-
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 

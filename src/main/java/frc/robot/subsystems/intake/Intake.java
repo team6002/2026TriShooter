@@ -15,7 +15,8 @@ public class Intake extends SubsystemBase {
 
   public Intake(IntakeIO io) {
     if (io == null) {
-      throw new IllegalArgumentException("IntakeIO cannot be null! Check your RobotContainer or AIRobotInSimulation initialization.");
+      throw new IllegalArgumentException(
+          "IntakeIO cannot be null! Check your RobotContainer or AIRobotInSimulation initialization.");
     }
     this.io = io;
     this.intakeSysIdRoutine =
@@ -118,15 +119,14 @@ public class Intake extends SubsystemBase {
     return io.numObjectsInHopper();
   }
 
-  /**
-   * Removes one piece of fuel from this specific robot's hopper.
-   */
+  /** Removes one piece of fuel from this specific robot's hopper. */
   public void removeFuel() {
     io.obtainFuelFromHopper();
   }
 
   /**
    * Manually adds fuel to this specific robot's hopper (useful for auto setup).
+   *
    * @param count number of pieces to add.
    */
   public void addFuelToHopper(int count) {
@@ -142,7 +142,7 @@ public class Intake extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // If io is null, something went very wrong in initialization. 
+    // If io is null, something went very wrong in initialization.
     // We return early to prevent the NPE crash.
     if (io == null) return;
 

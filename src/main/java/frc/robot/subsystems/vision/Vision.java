@@ -308,6 +308,9 @@ public class Vision extends SubsystemBase {
    * @return Returns the last result of the vision in the real world.
    */
   public Pose2d lastResult(Drive drive, int cameraIndex) {
+    if (cameraIndex < 0 || cameraIndex >= inputs.length || inputs[cameraIndex] == null) {
+      return null;
+    }
     List<Pose3d> theTagPoses = new ArrayList<>();
     int tagIndexOfClosestTag = 0;
     double tagDistanceFromRobot = 1000;

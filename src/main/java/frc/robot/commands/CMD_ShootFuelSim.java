@@ -25,7 +25,7 @@ public class CMD_ShootFuelSim extends Command {
   private final Intake intake; // Added intake instance
   private int timer;
   private int shooterIndex = 0;
-  
+
   // State tracking to prevent Auto-skipping
   private boolean seenAnyBalls = false;
   private int emptyHopperCounter = 0;
@@ -57,9 +57,9 @@ public class CMD_ShootFuelSim extends Command {
     seenAnyBalls = false;
     emptyHopperCounter = 0;
     startTime = Timer.getFPGATimestamp();
-    
+
     if (!RobotBase.isSimulation()) return;
-    
+
     Logger.recordOutput("Commands/CMD_ShootFuelSim", true);
     System.out.println("[CMD_ShootFuelSim] Started. Initial Hopper: " + intake.getHopperCount());
   }
@@ -69,11 +69,11 @@ public class CMD_ShootFuelSim extends Command {
     if (!RobotBase.isSimulation()) return;
 
     int currentBallCount = intake.getHopperCount(); // Use instance instead of static
-    
+
     // Logic to handle simulation delay/initialization
     if (currentBallCount > 0) {
       seenAnyBalls = true;
-      emptyHopperCounter = 0; 
+      emptyHopperCounter = 0;
     } else {
       emptyHopperCounter++;
     }
@@ -87,7 +87,7 @@ public class CMD_ShootFuelSim extends Command {
         timer++;
       }
     } else {
-        timer++;
+      timer++;
     }
   }
 
@@ -99,7 +99,7 @@ public class CMD_ShootFuelSim extends Command {
         calculateLeadingParams(robotPose, shooterOffset, FieldConstants.getHubPose());
 
     // Update Simulation State via instance
-    intake.removeFuel(); 
+    intake.removeFuel();
 
     // Spawn the physical projectile
     SimulatedArena.getInstance()
@@ -122,7 +122,7 @@ public class CMD_ShootFuelSim extends Command {
   @Override
   public boolean isFinished() {
     double elapsed = Timer.getFPGATimestamp() - startTime;
-    
+
     // Timeout if we wait too long without seeing balls
     if (!seenAnyBalls && elapsed > 2.5) return true;
 
