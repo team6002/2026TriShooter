@@ -18,6 +18,7 @@ import frc.robot.subsystems.hood.HoodConstants;
 import frc.robot.subsystems.intake.IntakeConstants;
 import frc.robot.subsystems.intake.IntakeConstants.ExtenderConstants;
 import frc.robot.subsystems.kicker.KickerConstants;
+import frc.robot.subsystems.opprobots.AIRobotInSimulation;
 import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.utils.AlertsManager;
 import frc.robot.utils.constants.RobotMode;
@@ -162,6 +163,14 @@ public class Robot extends LoggedRobot {
     robotContainer.intake.setVoltage(IntakeConstants.kOff);
     robotContainer.intake.setExtenderReference(robotContainer.intake.getExtenderReference());
     robotContainer.resetSimulationField();
+    for (int i = 0; i < 5; i++) {
+      // Check if the specific robot instance was actually created
+      if (AIRobotInSimulation.instances[i] != null) {
+          AIRobotInSimulation.instances[i].driveSimulation
+              .getDriveTrainSimulation()
+              .setSimulationWorldPose(AIRobotInSimulation.ROBOT_QUEENING_POSITIONS[i]);
+      }
+    }
   }
 
   /** This function is called periodically when disabled. */
@@ -227,6 +236,7 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationInit() {
     robotContainer.resetSimulationField();
+    AIRobotInSimulation.startOpponentRobotSimulations();
   }
 
   /** This function is called periodically whilst in simulation. */

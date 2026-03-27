@@ -80,5 +80,14 @@ public interface IntakeIO {
 
   public default void setExtenderReference(double velocity) {}
 
+  /** Default implementation does nothing for real hardware */
+  public default int numObjectsInHopper() { return 0; }
+
+  /** Default implementation does nothing for real hardware */
+  public default void obtainFuelFromHopper() {}
+
+  /** Default implementation does nothing for real hardware */
+  public default void addFuelToHopper(int count) {}
+
   public default void periodic() {}
 }

@@ -14,6 +14,9 @@ public class Intake extends SubsystemBase {
   private final SysIdRoutine intakeExtenderSysIdRoutine;
 
   public Intake(IntakeIO io) {
+    if (io == null) {
+      throw new IllegalArgumentException("IntakeIO cannot be null! Check your RobotContainer or AIRobotInSimulation initialization.");
+    }
     this.io = io;
     this.intakeSysIdRoutine =
         new SysIdRoutine(
@@ -108,8 +111,41 @@ public class Intake extends SubsystemBase {
     return io.getExtenderInPosition();
   }
 
+  /**
+   * @return The number of fuel pieces currently in this specific robot's hopper.
+   */
+  public int getHopperCount() {
+    return io.numObjectsInHopper();
+  }
+
+  /**
+   * Removes one piece of fuel from this specific robot's hopper.
+   */
+  public void removeFuel() {
+    io.obtainFuelFromHopper();
+  }
+
+  /**
+   * Manually adds fuel to this specific robot's hopper (useful for auto setup).
+   * @param count number of pieces to add.
+   */
+  public void addFuelToHopper(int count) {
+    io.addFuelToHopper(count);
+  }
+
+  /**
+   * @return true if the hopper is empty.
+   */
+  public boolean isHopperEmpty() {
+    return getHopperCount() <= 0;
+  }
+
   @Override
   public void periodic() {
+    // If io is null, something went very wrong in initialization. 
+    // We return early to prevent the NPE crash.
+    if (io == null) return;
+
     io.updateInputs(inputs);
     io.periodic();
     Logger.processInputs(this.getName(), inputs);

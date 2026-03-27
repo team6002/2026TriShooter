@@ -75,9 +75,15 @@ public class ShooterConstants {
   public static final double kStartOnTargetVel = Math.toRadians(720); // radians
 
   // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
+  // public static final double[][] SHOOTING_TABLE = {
+  //   {3.048, 70.2, 3333.33, 1},
+  //   {5.08, 59.1, 3916.66, 1.12}
+  // };
+  // Shooting table: {distance (meters), angle (degrees), velocity (m/s), time of flight (s)}
+  // Note: Velocity is now in Meters Per Second (MPS) to prevent the simulation from "phasing"
   public static final double[][] SHOOTING_TABLE = {
-    {3.048, 70.2, 3333.33, 1},
-    {5.08, 59.1, 3916.66, 1.12}
+    {3.048, 70.2, 7.71, 1.0}, // Distance: 10ft, Angle: 70.2deg, Vel: 7.71 m/s (~3333 RPM)
+    {5.08, 59.1, 9.06, 1.12}  // Distance: 16.6ft, Angle: 59.1deg, Vel: 9.06 m/s (~3916 RPM)
   };
 
   // Extract columns for MapleShooterOptimization

@@ -14,9 +14,9 @@ public class AUTO_2Sweep implements Auto {
         setAutoStartPose("FirstSweep2Sweep", false, robot.drive),
         followPath("FirstSweep2Sweep", false),
         followPath("ShootFirstCycle2Sweep", false),
-        new CMD_ShootFuelSim(robot.driveSimulation),
+        new CMD_ShootFuelSim(robot.driveSimulation, robot.intake),
         followPath("SecondSweep2Sweep", false),
         followPath("ShootSecondCycle2Sweep", false),
-        new CMD_ShootFuelSim(robot.driveSimulation));
+        new CMD_ShootFuelSim(robot.driveSimulation, robot.intake));
   }
 }

@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.5,
-        "y": 7.6
+        "x": 4.453095577746077,
+        "y": 7.444336661911555
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.966918687581155,
-        "y": 7.457275320967117
+        "x": 3.1462910128388017,
+        "y": 7.41845934379458
       },
       "isLocked": false,
-      "linkedName": "sweepstart"
+      "linkedName": "9470start"
     },
     {
       "anchor": {
-        "x": 7.5713124108336505,
-        "y": 6.965606276744577
+        "x": 2.9651497860199716,
+        "y": 6.862097004279601
       },
       "prevControl": {
-        "x": 7.048595992730968,
-        "y": 7.565885308375644
-      },
-      "nextControl": {
-        "x": 7.970756288041355,
-        "y": 6.506891425828802
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.8,
-        "y": 4.5
-      },
-      "prevControl": {
-        "x": 7.714594445591381,
-        "y": 5.169820784479857
+        "x": 3.3403708987161207,
+        "y": 7.17262482168331
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Sweepfirst"
+      "linkedName": "9470shoot"
     }
   ],
   "rotationTargets": [],
@@ -58,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -63.43494882292206
   },
   "reversed": false,
-  "folder": null,
+  "folder": "9470 Auto",
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 90.0
+    "velocity": 3.0,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

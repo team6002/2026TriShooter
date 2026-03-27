@@ -1,0 +1,99 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.9651497860199716,
+        "y": 6.862097004279601
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.0465542168674697,
+        "y": 7.848771084337351
+      },
+      "isLocked": false,
+      "linkedName": "9470shoot"
+    },
+    {
+      "anchor": {
+        "x": 6.613851640513552,
+        "y": 7.431398002853067
+      },
+      "prevControl": {
+        "x": 5.614283886049202,
+        "y": 7.460797054454959
+      },
+      "nextControl": {
+        "x": 7.0537660485021405,
+        "y": 7.418459343794579
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.613851640513552,
+        "y": 4.330048192771085
+      },
+      "prevControl": {
+        "x": 7.094443651925819,
+        "y": 4.330048192771085
+      },
+      "nextControl": {
+        "x": 6.133259629101285,
+        "y": 4.330048192771085
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.941041369472182,
+        "y": 7.276134094151213
+      },
+      "prevControl": {
+        "x": 5.8999416226458425,
+        "y": 7.029535613193177
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "9470secondswep"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.3773987206823002,
+      "rotationDegrees": 45.0
+    },
+    {
+      "waypointRelativePos": 2.621576763485475,
+      "rotationDegrees": -45.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 3.0,
+    "rotation": -51.499346279654524
+  },
+  "reversed": false,
+  "folder": "9470 Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -63.43494882292206
+  },
+  "useDefaultConstraints": true
+}

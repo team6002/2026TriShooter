@@ -35,6 +35,7 @@ import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.led.LEDStatusLight;
+import frc.robot.subsystems.opprobots.AIRobotInSimulation;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
 import frc.robot.utils.CustomPIDs.ChassisHeadingController;
@@ -42,12 +43,18 @@ import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
 import frc.robot.utils.hubcounter.HubShiftUtil;
+
+import java.io.IOException;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -141,14 +148,14 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive, () -> drive.getMeasuredChassisSpeedsRobotRelative()
-                // ,new VisionIOPhotonVisionSim(
-                //     Vision_Constants.camera0Name,
-                //     Vision_Constants.robotToCamera0,
-                //     driveSimulation::getSimulatedDriveTrainPose),
-                // new VisionIOPhotonVisionSim(
-                //     Vision_Constants.camera1Name,
-                //     Vision_Constants.robotToCamera1,
-                //     driveSimulation::getSimulatedDriveTrainPose)
+                ,new VisionIOPhotonVisionSim(
+                    Vision_Constants.camera0Name,
+                    Vision_Constants.robotToCamera0,
+                    driveSimulation::getSimulatedDriveTrainPose),
+                new VisionIOPhotonVisionSim(
+                    Vision_Constants.camera1Name,
+                    Vision_Constants.robotToCamera1,
+                    driveSimulation::getSimulatedDriveTrainPose)
                 );
 
         break;
@@ -186,6 +193,9 @@ public class RobotContainer {
     autoChooser.addOption("Trench Left", new AUTO_TrenchLeft());
     autoChooser.addOption("Trench Right", new AUTO_TrenchRight());
     autoChooser.addOption("Outpost", new AUTO_Outpost());
+    autoChooser.addOption("9470 Auto", new AUTO_9470auto());
+    autoChooser.addOption("9470 Auto Mirrored", new AUTO_9470automirrored());
+    autoChooser.addOption("randomized path", new AUTO_onthefly());
 
     // Set button binding config
     buttonBindingChooser = new LoggedDashboardChooser<>("Button Bindings");
@@ -270,13 +280,21 @@ public class RobotContainer {
       driver.autoAlignmentButton().whileTrue(shootClose());
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
-      driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation));
+      driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation, intake));
     }
   }
 
   public void sysIDButtonBindings() {
     driver.aButton().onTrue(drive.sysIdQuasistatic(Direction.kForward));
-    driver.bButton().onTrue(drive.sysIdQuasistatic(Direction.kReverse));
+    // driver.bButton().onTrue(drive.sysIdQuasistatic(Direction.kReverse));
+    // In RobotContainer.java
+// When you press 'B' on the driver controller, the opponent starts their path
+    try {
+      driver.bButton().onTrue(AIRobotInSimulation.instances[0].opponentRobotFollowPath(PathPlannerPath.fromPathFile("opprobot")));
+    } catch (FileVersionException | IOException | ParseException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     driver.stopWithXButton().onTrue(drive.sysIdDynamic(Direction.kForward));
     driver.yButton().onTrue(drive.sysIdDynamic(Direction.kReverse));
   }
