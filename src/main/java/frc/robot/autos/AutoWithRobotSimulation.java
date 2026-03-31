@@ -1,0 +1,102 @@
+package frc.robot.autos;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.RobotContainer;
+import frc.robot.commands.CMD_ShootFuelSim;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.opprobots.AIRobotInSimulation;
+import frc.robot.utils.constants.FieldConstants;
+import java.io.IOException;
+import org.ironmaple.utils.FieldMirroringUtils;
+import org.json.simple.parser.ParseException;
+
+public interface AutoWithRobotSimulation extends Auto {
+  Command getAutoCommand(RobotContainer robot) throws IOException, ParseException;
+
+  static Auto none() {
+    return new Auto() {
+      @Override
+      public Command getAutoCommand(RobotContainer robot) {
+        return Commands.none();
+      }
+    };
+  }
+
+  default Command setAutoStartPose(String pathName, Boolean mirrored, Drive drive) {
+    // 1. Declare a final variable that will be used in the lambda
+    final PathPlannerPath finalPath;
+
+    try {
+      PathPlannerPath loadedPath = PathPlannerPath.fromPathFile(pathName);
+
+      if (mirrored) {
+        loadedPath = loadedPath.mirrorPath();
+      }
+
+      // Handle Alliance flipping
+      if (DriverStation.getAlliance().isPresent() && FieldConstants.getAlliance() == Alliance.Red) {
+        loadedPath = loadedPath.flipPath();
+      }
+
+      finalPath = loadedPath; // This is the only assignment to finalPath
+    } catch (Exception e) {
+      DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+      return Commands.none(); // Better than returning an empty anonymous Command
+    }
+
+    // Now finalPath is effectively final and safe for the lambda
+    return Commands.runOnce(() -> drive.resetOdometry(finalPath.getStartingHolonomicPose().get()));
+  }
+
+  static Command setOppStartPose(Pose2d pose, int instance) {
+    return Commands.runOnce(
+        () -> AIRobotInSimulation.instances[instance].driveSimulation.setSimulationWorldPose(pose));
+  }
+
+  static PathPlannerPath getPath(String name, boolean mirror) throws IOException, ParseException {
+    PathPlannerPath path = PathPlannerPath.fromPathFile(name);
+    return mirror ? path.mirrorPath() : path;
+  }
+
+  static Pose2d flipLeftRight(Pose2d pose) {
+    return new Pose2d(
+        pose.getX(),
+        FieldMirroringUtils.FIELD_HEIGHT - pose.getY(),
+        pose.getRotation().unaryMinus());
+  }
+
+  default Command followPath(String pathName, boolean mirrored) {
+    PathPlannerPath path;
+    try {
+      path = getPath(pathName, mirrored);
+    } catch (Exception e) {
+      DriverStation.reportError("Error: failed to load path: " + pathName, e.getStackTrace());
+      return Commands.none();
+    }
+    return AutoBuilder.followPath(path);
+  }
+
+  static Command oppRobotFollowPath(String pathName, int instance, Boolean mirrored)
+      throws FileVersionException, IOException, ParseException {
+    Command returnCommand =
+        mirrored
+            ? AIRobotInSimulation.instances[instance].opponentRobotFollowPath(
+                PathPlannerPath.fromPathFile(pathName).mirrorPath())
+            : AIRobotInSimulation.instances[instance].opponentRobotFollowPath(
+                PathPlannerPath.fromPathFile(pathName));
+    return returnCommand;
+  }
+
+  static Command shootFuelOppRobot(int instance) {
+    return new CMD_ShootFuelSim(
+        AIRobotInSimulation.instances[instance].driveSimulation.getDriveTrainSimulation(),
+        AIRobotInSimulation.instances[instance].intake);
+  }
+}

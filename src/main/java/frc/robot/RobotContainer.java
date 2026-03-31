@@ -13,8 +13,6 @@
 
 package frc.robot;
 
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -26,6 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.autos.*;
 import frc.robot.commands.*;
@@ -37,7 +37,6 @@ import frc.robot.subsystems.hood.*;
 import frc.robot.subsystems.intake.*;
 import frc.robot.subsystems.kicker.*;
 import frc.robot.subsystems.led.LEDStatusLight;
-import frc.robot.subsystems.opprobots.AIRobotInSimulation;
 import frc.robot.subsystems.shooter.*;
 import frc.robot.subsystems.vision.*;
 import frc.robot.utils.CustomPIDs.ChassisHeadingController;
@@ -45,11 +44,9 @@ import frc.robot.utils.CustomPIDs.MapleJoystickDriveInput;
 import frc.robot.utils.constants.FieldConstants;
 import frc.robot.utils.constants.RobotMode;
 import frc.robot.utils.hubcounter.HubShiftUtil;
-import java.io.IOException;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.json.simple.parser.ParseException;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -257,7 +254,7 @@ public class RobotContainer {
     //             drive,
     //             () -> FieldConstants.getHubPose(),
     //             ShooterConstants.kShooterOptimization,
-    //             0.5,
+    // 0.5,
     //             false));
 
     driver.stopWithXButton().onTrue(Commands.runOnce(() -> drive.stopWithX()));
@@ -277,7 +274,20 @@ public class RobotContainer {
       driver.autoAlignmentButton().whileTrue(shootClose());
 
     } else if (Robot.CURRENT_ROBOT_MODE == RobotMode.SIM) {
-      driver.scoreButton().whileTrue(new CMD_ShootFuelSim(driveSimulation, intake));
+      driver
+          .scoreButton()
+          .whileTrue(
+            new SequentialCommandGroup(
+              drive.alignToTarget(()->FieldConstants.getHubPose())
+              ,new ParallelCommandGroup(
+                  new CMD_ShootFuelSim(driveSimulation, intake),
+                  JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                      driveInput,
+                      drive,
+                      () -> FieldConstants.getHubPose(),
+                      ShooterConstants.kShooterOptimization,
+                      0.5,
+                      false))));
     }
   }
 
@@ -286,16 +296,6 @@ public class RobotContainer {
     // driver.bButton().onTrue(drive.sysIdQuasistatic(Direction.kReverse));
     // In RobotContainer.java
     // When you press 'B' on the driver controller, the opponent starts their path
-    try {
-      driver
-          .bButton()
-          .onTrue(
-              AIRobotInSimulation.instances[0].opponentRobotFollowPath(
-                  PathPlannerPath.fromPathFile("opprobot")));
-    } catch (FileVersionException | IOException | ParseException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
     driver.stopWithXButton().onTrue(drive.sysIdDynamic(Direction.kForward));
     driver.yButton().onTrue(drive.sysIdDynamic(Direction.kReverse));
   }

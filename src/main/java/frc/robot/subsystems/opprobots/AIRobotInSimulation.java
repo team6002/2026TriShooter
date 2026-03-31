@@ -101,27 +101,6 @@ public class AIRobotInSimulation extends SubsystemBase {
         );
   }
 
-  public Command opponentRobotFollowPathFlipped(PathPlannerPath path) {
-    return new FollowPathCommand(
-        path.mirrorPath(), // Specify the path
-        // Provide actual robot pose in simulation, bypassing odometry error
-        driveSimulation::getActualPoseInSimulationWorld,
-        // Provide actual robot speed in simulation, bypassing encoder measurement error
-        driveSimulation::getActualSpeedsRobotRelative,
-        // Chassis speeds output
-        (speeds, feedforwards) ->
-            driveSimulation.runChassisSpeeds(speeds, new Translation2d(), false, false),
-        driveController, // Specify PID controller
-        PP_CONFIG, // Specify robot configuration
-        // Flip path based on alliance side
-        () ->
-            DriverStation.getAlliance()
-                .orElse(DriverStation.Alliance.Blue)
-                .equals(DriverStation.Alliance.Red),
-        this // AIRobotInSimulation is a subsystem; this command should use it as a requirement
-        );
-  }
-
   public static final AIRobotInSimulation[] instances =
       new AIRobotInSimulation[5]; // you can create as many opponent robots as you needs
 
