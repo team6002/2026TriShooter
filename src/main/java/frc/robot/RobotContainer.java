@@ -47,6 +47,7 @@ import frc.robot.utils.hubcounter.HubShiftUtil;
 import java.util.function.IntSupplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.Arena2026Rebuilt;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
@@ -319,6 +320,9 @@ public class RobotContainer {
   }
 
   public void resetSimulationField() {
+    Arena2026Rebuilt arena = new Arena2026Rebuilt();
+    arena.setEfficiencyMode(false);
+    // SimulatedArena.overrideInstance(arena);
     if (Robot.CURRENT_ROBOT_MODE != RobotMode.SIM) return;
 
     if (FieldConstants.getAlliance() == Alliance.Blue) {
