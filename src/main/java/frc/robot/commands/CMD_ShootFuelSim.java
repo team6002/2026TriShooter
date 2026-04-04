@@ -80,7 +80,7 @@ public class CMD_ShootFuelSim extends Command {
 
     // Shooting Loop
     if (currentBallCount > 0) {
-      if (timer >= 4) { // 0.2s between shots
+      if (timer >= 2) { // 0.2s between shots
         fireProjectile();
         timer = 0;
       } else {

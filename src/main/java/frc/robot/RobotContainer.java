@@ -15,6 +15,7 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -192,6 +193,7 @@ public class RobotContainer {
     autoChooser.addOption("9470 Auto", new AUTO_9470auto());
     autoChooser.addOption("9470 Auto Mirrored", new AUTO_9470automirrored());
     autoChooser.addOption("randomized path", new AUTO_onthefly());
+    autoChooser.addOption("27 Auto", new AUTO_27());
 
     // Set button binding config
     buttonBindingChooser = new LoggedDashboardChooser<>("Button Bindings");
@@ -289,6 +291,21 @@ public class RobotContainer {
                       ShooterConstants.kShooterOptimization,
                       0.5,
                       false))));
+
+      driver
+      .yButton()
+      .whileTrue(
+        new SequentialCommandGroup(
+          drive.alignToTarget(()->(drive.getPose().getY()<4 ? new Translation2d(0,1) : new Translation2d(0,7)))
+          ,new ParallelCommandGroup(
+              new CMD_PassFuelSim (driveSimulation, intake),
+              JoystickDriveAndAimAtTarget.driveAndAimAtTarget(
+                  driveInput,
+                  drive,
+                  ()->(drive.getPose().getY()<4 ? new Translation2d(0,1) : new Translation2d(0,7)),
+                  ShooterConstants.kShooterOptimization,
+                  0.5,
+                  false))));
     }
   }
 
