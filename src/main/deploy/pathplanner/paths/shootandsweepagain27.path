@@ -9,7 +9,7 @@
       "prevControl": null,
       "nextControl": {
         "x": 2.175891583452374,
-        "y": 0.45746077032684385
+        "y": 0.4574607703268436
       },
       "isLocked": false,
       "linkedName": "Sweepmiddle27"
@@ -32,64 +32,64 @@
     },
     {
       "anchor": {
-        "x": 5.966918687589158,
-        "y": 1.0526390870185458
+        "x": 5.865903614457832,
+        "y": 1.0735903614457822
       },
       "prevControl": {
-        "x": 5.672740930436129,
-        "y": 0.45296904359121726
+        "x": 5.571725857304803,
+        "y": 0.4739203180184537
       },
       "nextControl": {
-        "x": 6.303323823109842,
-        "y": 1.7383880171184036
+        "x": 6.202308749978516,
+        "y": 1.7593392915456403
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.458587731811697,
-        "y": 3.7438801711840233
+        "x": 5.865903614457832,
+        "y": 3.9694337349397584
       },
       "prevControl": {
-        "x": 6.148059914407988,
-        "y": 3.4074750356633396
+        "x": 5.7750264050006885,
+        "y": 3.520727513245115
       },
       "nextControl": {
-        "x": 6.8396132160039675,
-        "y": 4.156657779058982
+        "x": 6.040746987951807,
+        "y": 4.832722891566264
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.3513552068473595,
-        "y": 4.183794579172611
+        "x": 7.2219686162624805,
+        "y": 4.895420827389444
       },
       "prevControl": {
-        "x": 7.10664053187844,
-        "y": 4.234928988867609
+        "x": 6.794759036144578,
+        "y": 5.1168433734939756
       },
       "nextControl": {
-        "x": 8.218245363766048,
-        "y": 4.00265335235378
+        "x": 8.3438278296174,
+        "y": 4.3139616678750015
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.830085592011411,
-        "y": 2.747603423680457
+        "x": 7.558373751783169,
+        "y": 3.2004564907275337
       },
       "prevControl": {
-        "x": 8.160239363711732,
-        "y": 2.809507255874268
+        "x": 7.817146932952927,
+        "y": 3.3945363766048526
       },
       "nextControl": {
-        "x": 7.002011412268189,
-        "y": 2.592339514978602
+        "x": 6.9059368171205655,
+        "y": 2.7111287897305796
       },
       "isLocked": false,
       "linkedName": null
@@ -100,8 +100,8 @@
         "y": 1.9971611982881607
       },
       "prevControl": {
-        "x": 3.0169044222540857,
-        "y": 2.2041797432227077
+        "x": 2.861640513552069,
+        "y": 2.3853209700427978
       },
       "nextControl": null,
       "isLocked": false,
@@ -122,23 +122,23 @@
       "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 3.4925373134328215,
-      "rotationDegrees": 180.0
+      "waypointRelativePos": 3.062240663900398,
+      "rotationDegrees": -105.90690894687663
     },
     {
-      "waypointRelativePos": 5.027718550106616,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 3.7493775933609985,
+      "rotationDegrees": -176.79485464477568
     },
     {
-      "waypointRelativePos": 5.4626865671641776,
+      "waypointRelativePos": 5.063900414937749,
       "rotationDegrees": 45.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 2.3659689399054677,
-      "maxWaypointRelativePos": 5.201890614449695,
+      "minWaypointRelativePos": 2.625253207292355,
+      "maxWaypointRelativePos": 5.120864280891283,
       "constraints": {
         "maxVelocity": 2.0,
         "maxAcceleration": 2.0,
@@ -153,8 +153,8 @@
       "minWaypointRelativePos": 5.444969615124914,
       "maxWaypointRelativePos": 5.671843349088439,
       "constraints": {
-        "maxVelocity": 2.0,
-        "maxAcceleration": 2.0,
+        "maxVelocity": 2.25,
+        "maxAcceleration": 2.25,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -165,10 +165,10 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
-    "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0,
+    "maxVelocity": 3.25,
+    "maxAcceleration": 3.25,
+    "maxAngularVelocity": 360.0,
+    "maxAngularAcceleration": 360.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
@@ -177,7 +177,7 @@
     "rotation": 45.0
   },
   "reversed": false,
-  "folder": "27 Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 45.0
